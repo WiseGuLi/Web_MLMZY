@@ -1,0 +1,170 @@
+<style>
+    /* 只针对顶部栏的样式，不影响页面其他部分 */
+    .top-bar {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 0 2rem;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .site-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .star {
+        font-size: 26px;
+        line-height: 1;
+        color: #e60000;
+        transition: all 0.25s ease;
+        display: inline-block;
+    }
+
+    .site-title:hover .star {
+        transform: scale(1.35) rotate(25deg);
+        color: #ffd700;
+    }
+
+    .title-text {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+    .title-text .gu {
+        color: #000000;
+    }
+    .title-text .li {
+        color: #cc0000;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #222;
+        font-size: 15px;
+        font-weight: 500;
+        transition: background 0.15s, color 0.15s;
+        white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+        background: rgba(255, 0, 0, 0.08);
+        color: #cc0000;
+    }
+
+    .nav-links a:hover img {
+        filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
+    }
+
+    .nav-links a img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        flex-shrink: 0;
+        transition: filter 0.15s;
+    }
+
+    .nav-links .label {
+        display: inline-block;
+    }
+
+    /* 窄屏微调（手机端会跳走，但仍保留） */
+    @media (max-width: 640px) {
+        .top-bar {
+            padding: 0 1rem;
+            height: 56px;
+        }
+        .title-text {
+            font-size: 18px;
+        }
+        .star {
+            font-size: 22px;
+        }
+        .nav-links a {
+            padding: 4px 8px;
+            font-size: 13px;
+        }
+        .nav-links a img {
+            width: 18px;
+            height: 18px;
+        }
+    }
+</style>
+
+<header class="top-bar">
+    <a href="https://mlm.662506.xyz" class="site-title" title="回到首页">
+        <span class="star">★</span>
+        <span class="title-text">
+            <span class="gu">GuLi</span>
+            <span class="li"> 马列毛主义学习站</span>
+        </span>
+    </a>
+
+    <ul class="nav-links">
+        <li>
+            <a href="https://mlm.662506.xyz">
+                <img src="/icons/首页.svg" alt="首页图标" loading="lazy">
+                <span class="label">首页</span>
+            </a>
+        </li>
+        <li>
+            <a href="/article">
+                <img src="/icons/文章.svg" alt="文章图标" loading="lazy">
+                <span class="label">文章</span>
+            </a>
+        </li>
+        <li>
+            <a href="/library">
+                <img src="/icons/文库.svg" alt="文库图标" loading="lazy">
+                <span class="label">文库</span>
+            </a>
+        </li>
+        <li>
+            <a href="/settings">
+                <img src="/icons/设置.svg" alt="设置图标" loading="lazy">
+                <span class="label">设置</span>
+            </a>
+        </li>
+        <li>
+            <a href="/about">
+                <img src="/icons/关于.svg" alt="关于图标" loading="lazy">
+                <span class="label">关于</span>
+            </a>
+        </li>
+    </ul>
+</header>
+
+<script>
+    (function() {
+        var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|IEMobile/i.test(navigator.userAgent);
+        var isNarrow = window.innerWidth <= 768;
+        if (isMobile || isNarrow) {
+            window.location.href = 'https://mlm.662506.xyz/warn';
+        }
+    })();
+</script>
