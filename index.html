@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>红色五角星</title>
+    <style>
+        /* 全局重置，让页面占满视口 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f5f5f5;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        /* 卡片容器，让星星更聚焦 */
+        .card {
+            background: #ffffff;
+            padding: 3rem 4rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        /* SVG 星星尺寸 */
+        .star-svg {
+            display: block;
+            width: 200px;
+            height: 200px;
+            /* 让星星在 hover 时微微旋转，增加趣味 */
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card:hover .star-svg {
+            transform: rotate(15deg) scale(1.05);
+        }
+
+        /* 简单说明文字 */
+        .caption {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            user-select: none;
+        }
+
+        .caption span {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- 使用 SVG 绘制红色五角星 -->
+        <svg class="star-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- 五角星的 10 个点（5 个外顶点 + 5 个内凹点） -->
+            <!-- 外顶点半径 40，内凹半径 16，中心在 (50,50) -->
+            <!-- 角度从 -90° 开始（即正上方） -->
+            <polygon points="
+            50,10
+            61,38
+            92,38
+            67,56
+            78,84
+            50,68
+            22,84
+            33,56
+            8,38
+            39,38
+          " fill="#d32f2f" stroke="#b71c1c" stroke-width="2" stroke-linejoin="round" />
+
+            <!-- 可选：加一点高光 / 立体感（半透明内发光） -->
+            <!-- 这里不加额外元素，保持干净 -->
+        </svg>
+
+        <div class="caption">
+            ⭐ <span>红色五角星</span> &nbsp;·&nbsp; hover 有惊喜
+        </div>
+    </div>
+
+</body>
+</html>
