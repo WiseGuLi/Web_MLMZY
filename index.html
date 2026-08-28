@@ -1,574 +1,60 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GuLi 马列毛主义学习站</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>全空白页面</title>
     <style>
-        /* ===== 全局重置 ===== */
-        *,
-        *::before,
-        *::after {
+        /* 重置所有边距，保证页面完全空白 */
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html {
-            font-size: 16px;
-            -webkit-text-size-adjust: 100%;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+            background-color: #ffffff;  /* 纯白背景，可改为您喜欢的底色 */
             min-height: 100vh;
-            min-height: 100dvh;
-            background: linear-gradient(145deg, #f0f2f5 0%, #dce1e8 100%);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            margin: 0;
-            padding: 0;
-            line-height: 1.5;
-            color: #1a1a1a;
         }
 
-        .app-wrapper {
-            width: 100%;
-            max-width: 100%;
-            overflow-x: hidden;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: transparent;
-        }
-
-        /* ===== 顶端栏 ===== */
-        .topbar {
-            width: 100%;
-            max-width: 100%;
-            padding: 0.6rem 1.2rem;
-            background: rgba(255, 255, 255, 0.72);
-            backdrop-filter: blur(18px) saturate(1.2);
-            -webkit-backdrop-filter: blur(18px) saturate(1.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: nowrap;
-            gap: 0.4rem 0.8rem;
-            position: relative;
-            z-index: 10;
-            transition: padding 0.2s ease;
-        }
-
-        /* ===== 左侧标题区域（含五角星） ===== */
-        .title-area {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            flex-shrink: 0;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            min-height: 44px;
-            padding: 0.2rem 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .star {
-            display: inline-block;
-            font-size: clamp(1.4rem, 5vw, 1.8rem);
-            line-height: 1;
-            color: #cc0000;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
-            transform-origin: center;
+        /* 顶栏容器只负责占位，样式完全由 nav.html 决定 */
+        #nav-placeholder {
             flex-shrink: 0;
         }
 
-        .title-area:hover .star,
-        .title-area:focus .star {
-            transform: scale(1.35) rotate(180deg);
-            color: #f5c518;
-        }
-        .title-area:active .star {
-            transform: scale(1.2) rotate(180deg);
-            color: #f5c518;
-        }
-
-        .site-title {
-            font-size: clamp(1.1rem, 4.5vw, 1.6rem);
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            white-space: nowrap;
-            line-height: 1.3;
-            display: flex;
-            flex-wrap: nowrap;
-            align-items: baseline;
-            gap: 0.1em;
-        }
-        .site-title .guli {
-            color: #000000;
-        }
-        .site-title .rest {
-            color: #cc0000;
-        }
-
-        /* ===== 导航按钮列表（宽屏显示） ===== */
-        .nav-links {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-end;
-            flex-wrap: nowrap;
-            gap: 0.1rem 0.2rem;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            flex-shrink: 1;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 44px;
-            min-width: 44px;
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #2c2c2c;
-            font-size: clamp(0.75rem, 2vw, 0.95rem);
-            font-weight: 500;
-            gap: 0.4em;
-            transition: background 0.15s ease, color 0.15s ease;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            line-height: 1.2;
-            white-space: nowrap;
-            border: none;
-            background: transparent;
-            flex-shrink: 0;
-        }
-        .nav-item img {
-            width: clamp(18px, 3.2vw, 22px);
-            height: clamp(18px, 3.2vw, 22px);
-            display: block;
-            flex-shrink: 0;
-            max-width: 100%;
-            height: auto;
-        }
-        .nav-item span {
-            display: inline-block;
-            line-height: 1.2;
-        }
-        .nav-item:active {
-            background: rgba(204, 0, 0, 0.10);
-            color: #cc0000;
-        }
-        @media (hover: hover) {
-            .nav-item:hover {
-                background: rgba(204, 0, 0, 0.07);
-                color: #cc0000;
-            }
-        }
-
-        /* ===== 汉堡按钮 ===== */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            min-height: 44px;
-            padding: 0.4rem;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-            gap: 5px;
-            flex-shrink: 0;
-            position: relative;
-        }
-        .hamburger:active {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        .hamburger .line {
-            display: block;
-            width: 100%;
-            max-width: 28px;
-            height: 3px;
-            background: #1a1a1a;
-            border-radius: 3px;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease, background 0.2s ease;
-            transform-origin: center;
-            flex-shrink: 0;
-        }
-        .hamburger.active .line:first-child {
-            transform: translateY(8px) rotate(45deg);
-        }
-        .hamburger.active .line:last-child {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-
-        /* ===== 全屏导航覆盖层 ===== */
-        .nav-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            height: 100dvh;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1.2rem;
-            padding: 2rem;
-            z-index: 999;
-            overflow-y: auto;
-            animation: fadeIn 0.25s ease;
-        }
-        .nav-overlay.open {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.98);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .nav-overlay .nav-item {
-            font-size: clamp(1.2rem, 6vw, 1.8rem);
-            padding: 0.8rem 1.6rem;
-            min-height: 56px;
-            min-width: 200px;
-            width: 80%;
-            max-width: 320px;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.02);
-            border-radius: 12px;
-            white-space: nowrap;
-        }
-        .nav-overlay .nav-item img {
-            width: clamp(24px, 5vw, 32px);
-            height: clamp(24px, 5vw, 32px);
-        }
-        .nav-overlay .nav-item:active {
-            background: rgba(204, 0, 0, 0.12);
-        }
-
-        /* ===== 内容占位 ===== */
-        .content-placeholder {
+        /* 主体内容区域：完全空白，不显示任何内容 */
+        .main-content {
             flex: 1;
-            width: 100%;
-            min-height: 10vh;
-            pointer-events: none;
-        }
-
-        /* ======================================================
-                   媒体查询：平板 (768px - 1024px)
-                   ====================================================== */
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .topbar {
-                padding: 0.7rem 1.8rem;
-                gap: 0.6rem 1rem;
-            }
-            .site-title {
-                font-size: clamp(1.2rem, 4vw, 1.5rem);
-            }
-            .star {
-                font-size: clamp(1.5rem, 4.5vw, 1.9rem);
-            }
-            .nav-item {
-                padding: 0.4rem 0.8rem;
-                font-size: clamp(0.85rem, 2vw, 0.95rem);
-                min-height: 48px;
-            }
-            .nav-item img {
-                width: clamp(20px, 2.8vw, 24px);
-                height: clamp(20px, 2.8vw, 24px);
-            }
-            .hamburger {
-                display: none !important;
-            }
-            .nav-links {
-                display: flex !important;
-            }
-        }
-
-        /* ======================================================
-                   媒体查询：手机 (< 768px)
-                   ====================================================== */
-        @media (max-width: 767px) {
-            .topbar {
-                padding: 0.4rem 0.8rem 0.4rem 0.6rem;
-                gap: 0.2rem;
-            }
-            .title-area {
-                gap: 0.2rem;
-                min-height: 44px;
-            }
-            .star {
-                font-size: clamp(1.2rem, 5vw, 1.5rem);
-            }
-            .site-title {
-                font-size: clamp(0.95rem, 4.8vw, 1.2rem);
-                white-space: nowrap;
-            }
-            .nav-links {
-                display: none !important;
-            }
-            .hamburger {
-                display: flex !important;
-            }
-            .nav-overlay {
-                padding: 1.5rem;
-                gap: 1rem;
-            }
-            .nav-overlay .nav-item {
-                width: 90%;
-                max-width: 280px;
-                font-size: clamp(1rem, 5vw, 1.4rem);
-                padding: 0.7rem 1rem;
-                min-height: 52px;
-            }
-            .nav-overlay .nav-item img {
-                width: clamp(22px, 5vw, 28px);
-                height: clamp(22px, 5vw, 28px);
-            }
-        }
-
-        /* ======================================================
-                   极小屏 (320px - 400px)
-                   ====================================================== */
-        @media (max-width: 400px) {
-            .topbar {
-                padding: 0.3rem 0.4rem 0.3rem 0.4rem;
-            }
-            .star {
-                font-size: clamp(1rem, 4.5vw, 1.2rem);
-            }
-            .site-title {
-                font-size: clamp(0.8rem, 4vw, 0.95rem);
-            }
-            .hamburger {
-                width: 40px;
-                height: 40px;
-                min-width: 40px;
-                min-height: 40px;
-                padding: 0.3rem;
-            }
-            .hamburger .line {
-                max-width: 22px;
-                height: 2.5px;
-            }
-            .hamburger.active .line:first-child {
-                transform: translateY(6px) rotate(45deg);
-            }
-            .hamburger.active .line:last-child {
-                transform: translateY(-6px) rotate(-45deg);
-            }
-            .nav-overlay .nav-item {
-                min-height: 48px;
-                font-size: clamp(0.9rem, 4.8vw, 1rem);
-                padding: 0.5rem 0.8rem;
-            }
-        }
-
-        /* ===== 工具类 ===== */
-        .hidden {
-            display: none !important;
-        }
-        .flex {
-            display: flex !important;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-        a,
-        button,
-        .nav-item,
-        .hamburger,
-        .title-area {
-            touch-action: manipulation;
-        }
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.04);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(204, 0, 0, 0.25);
-            border-radius: 4px;
+            /* 不加任何内边距、边框、文字，保持全空 */
         }
     </style>
 </head>
 <body>
 
-    <div class="app-wrapper">
+    <!-- 顶栏占位 -->
+    <div id="nav-placeholder"></div>
 
-        <!-- ===== 顶端栏 ===== -->
-        <header class="topbar" role="banner">
+    <!-- 主体：完全空白（不加任何文字或元素） -->
+    <div class="main-content"></div>
 
-            <!-- 左侧：标题 + 五角星，点击跳转首页 -->
-            <a class="title-area" href="#" aria-label="首页">
-                <span class="star">★</span>
-                <span class="site-title">
-                    <span class="guli">GuLi</span>
-                    <span class="rest"> 马列毛主义学习站</span>
-                </span>
-            </a>
-
-            <!-- ===== 导航按钮（宽屏可见） ===== -->
-            <nav class="nav-links" role="navigation" aria-label="主导航">
-                <!-- 首页 -->
-                <a class="nav-item" href="#" aria-label="首页">
-                    <img src="首页.svg" alt="" aria-hidden="true" width="22" height="22" loading="lazy">
-                    <span>首页</span>
-                </a>
-                <!-- 文章 -->
-                <a class="nav-item" href="#" aria-label="文章">
-                    <img src="文章.svg" alt="" aria-hidden="true" width="22" height="22" loading="lazy">
-                    <span>文章</span>
-                </a>
-                <!-- 文库 -->
-                <a class="nav-item" href="#" aria-label="文库">
-                    <img src="文库.svg" alt="" aria-hidden="true" width="22" height="22" loading="lazy">
-                    <span>文库</span>
-                </a>
-                <!-- 关于（已设置跳转至 mlm.662506.xyz/about） -->
-                <a class="nav-item" href="https://mlm.662506.xyz/about" aria-label="关于" target="_blank" rel="noopener noreferrer">
-                    <img src="关于.svg" alt="" aria-hidden="true" width="22" height="22" loading="lazy">
-                    <span>关于</span>
-                </a>
-                <!-- 设置 -->
-                <a class="nav-item" href="#" aria-label="设置">
-                    <img src="设置.svg" alt="" aria-hidden="true" width="22" height="22" loading="lazy">
-                    <span>设置</span>
-                </a>
-            </nav>
-
-            <!-- ===== 汉堡按钮 ===== -->
-            <button class="hamburger" id="hamburgerBtn" aria-label="菜单" aria-expanded="false">
-                <span class="line"></span>
-                <span class="line"></span>
-            </button>
-
-        </header>
-
-        <!-- ===== 全屏导航覆盖层 ===== -->
-        <div class="nav-overlay" id="navOverlay">
-            <a class="nav-item" href="#" aria-label="首页">
-                <img src="首页.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy">
-                <span>首页</span>
-            </a>
-            <a class="nav-item" href="#" aria-label="文章">
-                <img src="文章.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy">
-                <span>文章</span>
-            </a>
-            <a class="nav-item" href="#" aria-label="文库">
-                <img src="文库.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy">
-                <span>文库</span>
-            </a>
-            <!-- 关于（覆盖层中同样跳转） -->
-            <a class="nav-item" href="https://mlm.662506.xyz/about" aria-label="关于" target="_blank" rel="noopener noreferrer">
-                <img src="关于.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy">
-                <span>关于</span>
-            </a>
-            <a class="nav-item" href="#" aria-label="设置">
-                <img src="设置.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy">
-                <span>设置</span>
-            </a>
-        </div>
-
-        <!-- ===== 下方空白 ===== -->
-        <div class="content-placeholder" aria-hidden="true"></div>
-
-    </div>
-
+    <!-- 加载外部顶栏 -->
     <script>
-        (function() {
-            const hamburger = document.getElementById('hamburgerBtn');
-            const overlay = document.getElementById('navOverlay');
-
-            function toggleMenu() {
-                const isOpen = overlay.classList.toggle('open');
-                hamburger.classList.toggle('active');
-                hamburger.setAttribute('aria-expanded', isOpen);
-                document.body.style.overflow = isOpen ? 'hidden' : '';
-            }
-
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleMenu();
+        fetch('/components/nav.html')
+            .then(res => {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(data => {
+                document.getElementById('nav-placeholder').innerHTML = data;
+            })
+            .catch(err => {
+                // 如果加载失败，可在此处给出备用提示（但为了“全空白”，此处留空）
+                console.warn('顶栏加载失败:', err);
+                // 您可以取消注释下一行来显示一个简单的备用提示（非必须）
+                // document.getElementById('nav-placeholder').innerHTML = '<p style="padding:1rem;color:#999;">顶栏加载失败，请检查路径</p>';
             });
-
-            overlay.addEventListener('click', function(e) {
-                const target = e.target.closest('.nav-item');
-                if (target) {
-                    toggleMenu();
-                } else {
-                    toggleMenu();
-                }
-            });
-
-            overlay.addEventListener('click', function(e) {
-                if (e.target === overlay) {
-                    toggleMenu();
-                }
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && overlay.classList.contains('open')) {
-                    toggleMenu();
-                }
-            });
-
-            const mediaQuery = window.matchMedia('(min-width: 768px)');
-            function handleMediaChange(e) {
-                if (e.matches) {
-                    if (overlay.classList.contains('open')) {
-                        overlay.classList.remove('open');
-                        hamburger.classList.remove('active');
-                        hamburger.setAttribute('aria-expanded', 'false');
-                        document.body.style.overflow = '';
-                    }
-                }
-            }
-            mediaQuery.addEventListener('change', handleMediaChange);
-            if (window.innerWidth >= 768) {
-                if (overlay.classList.contains('open')) {
-                    overlay.classList.remove('open');
-                    hamburger.classList.remove('active');
-                    hamburger.setAttribute('aria-expanded', 'false');
-                    document.body.style.overflow = '';
-                }
-            }
-        })();
     </script>
 
 </body>
