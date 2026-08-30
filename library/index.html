@@ -14,7 +14,7 @@
 
         body {
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;  /* 与顶栏背景一致 */
+            background: #f5f5f5;
             min-height: 100vh;
             color: #222;
         }
@@ -43,18 +43,18 @@
             background: #e8e8e8;
             border-radius: 40px;
             padding: 4px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
             user-select: none;
-            /* 确保相对定位，供滑块绝对定位 */
         }
 
         .segmented-control input {
-            display: none; /* 隐藏原生 radio */
+            display: none;
+            /* 隐藏原生 radio */;
         }
 
         .segmented-control label {
-            flex: 1;                     /* 均分宽度 */
+            flex: 1;
             padding: 10px 0;
             text-align: center;
             font-size: 1.1rem;
@@ -72,18 +72,18 @@
         .segmented-control .slider {
             position: absolute;
             top: 4px;
-            left: 4px;          /* 初始占位，JS 动态设置 */
+            left: 4px;
             height: calc(100% - 8px);
             background: white;
             border-radius: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
             transition: left 0.25s ease, width 0.25s ease;
             z-index: 1;
-            pointer-events: none; /* 让点击穿透 */
+            pointer-events: none;
         }
 
         /* 选中状态文字变红 */
-        .segmented-control input:checked + label {
+        .segmented-control input:checked+label {
             color: #cc0000;
             font-weight: 600;
         }
@@ -92,7 +92,7 @@
         .library-content {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
             padding: 2rem;
             min-height: 200px;
             display: flex;
@@ -109,8 +109,24 @@
                 font-size: 2rem;
             }
             .segmented-control label {
-                font-size: 0.95rem;
+                font-size: 0.85rem;
                 padding: 8px 0;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .segmented-control label {
+                font-size: 0.7rem;
+                padding: 6px 0;
+            }
+            .segmented-control {
+                border-radius: 28px;
+                padding: 3px;
+            }
+            .segmented-control .slider {
+                border-radius: 25px;
+                top: 3px;
+                height: calc(100% - 6px);
             }
         }
     </style>
@@ -125,7 +141,7 @@
         <h1 class="library-title">文库</h1>
 
         <div class="segmented-control" id="segmentedControl">
-            <span class="slider" id="slider"></span> <!-- 滑块 -->
+            <span class="slider" id="slider"></span>
 
             <input type="radio" name="author" id="author-marx" value="马克思" checked>
             <label for="author-marx">马克思</label>
@@ -138,6 +154,10 @@
 
             <input type="radio" name="author" id="author-mao" value="毛泽东">
             <label for="author-mao">毛泽东</label>
+
+            <!-- +++ 新增 “其他” 选项 +++ -->
+            <input type="radio" name="author" id="author-other" value="其他">
+            <label for="author-other">其他</label>
         </div>
 
         <div class="library-content" id="libraryContent">
@@ -166,25 +186,20 @@
             const contentDiv = document.getElementById('libraryContent');
 
             function updateSlider() {
-                // 找到当前选中的 radio 索引
                 let checkedIndex = 0;
                 radios.forEach((radio, idx) => {
                     if (radio.checked) checkedIndex = idx;
                 });
 
-                // 获取对应的 label 元素
                 const targetLabel = labels[checkedIndex];
                 if (!targetLabel) return;
 
-                // 获取 label 相对于控制器的位置
                 const controlRect = control.getBoundingClientRect();
                 const labelRect = targetLabel.getBoundingClientRect();
 
-                // 计算 left 和 width（相对于控制器的 padding）
                 const left = labelRect.left - controlRect.left;
                 const width = labelRect.width;
 
-                // 应用滑块位置（需考虑控制器的 padding，但 labelRect 已包含 padding 内的位置）
                 slider.style.left = left + 'px';
                 slider.style.width = width + 'px';
             }
@@ -196,19 +211,28 @@
             radios.forEach(radio => {
                 radio.addEventListener('change', function() {
                     updateSlider();
-                    // 更新下方内容（占位）
                     const author = this.value;
-                    contentDiv.innerHTML = `<span>您选择了 <strong>${author}</strong>，内容准备中……</span>`;
+                    // 针对“其他”显示稍微不同的文案
+                    if (author === '其他') {
+                        contentDiv.innerHTML = `<span>您选择了 <strong>其他</strong>，更多作者内容准备中……</span>`;
+                    } else {
+                        contentDiv.innerHTML = `<span>您选择了 <strong>${author}</strong>，内容准备中……</span>`;
+                    }
                 });
             });
 
-            // 窗口尺寸变化时重新计算（例如缩放或旋转屏幕）
+            // 窗口尺寸变化时重新计算
             window.addEventListener('resize', updateSlider);
 
             // 初始显示默认选中内容（马克思）
             const defaultChecked = document.querySelector('input[name="author"]:checked');
             if (defaultChecked) {
-                contentDiv.innerHTML = `<span>您选择了 <strong>${defaultChecked.value}</strong>，内容准备中……</span>`;
+                const val = defaultChecked.value;
+                if (val === '其他') {
+                    contentDiv.innerHTML = `<span>您选择了 <strong>其他</strong>，更多作者内容准备中……</span>`;
+                } else {
+                    contentDiv.innerHTML = `<span>您选择了 <strong>${val}</strong>，内容准备中……</span>`;
+                }
             }
         })();
     </script>
