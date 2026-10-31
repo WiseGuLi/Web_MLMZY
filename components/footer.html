@@ -1,0 +1,115 @@
+<style>
+    /* ===== 全站页脚：所有页面底部统一显示 ===== */
+    .site-footer {
+        flex-shrink: 0;
+        background: #211d1a;
+        color: #d8cfc2;
+        border-top: 3px solid #9e1414;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    .site-footer * {
+        box-sizing: border-box;
+    }
+
+    .footer-inner {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 46px 2rem 26px;
+        text-align: center;
+    }
+
+    .footer-star {
+        display: block;
+        color: #c22b2b;
+        font-size: 15px;
+        line-height: 1;
+        letter-spacing: 0;
+    }
+
+    .footer-slogan {
+        margin: 12px 0 10px;
+        font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+        font-size: clamp(20px, 3vw, 28px);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        line-height: 1.5;
+        color: #f6efe4;
+    }
+
+    .footer-desc {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.9;
+        color: #a89d90;
+    }
+
+    .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 8px 14px;
+        margin-top: 18px;
+        font-size: 13px;
+    }
+
+    .footer-nav a {
+        color: #cfc4b6;
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
+
+    .footer-nav a:hover {
+        color: #ffffff;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .footer-nav span {
+        color: #6f6459;
+    }
+
+    .footer-copy {
+        margin: 24px auto 0;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 12px;
+        line-height: 1.8;
+        color: #7f7468;
+    }
+
+    @media (max-width: 640px) {
+        .footer-inner {
+            padding: 38px 1.25rem 22px;
+        }
+
+        .footer-slogan {
+            letter-spacing: 0.06em;
+        }
+
+        .footer-desc {
+            font-size: 12.5px;
+        }
+    }
+</style>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <span class="footer-star" aria-hidden="true">★</span>
+        <p class="footer-slogan">全世界无产者，联合起来！</p>
+        <p class="footer-desc">GuLi 马列毛主义学习站 · 宣传无产阶级革命思想，为全人类的解放而斗争</p>
+
+        <nav class="footer-nav" aria-label="页脚导航">
+            <a href="/">首页</a>
+            <span aria-hidden="true">·</span>
+            <a href="/library">文库</a>
+            <span aria-hidden="true">·</span>
+            <a href="/article">文章</a>
+            <span aria-hidden="true">·</span>
+            <a href="/about">关于</a>
+        </nav>
+
+        <p class="footer-copy">本站为公益学习网站，内容仅供学习研究使用。</p>
+    </div>
+</footer>

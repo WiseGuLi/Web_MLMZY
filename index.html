@@ -3,59 +3,934 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>全空白页面</title>
+    <title>GuLi 马列毛主义学习站</title>
+    <meta name="description" content="GuLi 马列毛主义学习站：宣传马克思列宁主义、毛泽东思想，提供经典著作免费下载、理论文章与多媒体学习资源。零基础也能读懂。" />
     <style>
-        /* 重置所有边距，保证页面完全空白 */
+        :root {
+            --paper: #f7f3ea;
+            --paper-deep: #efe8db;
+            --ink: #1d1b19;
+            --muted: #6b635a;
+            --red: #9e1414;
+            --red-dark: #7c0d0d;
+            --line: #ddd3c3;
+            --card: #fffdf8;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            --max: 1120px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #ffffff;  /* 纯白背景，可改为您喜欢的底色 */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
-        /* 顶栏容器只负责占位，样式完全由 nav.html 决定 */
-        #nav-placeholder {
+        ::selection {
+            background: rgba(158, 20, 20, 0.16);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        #nav-placeholder,
+        #footer-placeholder {
             flex-shrink: 0;
         }
 
-        /* 主体内容区域：完全空白，不显示任何内容 */
-        .main-content {
+        main {
             flex: 1;
-            /* 不加任何内边距、边框、文字，保持全空 */
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== 首屏 ===== */
+        .hero {
+            border-bottom: 1px solid var(--line);
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.72fr);
+            align-items: center;
+            gap: clamp(2.5rem, 6vw, 5.5rem);
+            padding-top: clamp(3.5rem, 8vw, 6.5rem);
+            padding-bottom: clamp(3rem, 7vw, 5.5rem);
+        }
+
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--red);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            line-height: 1.5;
+        }
+
+        .eyebrow::before {
+            content: '';
+            display: block;
+            width: 34px;
+            height: 1px;
+            background: var(--red);
+            flex-shrink: 0;
+        }
+
+        .hero h1 {
+            margin: 20px 0 26px;
+            font-family: var(--serif);
+            font-size: clamp(2.7rem, 5.8vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: 0.01em;
+        }
+
+        .hero h1 .brand-en {
+            display: block;
+            color: var(--ink);
+        }
+
+        .hero h1 .brand-cn {
+            display: block;
+            margin-top: 6px;
+            color: var(--red);
+            font-size: 0.72em;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-lead {
+            max-width: 40rem;
+            color: #4f473f;
+            font-size: 16.5px;
+            line-height: 1.95;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 34px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            min-height: 46px;
+            padding: 10px 24px;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            font-family: var(--sans);
+            font-size: 14.5px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            line-height: 1.4;
+            text-decoration: none;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+
+        .btn-primary {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fffaf2;
+        }
+
+        .btn-primary:hover {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border-color: #b9ad9c;
+            color: var(--ink);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .btn .arrow {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .hero-note {
+            margin-top: 18px;
+            color: #8a8073;
+            font-size: 12px;
+            letter-spacing: 0.14em;
+        }
+
+        .hero-quote {
+            position: relative;
+            padding: clamp(1.6rem, 3vw, 2.4rem);
+            background: var(--red-dark);
+            border-radius: 2px;
+            color: #f8f1e5;
+        }
+
+        .quote-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+            color: rgba(248, 241, 229, 0.62);
+            font-size: 11px;
+            letter-spacing: 0.18em;
+        }
+
+        .quote-star {
+            color: #e8cfa6;
+            font-size: 13px;
+            letter-spacing: 0;
+        }
+
+        .hero-quote blockquote {
+            margin: 28px 0 12px;
+            font-family: var(--serif);
+            font-size: clamp(1.25rem, 1.8vw, 1.45rem);
+            font-weight: 700;
+            line-height: 1.7;
+            letter-spacing: 0.01em;
+        }
+
+        .quote-author {
+            color: rgba(248, 241, 229, 0.6);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .quote-rule {
+            height: 1px;
+            margin: 24px 0;
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .quote-sub {
+            color: rgba(248, 241, 229, 0.84);
+            font-family: var(--serif);
+            font-size: 14px;
+            line-height: 1.85;
+        }
+
+        /* ===== 导师名录 ===== */
+        .thinkers {
+            background: rgba(255, 255, 255, 0.32);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .thinkers-inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 9px 16px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            color: #5d554b;
+            font-family: var(--serif);
+            font-size: 13.5px;
+            letter-spacing: 0.1em;
+        }
+
+        .thinkers-label {
+            color: #918678;
+            font-family: var(--sans);
+            font-size: 11px;
+            letter-spacing: 0.16em;
+        }
+
+        .thinkers .sep {
+            color: var(--red);
+            font-size: 9px;
+            letter-spacing: 0;
+        }
+
+        /* ===== 通用区块 ===== */
+        .section {
+            padding: clamp(3.4rem, 7vw, 5.8rem) 0;
+            border-bottom: 1px solid var(--line);
+            scroll-margin-top: 84px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            margin-bottom: clamp(2rem, 4vw, 3.2rem);
+        }
+
+        .section-index {
+            flex-shrink: 0;
+            min-width: 30px;
+            padding-top: 7px;
+            border-top: 2px solid var(--red);
+            color: var(--red);
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            line-height: 1.4;
+        }
+
+        .section-head h2 {
+            font-family: var(--serif);
+            font-size: clamp(1.7rem, 3vw, 2.25rem);
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: 0.02em;
+        }
+
+        .section-kicker {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 13px;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== 宗旨 ===== */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+            gap: clamp(2rem, 5vw, 4.5rem);
+            align-items: start;
+        }
+
+        .mission-lead {
+            margin-bottom: 20px;
+            font-family: var(--serif);
+            font-size: clamp(1.2rem, 2vw, 1.48rem);
+            font-weight: 700;
+            line-height: 1.85;
+            letter-spacing: 0.01em;
+        }
+
+        .mission-text p + p {
+            margin-top: 16px;
+            color: #4f473f;
+            font-size: 15px;
+            line-height: 1.95;
+        }
+
+        .mission-points {
+            list-style: none;
+            border-top: 1px solid var(--line);
+        }
+
+        .mission-points li {
+            display: flex;
+            gap: 16px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .mission-points .num {
+            flex: 0 0 26px;
+            padding-top: 2px;
+            color: var(--red);
+            font-family: var(--serif);
+            font-size: 12px;
+            letter-spacing: 0.06em;
+        }
+
+        .mission-points strong {
+            display: block;
+            font-size: 14.5px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1.6;
+        }
+
+        .mission-points p {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.75;
+        }
+
+        /* ===== 功能入口 ===== */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            border-top: 1px solid var(--line);
+            border-left: 1px solid var(--line);
+        }
+
+        .feature-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 264px;
+            padding: 26px 22px;
+            background: rgba(255, 255, 255, 0.28);
+            border-right: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            text-decoration: none;
+            transition: background 0.18s ease;
+        }
+
+        .feature-card:not(.is-static):hover {
+            background: var(--card);
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            color: var(--red);
+            flex-shrink: 0;
+        }
+
+        .feature-card h3 {
+            margin-top: 24px;
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            line-height: 1.5;
+        }
+
+        .feature-card p {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: auto;
+            padding-top: 18px;
+            color: var(--red);
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        .feature-card:not(.is-static):hover .card-link {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .feature-card.is-static {
+            cursor: default;
+        }
+
+        .tag {
+            display: inline-block;
+            width: max-content;
+            margin-top: auto;
+            padding: 2px 7px;
+            border: 1px solid var(--line);
+            color: #8a8073;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            line-height: 1.6;
+        }
+
+        /* ===== 学习路径 ===== */
+        .path-section {
+            background: rgba(239, 232, 219, 0.52);
+        }
+
+        .path-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            border-top: 1px solid var(--line);
+        }
+
+        .path-item {
+            padding: 26px 28px 4px 0;
+            border-right: 1px solid var(--line);
+        }
+
+        .path-item + .path-item {
+            padding-left: 28px;
+        }
+
+        .path-item:last-child {
+            border-right: 0;
+            padding-right: 0;
+        }
+
+        .path-num {
+            color: var(--red);
+            font-family: var(--serif);
+            font-size: 11.5px;
+            letter-spacing: 0.14em;
+        }
+
+        .path-item h3 {
+            margin: 10px 0 7px;
+            font-family: var(--serif);
+            font-size: 1.12rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .path-item p {
+            color: var(--muted);
+            font-size: 13.5px;
+            line-height: 1.85;
+        }
+
+        .path-foot {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 22px;
+            margin-top: 30px;
+        }
+
+        .text-link {
+            color: var(--red);
+            font-size: 13.5px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(158, 20, 20, 0.35);
+            padding-bottom: 2px;
+        }
+
+        .text-link:hover {
+            border-bottom-color: var(--red);
+        }
+
+        .path-foot .hint {
+            color: #8a8073;
+            font-size: 12.5px;
+            letter-spacing: 0.04em;
+        }
+
+        /* ===== 结尾 ===== */
+        .closing {
+            padding: clamp(3rem, 6vw, 4.8rem) 0;
+            background: var(--paper-deep);
+        }
+
+        .closing-inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .closing-eyebrow {
+            color: var(--red);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+        }
+
+        .closing h2 {
+            margin: 12px 0 10px;
+            font-family: var(--serif);
+            font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: 0.02em;
+            text-wrap: balance;
+        }
+
+        .closing p {
+            max-width: 42rem;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .closing-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 980px) {
+            .hero-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 2.5rem;
+                padding-top: 3.5rem;
+                padding-bottom: 3.5rem;
+            }
+
+            .hero-quote {
+                max-width: 560px;
+            }
+
+            .mission-grid {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 2rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .feature-card {
+                min-height: 240px;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .container {
+                padding-left: 1.25rem;
+                padding-right: 1.25rem;
+            }
+
+            .section-head {
+                gap: 14px;
+            }
+
+            .path-grid {
+                grid-template-columns: minmax(0, 1fr);
+                border-top: 0;
+            }
+
+            .path-item {
+                padding: 20px 0;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .path-item + .path-item {
+                padding-left: 0;
+            }
+
+            .path-item:last-child {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+
+            .closing-inner {
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .hero h1 {
+                font-size: clamp(2.4rem, 11vw, 3.1rem);
+            }
+
+            .hero h1 .brand-cn {
+                font-size: 0.66em;
+                line-height: 1.35;
+            }
+
+            .hero-lead {
+                font-size: 15.5px;
+                line-height: 1.9;
+            }
+
+            .hero-actions .btn {
+                flex: 1 1 140px;
+            }
+
+            .feature-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .feature-card {
+                min-height: 0;
+            }
+
+            .card-link,
+            .tag {
+                margin-top: 18px;
+            }
+
+            .thinkers-inner {
+                font-size: 12.5px;
+                letter-spacing: 0.06em;
+            }
+
+            .thinkers-label {
+                flex-basis: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .btn,
+            .feature-card,
+            .footer-nav a {
+                transition: none;
+            }
         }
     </style>
 </head>
 <body>
-
-    <!-- 顶栏占位 -->
+    <!-- 顶部导航栏占位 -->
     <div id="nav-placeholder"></div>
 
-    <!-- 主体：完全空白（不加任何文字或元素） -->
-    <div class="main-content"></div>
+    <main>
+        <!-- ===== 首屏 ===== -->
+        <section class="hero">
+            <div class="container hero-grid">
+                <div class="hero-main">
+                    <p class="eyebrow">理论学习 · 思想武装 · 实践斗争</p>
+                    <h1>
+                        <span class="brand-en">GuLi</span>
+                        <span class="brand-cn">马列毛主义学习站</span>
+                    </h1>
+                    <p class="hero-lead">
+                        宣传马克思列宁主义、毛泽东思想，提供经典著作免费下载、理论文章与多媒体学习资源。
+                        无论你此前是否了解共产主义，都可以从这里开始，逐步读懂、学会、用得上。
+                    </p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="/library">进入文库 <span class="arrow" aria-hidden="true">→</span></a>
+                        <a class="btn btn-ghost" href="/article">阅读文章</a>
+                    </div>
+                    <p class="hero-note">免费 · 公益 · 零基础可读</p>
+                </div>
 
-    <!-- 加载外部顶栏 -->
+                <aside class="hero-quote" aria-label="学习箴言">
+                    <div class="quote-top">
+                        <span>学习箴言</span>
+                        <span class="quote-star" aria-hidden="true">★</span>
+                    </div>
+                    <blockquote>没有革命的理论，<br>就不会有革命的运动。</blockquote>
+                    <p class="quote-author">—— 列宁《怎么办？》</p>
+                    <div class="quote-rule" aria-hidden="true"></div>
+                    <p class="quote-sub">理论一经掌握群众，也会变成物质力量。</p>
+                    <p class="quote-author">—— 马克思《〈黑格尔法哲学批判〉导言》</p>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ===== 导师名录 ===== -->
+        <div class="thinkers">
+            <div class="container thinkers-inner">
+                <span class="thinkers-label">本站内容涵盖</span>
+                <span>马克思</span><span class="sep" aria-hidden="true">★</span>
+                <span>恩格斯</span><span class="sep" aria-hidden="true">★</span>
+                <span>列宁</span><span class="sep" aria-hidden="true">★</span>
+                <span>斯大林</span><span class="sep" aria-hidden="true">★</span>
+                <span>毛泽东</span>
+            </div>
+        </div>
+
+        <!-- ===== 宗旨 ===== -->
+        <section class="section" id="mission">
+            <div class="container">
+                <div class="section-head">
+                    <span class="section-index">01</span>
+                    <div>
+                        <h2>本站宗旨</h2>
+                        <p class="section-kicker">为什么做这个网站</p>
+                    </div>
+                </div>
+
+                <div class="mission-grid">
+                    <div class="mission-text">
+                        <p class="mission-lead">GuLi 马列毛主义学习站，是一个以宣传马克思、恩格斯、列宁、斯大林、毛泽东的革命思想为宗旨的公益学习网站。</p>
+                        <p>
+                            本站致力于整理马克思、恩格斯、列宁、斯大林、毛泽东的经典著作，提供书籍免费下载；
+                            汇集马列毛主义理论文章，并收集视频、图片等各类学习资源，供所有愿意学习的人自由使用。
+                        </p>
+                        <p>
+                            我们尤其希望服务那些刚刚接触共产主义的读者。你不需要任何理论基础：从基本概念开始，
+                            一步一步读懂经典、理解历史、认识现实。理论不是少数人的装饰，而是劳动者认识世界、改造世界的武器。
+                            本站愿与一切追求进步的人一起，为全人类的解放而斗争。
+                        </p>
+                    </div>
+
+                    <ul class="mission-points">
+                        <li>
+                            <span class="num">01</span>
+                            <div>
+                                <strong>免费开放</strong>
+                                <p>所有书籍与资料免费阅读、下载，不设付费门槛。</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="num">02</span>
+                            <div>
+                                <strong>零基础友好</strong>
+                                <p>用通俗的导读与概念解释，帮助初学者建立理论框架。</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="num">03</span>
+                            <div>
+                                <strong>理论联系实际</strong>
+                                <p>不止于背诵结论，而是学会用马列毛主义分析现实问题。</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 功能入口 ===== -->
+        <section class="section" id="learn">
+            <div class="container">
+                <div class="section-head">
+                    <span class="section-index">02</span>
+                    <div>
+                        <h2>在这里可以做什么</h2>
+                        <p class="section-kicker">按你的需要，找到入口</p>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <a class="feature-card" href="/library">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5V5.5Z"/>
+                            <path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/>
+                            <path d="M8 7h8"/>
+                        </svg>
+                        <h3>经典文库</h3>
+                        <p>马恩列斯毛经典著作、单行本与学习资料，免费阅读和下载。</p>
+                        <span class="card-link">进入文库 <span aria-hidden="true">→</span></span>
+                    </a>
+
+                    <a class="feature-card" href="/article">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M6 3h9l4 4v14H6V3Z"/>
+                            <path d="M15 3v5h4"/>
+                            <path d="M9 12h7M9 16h7"/>
+                        </svg>
+                        <h3>理论文章</h3>
+                        <p>学习笔记、理论阐释与时事评论，在阅读中锤炼分析能力。</p>
+                        <span class="card-link">阅读文章 <span aria-hidden="true">→</span></span>
+                    </a>
+
+                    <div class="feature-card is-static">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="1"/>
+                            <path d="m10 9 5 3-5 3V9Z"/>
+                        </svg>
+                        <h3>多媒体资源</h3>
+                        <p>纪录片、历史影像、图片与讲座视频，帮助更直观地理解理论。</p>
+                        <span class="tag">资源整理中</span>
+                    </div>
+
+                    <a class="feature-card" href="#start">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="m15.5 8.5-2 5-5 2 2-5 5-2Z"/>
+                        </svg>
+                        <h3>零基础入门</h3>
+                        <p>从“什么是阶级”开始，一步一步建立最基础的理论坐标。</p>
+                        <span class="card-link">查看学习路径 <span aria-hidden="true">→</span></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 学习路径 ===== -->
+        <section class="section path-section" id="start">
+            <div class="container">
+                <div class="section-head">
+                    <span class="section-index">03</span>
+                    <div>
+                        <h2>从零开始，这样学</h2>
+                        <p class="section-kicker">不需要基础，只需要认真</p>
+                    </div>
+                </div>
+
+                <div class="path-grid">
+                    <div class="path-item">
+                        <span class="path-num">第一步</span>
+                        <h3>先建立基本概念</h3>
+                        <p>什么是阶级、剥削、国家？先读入门导读，把最常用的概念弄清楚，避免一上来就被术语挡住。</p>
+                    </div>
+                    <div class="path-item">
+                        <span class="path-num">第二步</span>
+                        <h3>再读经典原著</h3>
+                        <p>从《共产党宣言》等篇幅较短、影响深远的著作开始，配合注释与导读，逐步进入经典本身。</p>
+                    </div>
+                    <div class="path-item">
+                        <span class="path-num">第三步</span>
+                        <h3>最后联系现实</h3>
+                        <p>用学到的观点分析当下的劳动、经济与国际关系，在讨论与实践中深化理解，而不是停留在背诵。</p>
+                    </div>
+                </div>
+
+                <div class="path-foot">
+                    <a class="text-link" href="/library">从文库开始系统学习 →</a>
+                    <span class="hint">书籍持续整理中，欢迎从现有篇目读起。</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 结尾行动 ===== -->
+        <section class="closing">
+            <div class="container closing-inner">
+                <div>
+                    <p class="closing-eyebrow">开始学习</p>
+                    <h2>从一本书开始，理解这个世界。</h2>
+                    <p>无需基础，免费阅读与下载。愿你在理论中找到认识世界、改造世界的力量。</p>
+                </div>
+                <div class="closing-actions">
+                    <a class="btn btn-primary" href="/library">进入文库</a>
+                    <a class="btn btn-ghost" href="/about">了解本站</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚占位 -->
+    <div id="footer-placeholder"></div>
+
     <script>
         fetch('/components/nav.html')
-            .then(res => {
-                if (!res.ok) throw new Error('网络响应失败');
+            .then(function (res) {
+                if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();
             })
-            .then(data => {
+            .then(function (data) {
                 document.getElementById('nav-placeholder').innerHTML = data;
             })
-            .catch(err => {
-                // 如果加载失败，可在此处给出备用提示（但为了“全空白”，此处留空）
-                console.warn('顶栏加载失败:', err);
-                // 您可以取消注释下一行来显示一个简单的备用提示（非必须）
-                // document.getElementById('nav-placeholder').innerHTML = '<p style="padding:1rem;color:#999;">顶栏加载失败，请检查路径</p>';
+            .catch(function (err) {
+                console.warn('导航栏加载失败:', err);
+            });
+
+        fetch('/components/footer.html')
+            .then(function (res) {
+                if (!res.ok) throw new Error('页脚加载失败');
+                return res.text();
+            })
+            .then(function (data) {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(function (err) {
+                console.warn('页脚加载失败:', err);
             });
     </script>
-
 </body>
 </html>
