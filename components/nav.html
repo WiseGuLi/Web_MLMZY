@@ -120,6 +120,7 @@
     }
 
     .nav-more summary {
+        position: relative;
         display: flex;
         align-items: center;
         gap: 5px;
@@ -133,6 +134,14 @@
         white-space: nowrap;
         list-style: none;
         transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-more summary img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        flex-shrink: 0;
+        transition: filter 0.15s;
     }
 
     .nav-more summary::-webkit-details-marker {
@@ -150,19 +159,21 @@
     }
 
     .nav-more .caret {
+        position: absolute;
+        top: 50%;
+        right: 8px;
         width: 8px;
         height: 8px;
-        margin: -4px 0 0 3px;
+        margin: 0;
         border-right: 2px solid currentColor;
         border-bottom: 2px solid currentColor;
-        transform: rotate(45deg);
-        transition: transform 0.2s ease, margin 0.2s ease;
+        transform: translateY(-50%) rotate(45deg);
+        transition: transform 0.2s ease;
         flex-shrink: 0;
     }
 
     .nav-more details[open] .caret {
-        margin-top: 2px;
-        transform: rotate(225deg);
+        transform: translateY(-50%) rotate(225deg);
     }
 
     .nav-more .nav-sub {
@@ -193,6 +204,29 @@
         height: 20px;
     }
 
+    .nav-sub .nav-sub-link {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        width: 100%;
+        padding: 9px 12px;
+        border-radius: 4px;
+        color: #6f675e;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+        white-space: nowrap;
+        cursor: default;
+    }
+
+    .nav-sub .nav-sub-link img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        flex-shrink: 0;
+        opacity: 0.8;
+    }
+
     .nav-sub .ext {
         margin-left: auto;
         color: #9a9082;
@@ -216,8 +250,8 @@
         display: block;
         flex-shrink: 0;
         background-color: currentColor;
-        -webkit-mask: url('/icons/顶栏/新时代.svg') no-repeat center / contain;
-        mask: url('/icons/顶栏/新时代.svg') no-repeat center / contain;
+        -webkit-mask: url('/icons/顶栏/更多/新时代.svg') no-repeat center / contain;
+        mask: url('/icons/顶栏/更多/新时代.svg') no-repeat center / contain;
         transition: background-color 0.15s ease;
     }
 
@@ -289,11 +323,10 @@
         .nav-more > details > summary {
             width: 84px;
             height: 34px;
-            justify-content: center;
         }
     }
 
-    /* ===== 中等屏幕：稍微收紧，避免七个栏目拥挤 ===== */
+    /* ===== 中等屏幕：稍微收紧，避免八个栏目拥挤 ===== */
     @media (min-width: 961px) and (max-width: 1200px) {
         .top-bar {
             padding: 0 1.25rem;
@@ -309,10 +342,16 @@
         }
         .nav-links > li > a,
         .nav-more > details > summary {
-            padding: 6px 8px;
+            width: 80px;
+            padding: 6px 6px;
             font-size: 14px;
         }
         .nav-links > li > a img {
+            width: 19px;
+            height: 19px;
+        }
+
+        .nav-more summary img {
             width: 19px;
             height: 19px;
         }
@@ -453,24 +492,34 @@
             height: 22px;
         }
 
+        .nav-more summary img {
+            width: 22px;
+            height: 22px;
+        }
+
         .nav-sub a .sub-icon {
             width: 20px;
             height: 20px;
         }
 
-        /* “更多”在手机菜单中展开为普通分组 */
+        /* 下拉列表在手机菜单中展开为普通分组 */
         .nav-more,
         .nav-more details {
             width: 100%;
         }
 
         .nav-more summary .caret {
+            position: static;
+            right: auto;
+            top: auto;
             margin-left: auto;
             margin-top: -4px;
+            transform: rotate(45deg);
         }
 
         .nav-more details[open] .caret {
             margin-top: 2px;
+            transform: rotate(225deg);
         }
 
         .nav-more .nav-sub {
@@ -496,6 +545,22 @@
         }
 
         .nav-sub a img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-sub .nav-sub-link {
+            width: 100%;
+            padding: 14px 1.5rem 14px 3.4rem;
+            gap: 12px;
+            border-radius: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 15px;
+            font-weight: 500;
+            color: #6f675e;
+        }
+
+        .nav-sub .nav-sub-link img {
             width: 20px;
             height: 20px;
         }
@@ -560,17 +625,51 @@
                 <span class="label">文库</span>
             </a>
         </li>
+        <li class="nav-more">
+            <details>
+                <summary>
+                    <img src="/icons/顶栏/教程/教程.svg" alt="教程图标">
+                    <span class="label">教程</span>
+                    <span class="caret" aria-hidden="true"></span>
+                </summary>
+                <ul class="nav-sub">
+                    <li>
+                        <a href="/tutorial/">
+                            <img src="/icons/顶栏/教程/从0学习.svg" alt="从0学习图标">
+                            <span class="label">从“0”学习马恩列斯毛</span>
+                        </a>
+                    </li>
+                </ul>
+            </details>
+        </li>
         <li>
             <a href="/contribute">
                 <img src="/icons/顶栏/投稿.svg" alt="投稿图标">
                 <span class="label">投稿</span>
             </a>
         </li>
-        <li>
-            <a href="/download">
-                <img src="/icons/顶栏/下载.svg" alt="下载图标">
-                <span class="label">下载</span>
-            </a>
+        <li class="nav-more">
+            <details>
+                <summary>
+                    <img src="/icons/顶栏/下载/下载.svg" alt="下载图标">
+                    <span class="label">下载</span>
+                    <span class="caret" aria-hidden="true"></span>
+                </summary>
+                <ul class="nav-sub">
+                    <li>
+                        <span class="nav-sub-link" aria-disabled="true" title="功能暂未开放">
+                            <img src="/icons/顶栏/下载/电脑.svg" alt="电脑图标">
+                            <span class="label">安装到电脑桌面</span>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="nav-sub-link" aria-disabled="true" title="功能暂未开放">
+                            <img src="/icons/顶栏/下载/手机.svg" alt="手机图标">
+                            <span class="label">下载安卓版</span>
+                        </span>
+                    </li>
+                </ul>
+            </details>
         </li>
         <li>
             <a href="/about">
@@ -587,7 +686,7 @@
                 <ul class="nav-sub">
                     <li>
                         <a href="https://librecounter.org/mlm.662506.xyz/show" target="_blank" rel="noopener noreferrer">
-                            <img src="/icons/顶栏/数据.svg" alt="网站数据图标">
+                            <img src="/icons/顶栏/更多/数据.svg" alt="网站数据图标">
                             <span class="label">网站数据</span>
                             <span class="ext" aria-hidden="true">↗</span>
                         </a>
