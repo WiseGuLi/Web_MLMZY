@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>革命历史 | GuLi 马列毛主义学习站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #faf9f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #nav-placeholder,
+        #footer-placeholder {
+            flex-shrink: 0;
+        }
+
+        /* 内容尚未整理，先保留空白页面 */
+        .main-content {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="nav-placeholder"></div>
+
+    <main class="main-content"></main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('/components/nav.html?v=12')
+            .then(res => {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(data => {
+                document.getElementById('nav-placeholder').innerHTML = data;
+            })
+            .catch(err => {
+                console.warn('顶栏加载失败:', err);
+            });
+
+        fetch('/components/footer.html?v=6')
+            .then(res => {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(err => {
+                console.warn('页脚加载失败:', err);
+            });
+    </script>
+
+    <script src="/components/nav.js?v=7"></script>
+</body>
+</html>

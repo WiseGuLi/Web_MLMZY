@@ -242,8 +242,13 @@
             line-height: 1.75;
         }
 
-        .book-item:hover .book-desc {
+        .book-item.is-expanded .book-desc {
             display: block;
+        }
+
+        /* 列表与页脚之间预留的空白：展开简介时由脚本等量收起，页脚位置保持不动 */
+        .library-bottom-space {
+            height: 96px;
         }
 
         .book-actions {
@@ -402,6 +407,7 @@
 
         <p class="library-status" id="libraryStatus" role="status">正在加载文库…</p>
         <ul class="book-list" id="bookList" aria-live="polite"></ul>
+        <div class="library-bottom-space" id="libraryBottomSpace" aria-hidden="true"></div>
     </main>
 
     <!-- ===== 页脚占位 ===== -->
@@ -410,7 +416,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=11')
+        fetch('/components/nav.html?v=12')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -441,6 +447,37 @@
             var authorSelect = document.getElementById('authorSelect');
             var statusBox = document.getElementById('libraryStatus');
             var bookList = document.getElementById('bookList');
+            var bottomSpace = document.getElementById('libraryBottomSpace');
+            var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 96;
+            var activeBookItem = null;
+            var hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+            function resetBottomSpace() {
+                if (activeBookItem) {
+                    activeBookItem.classList.remove('is-expanded');
+                }
+                activeBookItem = null;
+                if (bottomSpace) bottomSpace.style.height = '';
+            }
+
+            function updateBottomSpace() {
+                if (!bottomSpace) return;
+
+                if (!hoverMedia.matches || !activeBookItem) {
+                    bottomSpace.style.height = '';
+                    return;
+                }
+
+                var baseHeight = activeBookItem.bookBaseHeight || 0;
+                var growth = Math.max(0, activeBookItem.getBoundingClientRect().height - baseHeight);
+                bottomSpace.style.height = Math.max(0, bottomSpaceBase - growth) + 'px';
+            }
+
+            function rememberBookHeights() {
+                Array.prototype.forEach.call(bookList.querySelectorAll('.book-item'), function (li) {
+                    li.bookBaseHeight = li.getBoundingClientRect().height;
+                });
+            }
 
             var books = [];
             var initialSelectionDone = false;
@@ -664,6 +701,23 @@
 
                 li.appendChild(info);
                 li.appendChild(actions);
+
+                li.addEventListener('mouseenter', function () {
+                    if (!hoverMedia.matches) return;
+                    activeBookItem = li;
+                    li.classList.add('is-expanded');
+                    updateBottomSpace();
+                });
+
+                li.addEventListener('mouseleave', function () {
+                    li.classList.remove('is-expanded');
+                    if (activeBookItem === li) {
+                        activeBookItem = null;
+                        updateBottomSpace();
+                    }
+                    li.bookBaseHeight = li.getBoundingClientRect().height;
+                });
+
                 return li;
             }
 
@@ -673,6 +727,7 @@
                     return book.author === author;
                 });
 
+                resetBottomSpace();
                 bookList.innerHTML = '';
 
                 if (!filtered.length) {
@@ -688,6 +743,7 @@
                 filtered.forEach(function (book) {
                     bookList.appendChild(createBookItem(book));
                 });
+                rememberBookHeights();
             }
 
             function selectFirstAvailableAuthor() {
@@ -717,6 +773,7 @@
             async function loadBooks() {
                 statusBox.hidden = false;
                 statusBox.textContent = '正在加载文库…';
+                resetBottomSpace();
                 bookList.innerHTML = '';
 
                 try {
@@ -736,6 +793,7 @@
                     renderBooks();
                 } catch (error) {
                     console.error('文库配置加载失败:', error);
+                    resetBottomSpace();
                     bookList.innerHTML = '';
                     statusBox.hidden = false;
                     statusBox.textContent = '文库配置加载失败，请稍后刷新重试。';
@@ -762,7 +820,17 @@
             });
 
             window.addEventListener('resize', updateSlider);
+            window.addEventListener('resize', function () {
+                resetBottomSpace();
+                window.requestAnimationFrame(rememberBookHeights);
+            });
             window.addEventListener('load', updateSlider);
+
+            if (hoverMedia.addEventListener) {
+                hoverMedia.addEventListener('change', resetBottomSpace);
+            } else if (hoverMedia.addListener) {
+                hoverMedia.addListener(resetBottomSpace);
+            }
 
             syncAuthorSelect();
             updateSlider();
