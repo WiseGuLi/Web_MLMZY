@@ -144,8 +144,7 @@
             transition: background 0.15s ease;
         }
 
-        .book-item:hover,
-        .book-item:focus-within {
+        .book-item:hover {
             background: rgba(255, 255, 255, 0.55);
         }
 
@@ -162,9 +161,9 @@
         }
 
         .book-title {
-            font-family: var(--serif);
-            font-size: 1.18rem;
-            font-weight: 700;
+            font-family: var(--sans);
+            font-size: 1.32rem;
+            font-weight: 600;
             line-height: 1.5;
             color: var(--ink);
             word-break: break-word;
@@ -196,21 +195,15 @@
         }
 
         .book-desc {
-            max-height: 0;
-            margin-top: 0;
-            overflow: hidden;
-            opacity: 0;
+            display: none;
+            margin-top: 8px;
             color: var(--muted);
             font-size: 14px;
             line-height: 1.75;
-            transition: max-height 0.22s ease, margin 0.22s ease, opacity 0.22s ease;
         }
 
-        .book-item:hover .book-desc,
-        .book-item:focus-within .book-desc {
-            max-height: 300px;
-            margin-top: 8px;
-            opacity: 1;
+        .book-item:hover .book-desc {
+            display: block;
         }
 
         .book-actions {
@@ -248,21 +241,9 @@
             border-color: var(--red-dark);
         }
 
-        .book-btn-ghost {
-            background: transparent;
-            color: var(--ink);
-        }
-
-        .book-btn-ghost:hover {
-            border-color: var(--red);
-            color: var(--red);
-        }
-
         @media (hover: none) {
             .book-desc {
-                max-height: none;
-                margin-top: 8px;
-                opacity: 1;
+                display: block;
             }
         }
 
@@ -288,7 +269,7 @@
             }
 
             .book-title {
-                font-size: 1.08rem;
+                font-size: 1.2rem;
             }
 
             .book-actions {
@@ -326,7 +307,6 @@
 
         @media (prefers-reduced-motion: reduce) {
             .segmented-control .slider,
-            .book-desc,
             .book-btn,
             .book-item {
                 transition: none;
@@ -343,7 +323,7 @@
     <main class="library-container">
         <header class="library-head">
             <h1 class="library-title">文库</h1>
-            <p class="library-subtitle">经典著作 · 免费下载 · 在线阅读</p>
+            <p class="library-subtitle">经典著作 · 免费阅读</p>
         </header>
 
         <div class="segmented-control" id="segmentedControl">
@@ -606,24 +586,14 @@
                 var actions = document.createElement('div');
                 actions.className = 'book-actions';
 
-                var download = document.createElement('a');
-                download.className = 'book-btn book-btn-primary';
-                download.href = book.url;
-                download.setAttribute('download', '');
-                download.target = '_blank';
-                download.rel = 'noopener noreferrer';
-                download.textContent = '下载';
-                download.setAttribute('aria-label', '下载' + book.title);
-
                 var view = document.createElement('a');
-                view.className = 'book-btn book-btn-ghost';
+                view.className = 'book-btn book-btn-primary';
                 view.href = book.url;
                 view.target = '_blank';
                 view.rel = 'noopener noreferrer';
                 view.textContent = '在线查看';
                 view.setAttribute('aria-label', '在线查看' + book.title);
 
-                actions.appendChild(download);
                 actions.appendChild(view);
 
                 li.appendChild(info);
@@ -720,6 +690,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js"></script>
+    <script src="/components/nav.js?v=3"></script>
 </body>
 </html>

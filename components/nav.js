@@ -10,6 +10,11 @@
     }
 
     function isWideScreen() {
+        /* 以顶栏实际状态为准：汉堡按钮隐藏时才是宽屏模式 */
+        var toggle = document.getElementById('nav-toggle');
+        if (toggle) {
+            return window.getComputedStyle(toggle).display === 'none';
+        }
         return window.matchMedia('(min-width: 961px)').matches;
     }
 
