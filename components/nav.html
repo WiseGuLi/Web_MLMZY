@@ -108,7 +108,7 @@
         display: inline-block;
     }
 
-    /* ===== “其他”下拉菜单（桌面端） ===== */
+    /* ===== “更多”下拉菜单（桌面端） ===== */
     .nav-more {
         position: relative;
     }
@@ -147,36 +147,19 @@
         color: #cc0000;
     }
 
-    .nav-more summary:hover img {
-        filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
-    }
-
-    .nav-more summary img,
-    .nav-more summary .more-icon {
-        width: 20px;
-        height: 20px;
-        display: block;
-        flex-shrink: 0;
-        transition: filter 0.15s;
-    }
-
-    .nav-more summary .more-icon {
-        stroke: currentColor;
-    }
-
     .nav-more .caret {
-        width: 7px;
-        height: 7px;
-        margin: -3px 0 0 2px;
-        border-right: 1.5px solid currentColor;
-        border-bottom: 1.5px solid currentColor;
+        width: 8px;
+        height: 8px;
+        margin: -4px 0 0 3px;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
         transform: rotate(45deg);
         transition: transform 0.2s ease, margin 0.2s ease;
         flex-shrink: 0;
     }
 
     .nav-more details[open] .caret {
-        margin-top: 3px;
+        margin-top: 2px;
         transform: rotate(225deg);
     }
 
@@ -212,6 +195,45 @@
         margin-left: auto;
         color: #9a9082;
         font-size: 12px;
+    }
+
+    /* “新时代学习”：站内唯一的蓝色主题外链 */
+    .nav-sub a.nav-xi {
+        color: #1a5fb4;
+    }
+
+    .nav-sub a.nav-xi .sub-icon {
+        width: 20px;
+        height: 20px;
+        display: block;
+        flex-shrink: 0;
+        background-color: currentColor;
+        -webkit-mask: url('/icons/顶栏/新时代.svg') no-repeat center / contain;
+        mask: url('/icons/顶栏/新时代.svg') no-repeat center / contain;
+        transition: background-color 0.15s ease;
+    }
+
+    .nav-sub a.nav-xi .ext {
+        color: #1a5fb4;
+        opacity: 0.75;
+    }
+
+    .nav-sub a.nav-xi:hover,
+    .nav-sub a.nav-xi:focus-visible {
+        background: rgba(26, 95, 180, 0.1);
+        color: #0b4f9e;
+        outline: none;
+    }
+
+    .nav-sub a.nav-xi:hover .sub-icon,
+    .nav-sub a.nav-xi:focus-visible .sub-icon {
+        background-color: #0b4f9e;
+    }
+
+    .nav-sub a.nav-xi:hover .ext,
+    .nav-sub a.nav-xi:focus-visible .ext {
+        color: #0b4f9e;
+        opacity: 1;
     }
 
     /* ===== 折叠按钮（移动端才显示） ===== */
@@ -267,9 +289,7 @@
             padding: 6px 8px;
             font-size: 14px;
         }
-        .nav-links > li > a img,
-        .nav-more > details > summary img,
-        .nav-more > details > summary .more-icon {
+        .nav-links > li > a img {
             width: 19px;
             height: 19px;
         }
@@ -386,10 +406,18 @@
         }
 
         .nav-links > li > a:hover,
-        .nav-more > details > summary:hover,
+        .nav-more > details > summary:hover {
+            background: rgba(255, 0, 0, 0.06);
+            color: #cc0000;
+        }
+
         .nav-more details[open] > summary {
             background: rgba(255, 0, 0, 0.06);
             color: #222;
+        }
+
+        .nav-more details[open] > summary:hover {
+            color: #cc0000;
         }
 
         .nav-links > li > a:active,
@@ -397,14 +425,17 @@
             background: rgba(255, 0, 0, 0.1);
         }
 
-        .nav-links a img,
-        .nav-more summary img,
-        .nav-more summary .more-icon {
+        .nav-links a img {
             width: 22px;
             height: 22px;
         }
 
-        /* “其他”在手机菜单中展开为普通分组 */
+        .nav-sub a .sub-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* “更多”在手机菜单中展开为普通分组 */
         .nav-more,
         .nav-more details {
             width: 100%;
@@ -444,6 +475,16 @@
         .nav-sub a img {
             width: 20px;
             height: 20px;
+        }
+
+        .nav-sub a.nav-xi {
+            color: #1a5fb4;
+        }
+
+        .nav-sub a.nav-xi:hover,
+        .nav-sub a.nav-xi:active {
+            background: rgba(26, 95, 180, 0.1);
+            color: #0b4f9e;
         }
 
         /* 展开 / 收起 */
@@ -517,12 +558,7 @@
         <li class="nav-more">
             <details>
                 <summary>
-                    <svg class="more-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <circle cx="5" cy="12" r="1.7"></circle>
-                        <circle cx="12" cy="12" r="1.7"></circle>
-                        <circle cx="19" cy="12" r="1.7"></circle>
-                    </svg>
-                    <span class="label">其他</span>
+                    <span class="label">更多</span>
                     <span class="caret" aria-hidden="true"></span>
                 </summary>
                 <ul class="nav-sub">
@@ -530,6 +566,13 @@
                         <a href="https://librecounter.org/mlm.662506.xyz/show" target="_blank" rel="noopener noreferrer">
                             <img src="/icons/顶栏/数据.svg" alt="网站数据图标">
                             <span class="label">网站数据</span>
+                            <span class="ext" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-xi" href="https://www.xuexi.cn/" target="_blank" rel="noopener noreferrer">
+                            <span class="sub-icon" aria-hidden="true"></span>
+                            <span class="label">新时代学习</span>
                             <span class="ext" aria-hidden="true">↗</span>
                         </a>
                     </li>
