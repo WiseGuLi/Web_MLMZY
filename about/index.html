@@ -276,9 +276,9 @@
                 <ul class="reference-list">
                     <li>
                         <span class="name">
-                            <a href="https://marxism.forum/classics" target="_blank" rel="noopener noreferrer">马列毛经典文库</a>
+                            <a href="https://marxism.forum/" target="_blank" rel="noopener noreferrer">马列毛经典文库</a>
                         </span>
-                        <span class="desc">marxism.forum/classics</span>
+                        <span class="desc">marxism.forum</span>
                     </li>
                     <li>
                         <span class="name">
@@ -322,7 +322,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=8')
+        fetch('/components/nav.html?v=9')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -334,7 +334,7 @@
                 console.warn('顶栏加载失败:', err);
             });
 
-        fetch('/components/footer.html?v=5')
+        fetch('/components/footer.html?v=6')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();

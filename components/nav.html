@@ -337,9 +337,20 @@
             height: 34px;
         }
 
+        /* 宽屏下按钮内的图标、文字和箭头整体居中 */
+        .nav-links > li > a,
+        .nav-more > details > summary {
+            justify-content: center;
+        }
+
         .nav-more--icon > details > summary {
             width: 96px;
             height: 34px;
+        }
+
+        /* 展开下拉列表时，母按钮图标同步变红 */
+        .nav-more details[open] > summary img {
+            filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
         }
 
         /* “更多”与普通入口“关于”等宽，文字与箭头居中 */
