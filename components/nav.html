@@ -108,6 +108,112 @@
         display: inline-block;
     }
 
+    /* ===== “其他”下拉菜单（桌面端） ===== */
+    .nav-more {
+        position: relative;
+    }
+
+    .nav-more details {
+        margin: 0;
+    }
+
+    .nav-more summary {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        color: #222;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.4;
+        cursor: pointer;
+        white-space: nowrap;
+        list-style: none;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-more summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .nav-more summary::marker {
+        content: '';
+    }
+
+    .nav-more summary:hover,
+    .nav-more details[open] > summary {
+        background: rgba(255, 0, 0, 0.08);
+        color: #cc0000;
+    }
+
+    .nav-more summary:hover img {
+        filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
+    }
+
+    .nav-more summary img,
+    .nav-more summary .more-icon {
+        width: 20px;
+        height: 20px;
+        display: block;
+        flex-shrink: 0;
+        transition: filter 0.15s;
+    }
+
+    .nav-more summary .more-icon {
+        stroke: currentColor;
+    }
+
+    .nav-more .caret {
+        width: 7px;
+        height: 7px;
+        margin: -3px 0 0 2px;
+        border-right: 1.5px solid currentColor;
+        border-bottom: 1.5px solid currentColor;
+        transform: rotate(45deg);
+        transition: transform 0.2s ease, margin 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .nav-more details[open] .caret {
+        margin-top: 3px;
+        transform: rotate(225deg);
+    }
+
+    .nav-more .nav-sub {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        z-index: 1001;
+        min-width: 180px;
+        margin: 0;
+        padding: 6px;
+        list-style: none;
+        background: #fffefb;
+        border: 1px solid #e2ddd2;
+        border-radius: 6px;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-sub a {
+        width: 100%;
+        padding: 9px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .nav-sub a img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav-sub .ext {
+        margin-left: auto;
+        color: #9a9082;
+        font-size: 12px;
+    }
+
     /* ===== 折叠按钮（移动端才显示） ===== */
     .nav-toggle,
     .nav-toggle-input {
@@ -142,8 +248,8 @@
         transition: transform 0.25s ease, opacity 0.2s ease;
     }
 
-    /* ===== 中等屏幕：稍微收紧，避免拥挤 ===== */
-    @media (max-width: 960px) and (min-width: 769px) {
+    /* ===== 中等屏幕：稍微收紧，避免七个栏目拥挤 ===== */
+    @media (min-width: 961px) and (max-width: 1200px) {
         .top-bar {
             padding: 0 1.25rem;
         }
@@ -156,14 +262,21 @@
         .nav-links {
             gap: 2px;
         }
-        .nav-links a {
+        .nav-links > li > a,
+        .nav-more > details > summary {
             padding: 6px 8px;
             font-size: 14px;
+        }
+        .nav-links > li > a img,
+        .nav-more > details > summary img,
+        .nav-more > details > summary .more-icon {
+            width: 19px;
+            height: 19px;
         }
     }
 
     /* ===== 移动端：只保留标题 + 三横线折叠菜单 ===== */
-    @media (max-width: 768px) {
+    @media (max-width: 960px) {
         .top-bar {
             height: 56px;
             padding: 0 1rem;
@@ -260,7 +373,8 @@
             flex-shrink: 0;
         }
 
-        .nav-links a {
+        .nav-links > li > a,
+        .nav-more > details > summary {
             width: 100%;
             padding: 18px 1.5rem;
             gap: 14px;
@@ -271,17 +385,65 @@
             color: #222;
         }
 
-        .nav-links a:hover {
+        .nav-links > li > a:hover,
+        .nav-more > details > summary:hover,
+        .nav-more details[open] > summary {
             background: rgba(255, 0, 0, 0.06);
+            color: #222;
         }
 
-        .nav-links a:active {
+        .nav-links > li > a:active,
+        .nav-more > details > summary:active {
             background: rgba(255, 0, 0, 0.1);
         }
 
-        .nav-links a img {
+        .nav-links a img,
+        .nav-more summary img,
+        .nav-more summary .more-icon {
             width: 22px;
             height: 22px;
+        }
+
+        /* “其他”在手机菜单中展开为普通分组 */
+        .nav-more,
+        .nav-more details {
+            width: 100%;
+        }
+
+        .nav-more summary .caret {
+            margin-left: auto;
+            margin-top: -4px;
+        }
+
+        .nav-more details[open] .caret {
+            margin-top: 2px;
+        }
+
+        .nav-more .nav-sub {
+            position: static;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+            background: #f4f1ea;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .nav-sub a {
+            width: 100%;
+            padding: 14px 1.5rem 14px 3.4rem;
+            gap: 12px;
+            border-radius: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .nav-sub a img {
+            width: 20px;
+            height: 20px;
         }
 
         /* 展开 / 收起 */
@@ -335,10 +497,44 @@
             </a>
         </li>
         <li>
+            <a href="/contribute">
+                <img src="/icons/顶栏/投稿.svg" alt="投稿图标">
+                <span class="label">投稿</span>
+            </a>
+        </li>
+        <li>
+            <a href="/download">
+                <img src="/icons/顶栏/下载.svg" alt="下载图标">
+                <span class="label">下载</span>
+            </a>
+        </li>
+        <li>
             <a href="/about">
                 <img src="/icons/顶栏/关于.svg" alt="关于图标">
                 <span class="label">关于</span>
             </a>
+        </li>
+        <li class="nav-more">
+            <details>
+                <summary>
+                    <svg class="more-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="5" cy="12" r="1.7"></circle>
+                        <circle cx="12" cy="12" r="1.7"></circle>
+                        <circle cx="19" cy="12" r="1.7"></circle>
+                    </svg>
+                    <span class="label">其他</span>
+                    <span class="caret" aria-hidden="true"></span>
+                </summary>
+                <ul class="nav-sub">
+                    <li>
+                        <a href="https://librecounter.org/mlm.662506.xyz/show" target="_blank" rel="noopener noreferrer">
+                            <img src="/icons/顶栏/数据.svg" alt="网站数据图标">
+                            <span class="label">网站数据</span>
+                            <span class="ext" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                </ul>
+            </details>
         </li>
     </ul>
 </header>
