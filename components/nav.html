@@ -10,6 +10,17 @@
         box-sizing: border-box;
     }
 
+    /* 全站文字选中后的浅红底色，与首页保持一致 */
+    ::selection {
+        background: #f0d6d3;
+        color: #1d1b19;
+    }
+
+    ::-moz-selection {
+        background: #f0d6d3;
+        color: #1d1b19;
+    }
+
     .top-bar {
         position: sticky;
         top: 0;
@@ -331,10 +342,11 @@
             height: 34px;
         }
 
-        /* “更多”与普通入口“关于”等宽 */
+        /* “更多”与普通入口“关于”等宽，文字与箭头居中 */
         .nav-more:not(.nav-more--icon) > details > summary {
             width: 84px;
             height: 34px;
+            justify-content: center;
         }
     }
 
