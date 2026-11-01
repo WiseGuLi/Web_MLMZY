@@ -144,6 +144,10 @@
         transition: filter 0.15s;
     }
 
+    .nav-more summary:hover img {
+        filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
+    }
+
     .nav-more summary::-webkit-details-marker {
         display: none;
     }
@@ -159,21 +163,19 @@
     }
 
     .nav-more .caret {
-        position: absolute;
-        top: 50%;
-        right: 8px;
         width: 8px;
         height: 8px;
-        margin: 0;
+        margin: -4px 0 0 3px;
         border-right: 2px solid currentColor;
         border-bottom: 2px solid currentColor;
-        transform: translateY(-50%) rotate(45deg);
-        transition: transform 0.2s ease;
+        transform: rotate(45deg);
+        transition: transform 0.2s ease, margin 0.2s ease;
         flex-shrink: 0;
     }
 
     .nav-more details[open] .caret {
-        transform: translateY(-50%) rotate(225deg);
+        margin-top: 2px;
+        transform: rotate(225deg);
     }
 
     .nav-more .nav-sub {
@@ -313,15 +315,19 @@
         transition: transform 0.25s ease, opacity 0.2s ease;
     }
 
-    /* ===== 宽屏：所有顶栏按钮等宽等高 ===== */
+    /* ===== 宽屏：直接入口等宽；“教程/下载”因含图标和箭头适当加宽 ===== */
     @media (min-width: 961px) {
         .nav-links > li {
             flex-shrink: 0;
         }
 
-        .nav-links > li > a,
-        .nav-more > details > summary {
+        .nav-links > li > a {
             width: 84px;
+            height: 34px;
+        }
+
+        .nav-more--icon > details > summary {
+            width: 96px;
             height: 34px;
         }
     }
@@ -340,10 +346,18 @@
         .nav-links {
             gap: 2px;
         }
-        .nav-links > li > a,
-        .nav-more > details > summary {
+        .nav-links > li > a {
             width: 80px;
             padding: 6px 6px;
+            font-size: 14px;
+        }
+        .nav-more--icon > details > summary {
+            width: 92px;
+            padding: 6px 6px;
+            font-size: 14px;
+        }
+        .nav-more:not(.nav-more--icon) > details > summary {
+            padding: 6px 8px;
             font-size: 14px;
         }
         .nav-links > li > a img {
@@ -625,7 +639,7 @@
                 <span class="label">文库</span>
             </a>
         </li>
-        <li class="nav-more">
+        <li class="nav-more nav-more--icon">
             <details>
                 <summary>
                     <img src="/icons/顶栏/教程/教程.svg" alt="教程图标">
@@ -648,7 +662,7 @@
                 <span class="label">投稿</span>
             </a>
         </li>
-        <li class="nav-more">
+        <li class="nav-more nav-more--icon">
             <details>
                 <summary>
                     <img src="/icons/顶栏/下载/下载.svg" alt="下载图标">
