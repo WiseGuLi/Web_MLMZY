@@ -352,7 +352,10 @@
         }
 
         .book-list.view-double .book-desc {
-            display: none !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .book-list.view-double .book-actions {
@@ -420,6 +423,18 @@
 
         .book-item.is-expanded .book-desc {
             display: block;
+        }
+
+        .book-item.search-open .book-desc {
+            display: block;
+        }
+
+        .search-hit {
+            padding: 0 1px;
+            border-radius: 2px;
+            background: rgba(158, 20, 20, 0.08);
+            color: var(--red);
+            font-weight: 700;
         }
 
         /* 列表与页脚之间预留的空白：展开简介时由脚本等量收起，页脚位置保持不动 */
@@ -601,6 +616,9 @@
         <div class="segmented-control" id="segmentedControl">
             <span class="slider" id="slider"></span>
 
+            <input type="radio" name="author" id="author-all" value="全部">
+            <label for="author-all">全部</label>
+
             <input type="radio" name="author" id="author-marx" value="马克思" checked>
             <label for="author-marx">马克思</label>
 
@@ -657,7 +675,8 @@
 
             var R2_BASE = 'https://mlm-files.662506.xyz/';
             var BOOKS_CONFIG_URL = '/data/books.yml';
-            var AUTHORS = ['马克思', '恩格斯', '列宁', '斯大林', '毛泽东', '其他'];
+            var AUTHOR_ORDER = ['马克思', '恩格斯', '列宁', '斯大林', '毛泽东', '其他'];
+            var AUTHORS = ['全部'].concat(AUTHOR_ORDER);
 
             var control = document.getElementById('segmentedControl');
             var slider = document.getElementById('slider');
@@ -744,7 +763,7 @@
 
             function getSelectedAuthor() {
                 var selected = control.querySelector('input[name="author"]:checked');
-                return selected ? selected.value : '马克思';
+                return selected ? selected.value : '全部';
             }
 
             function syncAuthorSelect() {
@@ -895,7 +914,7 @@
                 var parts = file.replace(/^\/+/, '').split('/');
                 var author = raw.author ? String(raw.author) : (parts.length >= 2 ? parts[1] : '其他');
 
-                if (AUTHORS.indexOf(author) === -1) author = '其他';
+                if (AUTHOR_ORDER.indexOf(author) === -1) author = '其他';
 
                 var format = getFileExtension(file);
 
@@ -910,9 +929,50 @@
                 };
             }
 
-            function createBookItem(book) {
+            function escapeRegExp(value) {
+                return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            }
+
+            function appendHighlightedText(element, text, terms) {
+                if (!terms.length) {
+                    element.textContent = text;
+                    return;
+                }
+
+                var pattern = new RegExp('(' + terms.map(escapeRegExp).join('|') + ')', 'gi');
+                var pieces = String(text).split(pattern);
+
+                pieces.forEach(function (piece) {
+                    if (!piece) return;
+
+                    var isHit = terms.some(function (term) {
+                        return piece.toLowerCase() === term.toLowerCase();
+                    });
+
+                    if (!isHit) {
+                        element.appendChild(document.createTextNode(piece));
+                        return;
+                    }
+
+                    var mark = document.createElement('mark');
+                    mark.className = 'search-hit';
+                    mark.textContent = piece;
+                    element.appendChild(mark);
+                });
+            }
+
+            function createBookItem(book, terms) {
                 var li = document.createElement('li');
                 li.className = 'book-item';
+                li.dataset.author = book.author;
+
+                if (terms.length) {
+                    var descText = book.description.toLowerCase();
+                    var descMatched = terms.some(function (term) {
+                        return descText.indexOf(term) !== -1;
+                    });
+                    if (descMatched) li.classList.add('search-open');
+                }
 
                 var info = document.createElement('div');
                 info.className = 'book-info';
@@ -922,7 +982,7 @@
 
                 var title = document.createElement('h2');
                 title.className = 'book-title';
-                title.textContent = book.title;
+                appendHighlightedText(title, book.title, terms);
                 titleLine.appendChild(title);
 
                 if (book.featured) {
@@ -939,7 +999,7 @@
 
                 var desc = document.createElement('p');
                 desc.className = 'book-desc';
-                desc.textContent = book.description;
+                appendHighlightedText(desc, book.description, terms);
 
                 info.appendChild(titleLine);
                 info.appendChild(desc);
@@ -983,8 +1043,15 @@
                 var author = getSelectedAuthor();
                 var terms = getSearchTerms();
                 var filtered = books.filter(function (book) {
-                    return book.author === author && matchesSearch(book, terms);
+                    var inCategory = author === '全部' || book.author === author;
+                    return inCategory && matchesSearch(book, terms);
                 });
+
+                if (author === '全部') {
+                    filtered.sort(function (a, b) {
+                        return AUTHOR_ORDER.indexOf(a.author) - AUTHOR_ORDER.indexOf(b.author);
+                    });
+                }
 
                 resetBottomSpace();
                 bookList.innerHTML = '';
@@ -1000,19 +1067,21 @@
                 statusBox.hidden = true;
                 statusBox.textContent = '';
                 filtered.forEach(function (book) {
-                    bookList.appendChild(createBookItem(book));
+                    bookList.appendChild(createBookItem(book, terms));
                 });
                 rememberBookHeights();
             }
 
             function selectFirstAvailableAuthor() {
                 var current = getSelectedAuthor();
+                if (current === '全部' && books.length) return;
+
                 var hasCurrent = books.some(function (book) {
                     return book.author === current;
                 });
                 if (hasCurrent) return;
 
-                var firstAuthor = AUTHORS.find(function (author) {
+                var firstAuthor = AUTHOR_ORDER.find(function (author) {
                     return books.some(function (book) {
                         return book.author === author;
                     });
