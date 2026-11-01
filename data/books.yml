@@ -41,7 +41,7 @@
 - title: "《共产党宣言》"
   file: "文库/马克思/《共产党宣言》.html"
   format: pdf
-  featured: false
+  featured: true
   description: "科学社会主义的纲领性文献。"
 - title: "《雇佣劳动与资本》"
   file: "文库/马克思/《雇佣劳动与资本》.pdf"
@@ -406,7 +406,7 @@
 - title: "《共产党宣言》"
   file: "文库/恩格斯/《共产党宣言》.html"
   format: pdf
-  featured: false
+  featured: true
   description: "科学社会主义的纲领性文献。"
 - title: "《共产主义原理》"
   file: "文库/恩格斯/《共产主义原理》.html"
