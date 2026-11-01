@@ -15,13 +15,13 @@ content:
         required: true
 
       - name: file
-        label: 原始文件名（R2 中的路径）
+        label: 原始文件名（R2中的路径）
         type: string
         required: true
         description: "例如 csapp.pdf 或 pdfs/csapp.pdf，必须与 R2 桶中的实际路径完全一致"
 
       - name: format
-        label: 文件格式
+        label: 文件格式（PDF or HTML）
         type: select
         required: true
         options:
@@ -32,7 +32,7 @@ content:
               value: html
 
       - name: featured
-        label: 推荐书籍
+        label: 是否推荐
         type: boolean
         default: false
 
