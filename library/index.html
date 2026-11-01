@@ -48,7 +48,7 @@
 
         .library-head {
             text-align: center;
-            margin-bottom: 1.7rem;
+            margin-bottom: 1.35rem;
         }
 
         .library-title {
@@ -65,6 +65,129 @@
             color: var(--muted);
             font-size: 14px;
             letter-spacing: 0.12em;
+        }
+
+        /* ----- 搜索与列表布局 ----- */
+        .library-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+        }
+
+        .library-search {
+            position: relative;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .library-search .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            width: 17px;
+            height: 17px;
+            transform: translateY(-50%);
+            color: #8a8278;
+            pointer-events: none;
+        }
+
+        .library-search-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 42px 0 40px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: var(--card);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .library-search-input::placeholder {
+            color: #9a9082;
+        }
+
+        .library-search-input::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .library-search-input:focus {
+            outline: 2px solid rgba(158, 20, 20, 0.3);
+            outline-offset: 2px;
+            border-color: rgba(158, 20, 20, 0.45);
+        }
+
+        .search-clear {
+            position: absolute;
+            top: 50%;
+            right: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: #8a8278;
+            font-family: var(--sans);
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            transform: translateY(-50%);
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .search-clear:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--red);
+        }
+
+        .search-clear[hidden] {
+            display: none;
+        }
+
+        .view-switch {
+            display: flex;
+            flex: 0 0 auto;
+            gap: 2px;
+            padding: 2px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: var(--card);
+        }
+
+        .view-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border: 0;
+            border-radius: 2px;
+            background: transparent;
+            color: #8a8278;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .view-btn:hover {
+            background: #f3efe8;
+            color: var(--ink);
+        }
+
+        .view-btn[aria-pressed="true"] {
+            background: rgba(158, 20, 20, 0.08);
+            color: var(--red);
+        }
+
+        .view-btn svg {
+            display: block;
+            width: 16px;
+            height: 16px;
         }
 
         /* ----- 作者分类 ----- */
@@ -188,6 +311,59 @@
             background: rgba(255, 255, 255, 0.55);
         }
 
+        /* 双列：统一尺寸的书籍卡片 */
+        .book-list.view-double {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            border-top: 0;
+        }
+
+        .book-list.view-double .book-item {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 12px;
+            height: 220px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            background: var(--card);
+            overflow: hidden;
+        }
+
+        .book-list.view-double .book-item:hover {
+            background: #fffefb;
+            border-color: #d8d0c3;
+        }
+
+        .book-list.view-double .book-info {
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        .book-list.view-double .book-title {
+            font-size: 1.18rem;
+            line-height: 1.5;
+        }
+
+        .book-list.view-double .book-title-line {
+            gap: 6px;
+        }
+
+        .book-list.view-double .book-desc {
+            display: none !important;
+        }
+
+        .book-list.view-double .book-actions {
+            width: 100%;
+            padding-top: 0;
+        }
+
+        .book-list.view-double .book-btn {
+            width: 100%;
+        }
+
         .book-info {
             flex: 1;
             min-width: 0;
@@ -293,6 +469,14 @@
         }
 
         @media (max-width: 700px) {
+            .library-tools {
+                margin-bottom: 1.1rem;
+            }
+
+            .view-switch {
+                display: none;
+            }
+
             .segmented-control {
                 display: none;
             }
@@ -379,6 +563,41 @@
             <p class="library-subtitle">经典著作 · 免费阅读</p>
         </header>
 
+        <div class="library-tools">
+            <div class="library-search">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-3.5-3.5"></path>
+                </svg>
+                <input
+                    class="library-search-input"
+                    id="librarySearch"
+                    type="search"
+                    placeholder="搜索当前分类的书名或简介"
+                    aria-label="搜索当前分类中的书名或简介"
+                    autocomplete="off"
+                    spellcheck="false"
+                />
+                <button class="search-clear" id="searchClear" type="button" aria-label="清除搜索" hidden>×</button>
+            </div>
+
+            <div class="view-switch" id="viewSwitch" role="group" aria-label="列表布局">
+                <button class="view-btn" type="button" data-view="single" aria-pressed="true" aria-label="单列展示" title="单列展示">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <button class="view-btn" type="button" data-view="double" aria-pressed="false" aria-label="双列展示" title="双列展示">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="4" y="4" width="6" height="6"></rect>
+                        <rect x="14" y="4" width="6" height="6"></rect>
+                        <rect x="4" y="14" width="6" height="6"></rect>
+                        <rect x="14" y="14" width="6" height="6"></rect>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
         <div class="segmented-control" id="segmentedControl">
             <span class="slider" id="slider"></span>
 
@@ -416,7 +635,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=12')
+        fetch('/components/nav.html?v=13')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -447,6 +666,12 @@
             var authorSelect = document.getElementById('authorSelect');
             var statusBox = document.getElementById('libraryStatus');
             var bookList = document.getElementById('bookList');
+            var searchInput = document.getElementById('librarySearch');
+            var searchClear = document.getElementById('searchClear');
+            var viewSwitch = document.getElementById('viewSwitch');
+            var viewButtons = Array.prototype.slice.call(viewSwitch.querySelectorAll('.view-btn'));
+            var narrowMedia = window.matchMedia('(max-width: 700px)');
+            var desiredView = 'single';
             var bottomSpace = document.getElementById('libraryBottomSpace');
             var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 96;
             var activeBookItem = null;
@@ -477,6 +702,34 @@
                 Array.prototype.forEach.call(bookList.querySelectorAll('.book-item'), function (li) {
                     li.bookBaseHeight = li.getBoundingClientRect().height;
                 });
+            }
+
+            function getSearchTerms() {
+                return searchInput.value
+                    .trim()
+                    .toLowerCase()
+                    .split(/[\s\u3000]+/)
+                    .filter(Boolean);
+            }
+
+            function matchesSearch(book, terms) {
+                if (!terms.length) return true;
+                var haystack = (book.title + ' ' + book.description).toLowerCase();
+                return terms.every(function (term) {
+                    return haystack.indexOf(term) !== -1;
+                });
+            }
+
+            function applyViewMode() {
+                var actualView = narrowMedia.matches ? 'single' : desiredView;
+                bookList.classList.toggle('view-double', actualView === 'double');
+
+                viewButtons.forEach(function (button) {
+                    button.setAttribute('aria-pressed', String(button.getAttribute('data-view') === desiredView));
+                });
+
+                resetBottomSpace();
+                window.requestAnimationFrame(rememberBookHeights);
             }
 
             var books = [];
@@ -626,6 +879,15 @@
                 return R2_BASE + raw.replace(/^\/+/, '').split('/').map(encodeURIComponent).join('/');
             }
 
+            /* 文件类型只从文件名读取，配置文件里的 format 不再参与判断 */
+            function getFileExtension(file) {
+                var clean = String(file || '').split(/[?#]/)[0].replace(/\\/g, '/');
+                var name = clean.slice(clean.lastIndexOf('/') + 1);
+                var dot = name.lastIndexOf('.');
+                if (dot <= 0 || dot === name.length - 1) return '';
+                return name.slice(dot + 1).toLowerCase();
+            }
+
             function normalizeBook(raw) {
                 if (!raw || !raw.title || !raw.file) return null;
 
@@ -635,11 +897,7 @@
 
                 if (AUTHORS.indexOf(author) === -1) author = '其他';
 
-                var format = String(raw.format || '').toLowerCase();
-                if (format !== 'pdf' && format !== 'html') {
-                    var ext = (file.split('.').pop() || '').toLowerCase();
-                    format = (ext === 'html' || ext === 'htm') ? 'html' : 'pdf';
-                }
+                var format = getFileExtension(file);
 
                 return {
                     title: String(raw.title),
@@ -677,7 +935,7 @@
                 var format = document.createElement('span');
                 format.className = 'book-format';
                 format.textContent = '.' + book.format;
-                titleLine.appendChild(format);
+                if (book.format) titleLine.appendChild(format);
 
                 var desc = document.createElement('p');
                 desc.className = 'book-desc';
@@ -703,7 +961,7 @@
                 li.appendChild(actions);
 
                 li.addEventListener('mouseenter', function () {
-                    if (!hoverMedia.matches) return;
+                    if (!hoverMedia.matches || bookList.classList.contains('view-double')) return;
                     activeBookItem = li;
                     li.classList.add('is-expanded');
                     updateBottomSpace();
@@ -723,8 +981,9 @@
 
             function renderBooks() {
                 var author = getSelectedAuthor();
+                var terms = getSearchTerms();
                 var filtered = books.filter(function (book) {
-                    return book.author === author;
+                    return book.author === author && matchesSearch(book, terms);
                 });
 
                 resetBottomSpace();
@@ -732,9 +991,9 @@
 
                 if (!filtered.length) {
                     statusBox.hidden = false;
-                    statusBox.textContent = books.length
-                        ? '该分类暂无书籍，敬请期待。'
-                        : '文库正在整理中，敬请期待。';
+                    statusBox.textContent = terms.length
+                        ? '没有找到匹配的书籍，换个关键词试试。'
+                        : (books.length ? '该分类暂无书籍，敬请期待。' : '文库正在整理中，敬请期待。');
                     return;
                 }
 
@@ -819,6 +1078,32 @@
                 renderBooks();
             });
 
+            searchInput.addEventListener('input', function () {
+                searchClear.hidden = !searchInput.value;
+                renderBooks();
+            });
+
+            searchInput.addEventListener('keydown', function (event) {
+                if (event.key !== 'Escape' || !searchInput.value) return;
+                searchInput.value = '';
+                searchClear.hidden = true;
+                renderBooks();
+            });
+
+            searchClear.addEventListener('click', function () {
+                searchInput.value = '';
+                searchClear.hidden = true;
+                searchInput.focus();
+                renderBooks();
+            });
+
+            viewButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    desiredView = button.getAttribute('data-view') === 'double' ? 'double' : 'single';
+                    applyViewMode();
+                });
+            });
+
             window.addEventListener('resize', updateSlider);
             window.addEventListener('resize', function () {
                 resetBottomSpace();
@@ -832,6 +1117,13 @@
                 hoverMedia.addListener(resetBottomSpace);
             }
 
+            if (narrowMedia.addEventListener) {
+                narrowMedia.addEventListener('change', applyViewMode);
+            } else if (narrowMedia.addListener) {
+                narrowMedia.addListener(applyViewMode);
+            }
+
+            applyViewMode();
             syncAuthorSelect();
             updateSlider();
             loadBooks();
