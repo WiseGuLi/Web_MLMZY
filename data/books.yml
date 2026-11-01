@@ -39,7 +39,7 @@
   featured: false
   description: "揭示资本主义剥削本质的政治经济学著作。"
 - title: "《共产党宣言》"
-  file: "文库/马克思/《共产党宣言》.pdf"
+  file: "文库/马克思/《共产党宣言》.html"
   format: pdf
   featured: false
   description: "科学社会主义的纲领性文献。"
@@ -404,7 +404,7 @@
   featured: false
   description: "恩格斯全面阐述马克思主义理论的经典著作。"
 - title: "《共产党宣言》"
-  file: "文库/恩格斯/《共产党宣言》.pdf"
+  file: "文库/恩格斯/《共产党宣言》.html"
   format: pdf
   featured: false
   description: "科学社会主义的纲领性文献。"
