@@ -1,0 +1,28 @@
+content:
+  - name: books
+    label: 书籍管理
+    type: collection
+    path: data/books
+    fields:
+      - name: title
+        label: 显示名称（书名）
+        type: string
+        required: true
+
+      - name: file
+        label: 文件（PDF 或 HTML）
+        type: file
+        required: true
+        options:
+          extensions: ["pdf", "html", "htm"]  # 允许选择PDF或HTML文件
+          # 如果你想让 Pages CMS 直接管理 R2 上的文件，需要配置 media（见下方说明）
+
+      - name: description
+        label: 简介
+        type: text
+        required: false
+
+      - name: featured
+        label: 推荐书籍
+        type: boolean
+        default: false
