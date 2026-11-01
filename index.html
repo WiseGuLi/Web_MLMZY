@@ -87,7 +87,7 @@
             align-items: center;
             gap: 12px;
             color: var(--red);
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: 0.18em;
             line-height: 1.5;
@@ -175,7 +175,7 @@
         .hero-note {
             margin-top: 18px;
             color: #8a8073;
-            font-size: 12px;
+            font-size: 14px;
             letter-spacing: 0.14em;
         }
 
@@ -194,13 +194,13 @@
             padding-bottom: 14px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.22);
             color: rgba(248, 241, 229, 0.62);
-            font-size: 11px;
+            font-size: 14px;
             letter-spacing: 0.18em;
         }
 
         .quote-star {
             color: #e8cfa6;
-            font-size: 13px;
+            font-size: 14px;
             letter-spacing: 0;
         }
 
@@ -215,7 +215,7 @@
 
         .quote-author {
             color: rgba(248, 241, 229, 0.6);
-            font-size: 12px;
+            font-size: 14px;
             text-align: right;
         }
 
@@ -228,7 +228,7 @@
         .quote-sub {
             color: rgba(248, 241, 229, 0.84);
             font-family: var(--serif);
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.85;
         }
 
@@ -248,21 +248,23 @@
             padding-bottom: 15px;
             color: #5d554b;
             font-family: var(--serif);
-            font-size: 13.5px;
+            font-size: 16px;
             letter-spacing: 0.1em;
         }
 
         .thinkers-label {
             color: #918678;
             font-family: var(--sans);
-            font-size: 11px;
+            font-size: 14px;
             letter-spacing: 0.16em;
         }
 
         .thinkers .sep {
-            color: var(--red);
-            font-size: 9px;
-            letter-spacing: 0;
+            width: 7px;
+            height: 7px;
+            flex-shrink: 0;
+            background: var(--red);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
         }
 
         /* ===== 通用区块 ===== */
@@ -286,7 +288,7 @@
             border-top: 2px solid var(--red);
             color: var(--red);
             font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-            font-size: 11px;
+            font-size: 14px;
             letter-spacing: 0.08em;
             line-height: 1.4;
         }
@@ -302,7 +304,7 @@
         .section-kicker {
             margin-top: 5px;
             color: var(--muted);
-            font-size: 13px;
+            font-size: 14px;
             letter-spacing: 0.05em;
         }
 
@@ -347,7 +349,7 @@
             padding-top: 2px;
             color: var(--red);
             font-family: var(--serif);
-            font-size: 12px;
+            font-size: 16px;
             letter-spacing: 0.06em;
         }
 
@@ -362,7 +364,7 @@
         .mission-points p {
             margin-top: 3px;
             color: var(--muted);
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.75;
         }
 
@@ -409,7 +411,7 @@
         .feature-card p {
             margin-top: 7px;
             color: var(--muted);
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.8;
         }
 
@@ -420,7 +422,7 @@
             margin-top: auto;
             padding-top: 18px;
             color: var(--red);
-            font-size: 12px;
+            font-size: 14px;
             letter-spacing: 0.05em;
         }
 
@@ -440,7 +442,7 @@
             padding: 2px 7px;
             border: 1px solid var(--line);
             color: #8a8073;
-            font-size: 11px;
+            font-size: 14px;
             letter-spacing: 0.08em;
             line-height: 1.6;
         }
@@ -473,7 +475,7 @@
         .path-num {
             color: var(--red);
             font-family: var(--serif);
-            font-size: 11.5px;
+            font-size: 16px;
             letter-spacing: 0.14em;
         }
 
@@ -487,7 +489,7 @@
 
         .path-item p {
             color: var(--muted);
-            font-size: 13.5px;
+            font-size: 14px;
             line-height: 1.85;
         }
 
@@ -501,7 +503,7 @@
 
         .text-link {
             color: var(--red);
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: 0.04em;
             text-decoration: none;
@@ -515,7 +517,7 @@
 
         .path-foot .hint {
             color: #8a8073;
-            font-size: 12.5px;
+            font-size: 14px;
             letter-spacing: 0.04em;
         }
 
@@ -535,7 +537,7 @@
 
         .closing-eyebrow {
             color: var(--red);
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: 0.18em;
         }
@@ -630,6 +632,15 @@
                 font-size: clamp(2rem, 9vw, 2.55rem);
             }
 
+            .eyebrow {
+                gap: 8px;
+                letter-spacing: 0.04em;
+            }
+
+            .eyebrow::before {
+                width: 24px;
+            }
+
             .hero-lead {
                 font-size: 15.5px;
                 line-height: 1.9;
@@ -653,8 +664,9 @@
             }
 
             .thinkers-inner {
-                font-size: 12.5px;
-                letter-spacing: 0.06em;
+                font-size: 16px;
+                gap: 6px 8px;
+                letter-spacing: 0.02em;
             }
 
             .thinkers-label {
@@ -715,10 +727,10 @@
         <div class="thinkers">
             <div class="container thinkers-inner">
                 <span class="thinkers-label">本站内容涵盖</span>
-                <span>马克思</span><span class="sep" aria-hidden="true">★</span>
-                <span>恩格斯</span><span class="sep" aria-hidden="true">★</span>
-                <span>列宁</span><span class="sep" aria-hidden="true">★</span>
-                <span>斯大林</span><span class="sep" aria-hidden="true">★</span>
+                <span>马克思</span><span class="sep" aria-hidden="true"></span>
+                <span>恩格斯</span><span class="sep" aria-hidden="true"></span>
+                <span>列宁</span><span class="sep" aria-hidden="true"></span>
+                <span>斯大林</span><span class="sep" aria-hidden="true"></span>
                 <span>毛泽东</span>
             </div>
         </div>
@@ -912,5 +924,6 @@
                 console.warn('页脚加载失败:', err);
             });
     </script>
+    <script src="/components/nav.js"></script>
 </body>
 </html>
