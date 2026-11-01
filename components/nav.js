@@ -9,7 +9,12 @@
         }
     }
 
+    function isWideScreen() {
+        return window.matchMedia('(min-width: 961px)').matches;
+    }
+
     document.addEventListener('click', function (event) {
+        if (!isWideScreen()) return;
         var openMenus = document.querySelectorAll('.nav-more details[open]');
         for (var i = 0; i < openMenus.length; i++) {
             if (!openMenus[i].contains(event.target)) {
@@ -18,9 +23,17 @@
         }
     });
 
-    window.addEventListener('scroll', closeMore, { passive: true });
-    window.addEventListener('wheel', closeMore, { passive: true });
-    window.addEventListener('touchmove', closeMore, { passive: true });
+    window.addEventListener('scroll', function () {
+        if (isWideScreen()) closeMore();
+    }, { passive: true });
+
+    window.addEventListener('wheel', function () {
+        if (isWideScreen()) closeMore();
+    }, { passive: true });
+
+    window.addEventListener('touchmove', function () {
+        if (isWideScreen()) closeMore();
+    }, { passive: true });
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {

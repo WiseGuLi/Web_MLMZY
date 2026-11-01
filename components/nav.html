@@ -256,7 +256,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 5px;
+        gap: 4px;
         border-radius: 10px;
         cursor: pointer;
         margin-left: auto;
@@ -272,17 +272,23 @@
     .nav-toggle span {
         display: block;
         width: 22px;
-        height: 2px;
+        height: 3px;
+        flex: 0 0 3px;
         background: #222;
         border-radius: 2px;
         transition: transform 0.25s ease, opacity 0.2s ease;
     }
 
-    /* ===== 宽屏：所有顶栏按钮等宽 ===== */
+    /* ===== 宽屏：所有顶栏按钮等宽等高 ===== */
     @media (min-width: 961px) {
+        .nav-links > li {
+            flex-shrink: 0;
+        }
+
         .nav-links > li > a,
         .nav-more > details > summary {
-            min-width: 84px;
+            width: 84px;
+            height: 34px;
             justify-content: center;
         }
     }
