@@ -7,7 +7,6 @@
     <style>
         :root {
             --paper: #faf9f5;
-            --paper-deep: #f1efe9;
             --ink: #1d1b19;
             --muted: #68625b;
             --red: #9e1414;
@@ -616,10 +615,10 @@
         <div class="segmented-control" id="segmentedControl">
             <span class="slider" id="slider"></span>
 
-            <input type="radio" name="author" id="author-all" value="全部">
+            <input type="radio" name="author" id="author-all" value="全部" checked>
             <label for="author-all">全部</label>
 
-            <input type="radio" name="author" id="author-marx" value="马克思" checked>
+            <input type="radio" name="author" id="author-marx" value="马克思">
             <label for="author-marx">马克思</label>
 
             <input type="radio" name="author" id="author-engels" value="恩格斯">
@@ -920,7 +919,6 @@
 
                 return {
                     title: String(raw.title),
-                    file: file,
                     author: author,
                     format: format,
                     featured: raw.featured === true || String(raw.featured).toLowerCase() === 'true',
@@ -964,7 +962,6 @@
             function createBookItem(book, terms) {
                 var li = document.createElement('li');
                 li.className = 'book-item';
-                li.dataset.author = book.author;
 
                 if (terms.length) {
                     var descText = book.description.toLowerCase();
