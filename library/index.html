@@ -653,7 +653,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=13')
+        fetch('/components/nav.html?v=14')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -673,7 +673,7 @@
         (function () {
             'use strict';
 
-            var R2_BASE = 'https://mlm-files.662506.xyz/';
+            var R2_BASE = 'https://files.mlmzy.org/';
             var BOOKS_CONFIG_URL = '/data/books.yml';
             var AUTHOR_ORDER = ['马克思', '恩格斯', '列宁', '斯大林', '毛泽东', '其他'];
             var AUTHORS = ['全部'].concat(AUTHOR_ORDER);
