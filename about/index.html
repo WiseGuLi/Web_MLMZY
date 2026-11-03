@@ -208,6 +208,43 @@
             line-height: 1.95;
         }
 
+        .contact-card {
+            margin-top: 16px;
+            padding: 20px 22px;
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--red);
+            background: #f5f2eb;
+        }
+
+        .contact-label {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .contact-mail {
+            display: inline-block;
+            margin-top: 4px;
+            font-size: clamp(20px, 2.8vw, 24px);
+            font-weight: 600;
+            line-height: 1.5;
+            word-break: break-all;
+        }
+
+        .contact-subject {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(158, 20, 20, 0.18);
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .contact-subject strong {
+            color: var(--ink);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
         @media (max-width: 640px) {
             .main-content {
                 padding: 40px 1.25rem 56px;
@@ -249,6 +286,10 @@
 
             .thanks {
                 margin-top: 30px;
+                padding: 18px;
+            }
+
+            .contact-card {
                 padding: 18px;
             }
         }
@@ -307,6 +348,30 @@
                 <h2 id="resources">资源来源</h2>
                 <p>网站上的电子书、视频、图片等资源均来自网络及各大马恩列斯毛文库，仅供学习研究使用，不用于商业用途。</p>
                 <p>如相关资源涉及版权或其他问题，请联系本站处理。</p>
+            </section>
+
+            <section class="about-section" aria-labelledby="cost">
+                <h2 id="cost">网站投入</h2>
+                <p>截至目前的累计投入成本：</p>
+                <dl class="info-grid">
+                    <dt>金钱</dt>
+                    <dd>约 30 元</dd>
+                    <dt>时间</dt>
+                    <dd>约 8 小时</dd>
+                </dl>
+            </section>
+
+            <section class="about-section" aria-labelledby="contact">
+                <h2 id="contact">联系本站</h2>
+                <p>如需联系网站制作者，请发送邮件至：</p>
+                <div class="contact-card">
+                    <p class="contact-label">联系邮箱</p>
+                    <a
+                        class="contact-mail"
+                        href="mailto:contact@mlmzy.org?subject=MLMZY%E7%BD%91%E7%AB%99-%E8%81%94%E7%B3%BB"
+                    >contact@mlmzy.org</a>
+                    <p class="contact-subject">邮件标题必须为：<strong>MLMZY网站-联系</strong></p>
+                </div>
             </section>
 
             <section class="thanks" aria-labelledby="thanks">

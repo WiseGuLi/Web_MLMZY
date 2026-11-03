@@ -476,6 +476,53 @@
             border-color: var(--red-dark);
         }
 
+        /* 回到顶部 */
+        .back-to-top {
+            position: fixed;
+            right: 28px;
+            bottom: 28px;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 0 16px;
+            border: 1px solid rgba(158, 20, 20, 0.2);
+            border-radius: 999px;
+            background: rgba(255, 254, 251, 0.95);
+            color: var(--red);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(8px);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s, background 0.15s ease, color 0.15s ease;
+        }
+
+        .back-to-top.is-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: var(--red);
+            color: #fffaf2;
+            border-color: var(--red);
+        }
+
+        .back-to-top svg {
+            display: block;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
         @media (hover: none) {
             .book-desc {
                 display: block;
@@ -532,6 +579,21 @@
                 min-width: 78px;
                 padding: 6px 10px;
             }
+
+            .back-to-top {
+                right: 16px;
+                bottom: max(16px, env(safe-area-inset-bottom));
+                width: 44px;
+                height: 44px;
+                min-height: 0;
+                justify-content: center;
+                padding: 0;
+                border-radius: 50%;
+            }
+
+            .back-to-top span {
+                display: none;
+            }
         }
 
         @media (max-width: 450px) {
@@ -559,7 +621,8 @@
         @media (prefers-reduced-motion: reduce) {
             .segmented-control .slider,
             .book-btn,
-            .book-item {
+            .book-item,
+            .back-to-top {
                 transition: none;
             }
         }
@@ -646,6 +709,14 @@
         <div class="library-bottom-space" id="libraryBottomSpace" aria-hidden="true"></div>
     </main>
 
+    <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 19V5"></path>
+            <path d="m5 12 7-7 7 7"></path>
+        </svg>
+        <span>回到顶部</span>
+    </button>
+
     <!-- ===== 页脚占位 ===== -->
     <div id="footer-placeholder"></div>
 
@@ -694,6 +765,8 @@
             var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 96;
             var activeBookItem = null;
             var hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
+            var backToTop = document.getElementById('backToTop');
+            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
             function resetBottomSpace() {
                 if (activeBookItem) {
@@ -748,6 +821,11 @@
 
                 resetBottomSpace();
                 window.requestAnimationFrame(rememberBookHeights);
+            }
+
+            function updateBackToTop() {
+                if (!backToTop) return;
+                backToTop.classList.toggle('is-visible', window.scrollY > 360);
             }
 
             var books = [];
@@ -1175,7 +1253,15 @@
                 resetBottomSpace();
                 window.requestAnimationFrame(rememberBookHeights);
             });
+            window.addEventListener('scroll', updateBackToTop, { passive: true });
             window.addEventListener('load', updateSlider);
+
+            backToTop.addEventListener('click', function () {
+                window.scrollTo({
+                    top: 0,
+                    behavior: reducedMotion.matches ? 'auto' : 'smooth'
+                });
+            });
 
             if (hoverMedia.addEventListener) {
                 hoverMedia.addEventListener('change', resetBottomSpace);
@@ -1192,6 +1278,7 @@
             applyViewMode();
             syncAuthorSelect();
             updateSlider();
+            updateBackToTop();
             loadBooks();
         })();
     </script>
