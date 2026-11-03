@@ -324,11 +324,21 @@
             align-items: stretch;
             justify-content: space-between;
             gap: 12px;
-            height: 220px;
+            height: auto;
+            min-height: 300px;
             padding: 18px;
             border: 1px solid var(--line);
             background: var(--card);
             overflow: hidden;
+        }
+
+        .book-list.view-double .book-item.has-menu {
+            overflow: visible;
+        }
+
+        .book-list.view-double .book-item.has-menu:hover,
+        .book-list.view-double .book-item.has-menu:focus-within {
+            z-index: 20;
         }
 
         .book-list.view-double .book-item:hover {
@@ -352,6 +362,13 @@
 
         .book-list.view-double .book-desc {
             display: -webkit-box !important;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-list.view-double .book-quote {
+            display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
@@ -412,6 +429,13 @@
             font-weight: 500;
         }
 
+        .book-author {
+            margin-top: 3px;
+            color: #746b61;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
         .book-desc {
             display: none;
             margin-top: 8px;
@@ -420,11 +444,27 @@
             line-height: 1.75;
         }
 
+        .book-quote {
+            display: none;
+            margin: 8px 0 0;
+            padding-left: 10px;
+            border-left: 2px solid rgba(158, 20, 20, 0.28);
+            color: #5f574e;
+            font-family: var(--serif);
+            font-size: 16px;
+            line-height: 1.75;
+        }
+
         .book-item.is-expanded .book-desc {
             display: block;
         }
 
         .book-item.search-open .book-desc {
+            display: block;
+        }
+
+        .book-item.is-expanded .book-quote,
+        .book-item.search-open .book-quote {
             display: block;
         }
 
@@ -474,6 +514,91 @@
         .book-btn-primary:hover {
             background: var(--red-dark);
             border-color: var(--red-dark);
+        }
+
+        /* 同一分类中同名多格式书籍：下载按钮展开为格式选择 */
+        .book-download {
+            position: relative;
+            flex: 0 0 auto;
+        }
+
+        .book-download > summary {
+            gap: 6px;
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .book-download > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .book-download > summary::marker {
+            content: '';
+        }
+
+        .book-download[open] > summary {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .book-download-caret {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+            transition: transform 0.15s ease;
+        }
+
+        .book-download[open] .book-download-caret {
+            transform: rotate(180deg);
+        }
+
+        .book-download-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            z-index: 30;
+            min-width: 132px;
+            padding: 4px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: var(--card);
+            box-shadow: 0 10px 28px rgba(33, 27, 20, 0.16);
+        }
+
+        .book-download-menu a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 9px 10px;
+            border-radius: 2px;
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .book-download-menu a:hover,
+        .book-download-menu a:focus-visible {
+            background: rgba(158, 20, 20, 0.07);
+            color: var(--red);
+            outline: none;
+        }
+
+        .book-download-menu .download-ext {
+            color: #7b7267;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .book-list.view-double .book-download,
+        .book-list.view-double .book-download > summary {
+            width: 100%;
         }
 
         /* 回到顶部 */
@@ -526,7 +651,8 @@
         }
 
         @media (hover: none) {
-            .book-desc {
+            .book-desc,
+            .book-quote {
                 display: block;
             }
         }
@@ -575,6 +701,17 @@
             .book-actions {
                 flex-direction: column;
                 gap: 6px;
+            }
+
+            .book-download,
+            .book-download > summary {
+                width: 100%;
+            }
+
+            .book-download-menu {
+                right: auto;
+                left: 0;
+                min-width: 100%;
             }
 
             .book-btn {
@@ -652,8 +789,8 @@
                     class="library-search-input"
                     id="librarySearch"
                     type="search"
-                    placeholder="搜索当前分类的书名或简介"
-                    aria-label="搜索当前分类中的书名或简介"
+                    placeholder="搜索书名、简介或引用"
+                    aria-label="搜索当前分类中的书名、简介或引用"
                     autocomplete="off"
                     spellcheck="false"
                 />
@@ -703,7 +840,7 @@
         </div>
 
         <div class="author-select-wrap">
-            <select class="author-select" id="authorSelect" aria-label="选择作者分类"></select>
+            <select class="author-select" id="authorSelect" aria-label="选择文库分类"></select>
         </div>
 
         <p class="library-status" id="libraryStatus" role="status">正在加载文库…</p>
@@ -740,20 +877,29 @@
             .catch(error => console.error('页脚加载失败:', error));
     </script>
 
-    <!-- 文库：运行时读取 data/books.yml，不在源码中写死书籍数据 -->
+    <!-- 文库：运行时读取 data/文库/*.yml，不在源码中写死书籍数据 -->
     <script>
         (function () {
             'use strict';
 
             var R2_BASE = 'https://files.mlmzy.org/';
-            var BOOKS_CONFIG_URL = '/data/books.yml';
-            var AUTHOR_ORDER = ['马克思', '恩格斯', '列宁', '斯大林', '毛泽东', '其他'];
-            var AUTHORS = ['全部'].concat(AUTHOR_ORDER);
+            /* 每个分类标签读取 data/文库/<分类名>.yml，作者字段只用于展示，不参与分类。 */
+            var LIBRARY_CONFIG_DIR = '/data/文库/';
+            var CATEGORY_ORDER = [];
+            var CATEGORIES = ['全部'];
 
             var control = document.getElementById('segmentedControl');
             var slider = document.getElementById('slider');
             var radios = Array.prototype.slice.call(control.querySelectorAll('input[type="radio"]'));
             var labels = Array.prototype.slice.call(control.querySelectorAll('label'));
+
+            CATEGORY_ORDER = radios.map(function (radio) {
+                return radio.value;
+            }).filter(function (value) {
+                return value !== '全部';
+            });
+            CATEGORIES = ['全部'].concat(CATEGORY_ORDER);
+
             var authorSelect = document.getElementById('authorSelect');
             var statusBox = document.getElementById('libraryStatus');
             var bookList = document.getElementById('bookList');
@@ -807,10 +953,39 @@
 
             function matchesSearch(book, terms) {
                 if (!terms.length) return true;
-                var haystack = (book.title + ' ' + book.description).toLowerCase();
+                var haystack = [book.title, book.searchDescription, book.searchQuote]
+                    .join(' ')
+                    .toLowerCase();
                 return terms.every(function (term) {
                     return haystack.indexOf(term) !== -1;
                 });
+            }
+
+            function includesAll(text, terms) {
+                return terms.every(function (term) {
+                    return text.indexOf(term) !== -1;
+                });
+            }
+
+            function includesAny(text, terms) {
+                return terms.some(function (term) {
+                    return text.indexOf(term) !== -1;
+                });
+            }
+
+            /* 书名匹配 0，简介匹配 1，引用匹配 2 */
+            function getSearchRank(book, terms) {
+                var title = book.title.toLowerCase();
+                var description = book.searchDescription;
+                var quote = book.searchQuote;
+
+                if (includesAll(title, terms)) return 0;
+                if (includesAll(description, terms)) return 1;
+                if (includesAll(quote, terms)) return 2;
+
+                if (includesAny(title, terms)) return 0;
+                if (includesAny(description, terms)) return 1;
+                return 2;
             }
 
             function applyViewMode() {
@@ -833,20 +1008,20 @@
             var books = [];
             var initialSelectionDone = false;
 
-            AUTHORS.forEach(function (author) {
+            CATEGORIES.forEach(function (category) {
                 var option = document.createElement('option');
-                option.value = author;
-                option.textContent = author;
+                option.value = category;
+                option.textContent = category;
                 authorSelect.appendChild(option);
             });
 
-            function getSelectedAuthor() {
+            function getSelectedCategory() {
                 var selected = control.querySelector('input[name="author"]:checked');
                 return selected ? selected.value : '全部';
             }
 
-            function syncAuthorSelect() {
-                authorSelect.value = getSelectedAuthor();
+            function syncCategorySelect() {
+                authorSelect.value = getSelectedCategory();
             }
 
             function updateSlider() {
@@ -884,7 +1059,7 @@
                 return value;
             }
 
-            /* 支持当前 books.yml 的列表结构：- key: value，以及 | / > 块文本。 */
+            /* 支持 data/文库/*.yml 的列表结构：- key: value，以及 | / > 块文本。 */
             function parseBooksYaml(text) {
                 var lines = String(text).replace(/\r\n?/g, '\n').split('\n');
                 var items = [];
@@ -986,25 +1161,98 @@
                 return name.slice(dot + 1).toLowerCase();
             }
 
-            function normalizeBook(raw) {
+            function normalizeBook(raw, category, categoryIndex, order) {
                 if (!raw || !raw.title || !raw.file) return null;
 
                 var file = String(raw.file).replace(/\\/g, '/').trim();
-                var parts = file.replace(/^\/+/, '').split('/');
-                var author = raw.author ? String(raw.author) : (parts.length >= 2 ? parts[1] : '其他');
-
-                if (AUTHOR_ORDER.indexOf(author) === -1) author = '其他';
-
-                var format = getFileExtension(file);
+                var description = raw.description ? String(raw.description).trim() : '暂无简介。';
+                var quote = raw.quote ? String(raw.quote).trim() : '';
+                var author = raw.author ? String(raw.author).trim() : '';
 
                 return {
-                    title: String(raw.title),
-                    author: author,
-                    format: format,
+                    title: String(raw.title).trim(),
+                    author: author || '佚名',
+                    category: category,
+                    categoryIndex: categoryIndex,
+                    order: order,
+                    format: getFileExtension(file),
                     featured: raw.featured === true || String(raw.featured).toLowerCase() === 'true',
-                    description: raw.description ? String(raw.description) : '暂无简介。',
+                    description: description,
+                    quote: quote,
+                    searchDescription: description.toLowerCase(),
+                    searchQuote: quote.toLowerCase(),
                     url: buildFileUrl(file)
                 };
+            }
+
+            /* 仅在同一个分类内合并同名不同格式的书籍；“全部”下不同分类不合并。 */
+            function mergeBookVariants(bookList) {
+                var groups = [];
+                var byKey = Object.create(null);
+
+                bookList.forEach(function (book) {
+                    var key = book.category + '\u0000' + book.title;
+                    var group = byKey[key];
+
+                    if (!group) {
+                        group = {
+                            title: book.title,
+                            author: book.author,
+                            category: book.category,
+                            categoryIndex: book.categoryIndex,
+                            order: book.order,
+                            featured: book.featured,
+                            description: book.description,
+                            quote: book.quote,
+                            searchDescription: book.searchDescription,
+                            searchQuote: book.searchQuote,
+                            variants: []
+                        };
+                        byKey[key] = group;
+                        groups.push(group);
+                    } else {
+                        group.featured = group.featured || book.featured;
+                        if (!group.author) group.author = book.author;
+                        if (!group.quote && book.quote) group.quote = book.quote;
+                        if (!group.description && book.description) group.description = book.description;
+                        group.searchDescription += ' ' + book.searchDescription;
+                        group.searchQuote += ' ' + book.searchQuote;
+                    }
+
+                    var hasVariant = group.variants.some(function (variant) {
+                        return variant.url === book.url;
+                    });
+                    if (!hasVariant) {
+                        group.variants.push({
+                            format: book.format,
+                            url: book.url
+                        });
+                    }
+                });
+
+                groups.forEach(function (group) {
+                    group.variants.sort(function (a, b) {
+                        return a.format.localeCompare(b.format);
+                    });
+
+                    var formats = [];
+                    group.variants.forEach(function (variant) {
+                        if (variant.format && formats.indexOf(variant.format) === -1) {
+                            formats.push(variant.format);
+                        }
+                    });
+                    group.formats = formats;
+                });
+
+                return groups;
+            }
+
+            function stripOuterQuotes(value) {
+                var text = String(value || '').trim();
+                if (text.length >= 2 && text.charAt(0) === '“' && text.charAt(text.length - 1) === '”') {
+                    return text.slice(1, -1);
+                }
+                return text;
             }
 
             function escapeRegExp(value) {
@@ -1044,11 +1292,9 @@
                 li.className = 'book-item';
 
                 if (terms.length) {
-                    var descText = book.description.toLowerCase();
-                    var descMatched = terms.some(function (term) {
-                        return descText.indexOf(term) !== -1;
-                    });
-                    if (descMatched) li.classList.add('search-open');
+                    var descMatched = includesAny(book.searchDescription, terms);
+                    var quoteMatched = includesAny(book.searchQuote, terms);
+                    if (descMatched || quoteMatched) li.classList.add('search-open');
                 }
 
                 var info = document.createElement('div');
@@ -1069,30 +1315,98 @@
                     titleLine.appendChild(badge);
                 }
 
-                var format = document.createElement('span');
-                format.className = 'book-format';
-                format.textContent = '.' + book.format;
-                if (book.format) titleLine.appendChild(format);
+                book.formats.forEach(function (format) {
+                    if (!format) return;
+                    var formatBadge = document.createElement('span');
+                    formatBadge.className = 'book-format';
+                    formatBadge.textContent = '.' + format;
+                    titleLine.appendChild(formatBadge);
+                });
+
+                var author = document.createElement('p');
+                author.className = 'book-author';
+                author.textContent = '作者：' + book.author;
 
                 var desc = document.createElement('p');
                 desc.className = 'book-desc';
                 appendHighlightedText(desc, book.description, terms);
 
                 info.appendChild(titleLine);
+                info.appendChild(author);
                 info.appendChild(desc);
+
+                if (book.quote) {
+                    var quote = document.createElement('blockquote');
+                    quote.className = 'book-quote';
+                    appendHighlightedText(quote, '“' + stripOuterQuotes(book.quote) + '”', terms);
+                    info.appendChild(quote);
+                }
 
                 var actions = document.createElement('div');
                 actions.className = 'book-actions';
 
-                var view = document.createElement('a');
-                view.className = 'book-btn book-btn-primary';
-                view.href = book.url;
-                view.target = '_blank';
-                view.rel = 'noopener noreferrer';
-                view.textContent = '在线查看/下载';
-                view.setAttribute('aria-label', '在线查看或下载' + book.title);
+                if (book.variants.length === 1) {
+                    var variant = book.variants[0];
+                    var view = document.createElement('a');
+                    view.className = 'book-btn book-btn-primary';
+                    view.href = variant.url;
+                    view.target = '_blank';
+                    view.rel = 'noopener noreferrer';
+                    view.textContent = '在线查看/下载';
+                    view.setAttribute('aria-label', '在线查看或下载' + book.title);
+                    actions.appendChild(view);
+                } else {
+                    li.classList.add('has-menu');
 
-                actions.appendChild(view);
+                    var download = document.createElement('details');
+                    download.className = 'book-download';
+
+                    var summary = document.createElement('summary');
+                    summary.className = 'book-btn book-btn-primary';
+                    summary.setAttribute('aria-label', '选择' + book.title + '的下载格式');
+
+                    var summaryText = document.createElement('span');
+                    summaryText.textContent = '下载';
+                    summary.appendChild(summaryText);
+                    summary.insertAdjacentHTML('beforeend',
+                        '<svg class="book-download-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>'
+                    );
+
+                    var menu = document.createElement('div');
+                    menu.className = 'book-download-menu';
+
+                    book.variants.forEach(function (item) {
+                        var option = document.createElement('a');
+                        option.href = item.url;
+                        option.target = '_blank';
+                        option.rel = 'noopener noreferrer';
+                        option.setAttribute('aria-label', '下载' + book.title + '的 .' + item.format + ' 版本');
+
+                        var ext = document.createElement('span');
+                        ext.className = 'download-ext';
+                        ext.textContent = item.format ? '.' + item.format + ' 版本' : '下载';
+                        option.appendChild(ext);
+                        option.addEventListener('click', function () {
+                            download.removeAttribute('open');
+                        });
+                        menu.appendChild(option);
+                    });
+
+                    download.appendChild(summary);
+                    download.appendChild(menu);
+
+                    download.addEventListener('toggle', function () {
+                        if (!download.open) return;
+                        Array.prototype.forEach.call(
+                            bookList.querySelectorAll('.book-download[open]'),
+                            function (other) {
+                                if (other !== download) other.removeAttribute('open');
+                            }
+                        );
+                    });
+
+                    actions.appendChild(download);
+                }
 
                 li.appendChild(info);
                 li.appendChild(actions);
@@ -1117,18 +1431,23 @@
             }
 
             function renderBooks() {
-                var author = getSelectedAuthor();
+                var category = getSelectedCategory();
                 var terms = getSearchTerms();
                 var filtered = books.filter(function (book) {
-                    var inCategory = author === '全部' || book.author === author;
+                    var inCategory = category === '全部' || book.category === category;
                     return inCategory && matchesSearch(book, terms);
                 });
 
-                if (author === '全部') {
-                    filtered.sort(function (a, b) {
-                        return AUTHOR_ORDER.indexOf(a.author) - AUTHOR_ORDER.indexOf(b.author);
-                    });
-                }
+                filtered.sort(function (a, b) {
+                    if (terms.length) {
+                        var rankDiff = getSearchRank(a, terms) - getSearchRank(b, terms);
+                        if (rankDiff) return rankDiff;
+                    }
+                    if (a.categoryIndex !== b.categoryIndex) {
+                        return a.categoryIndex - b.categoryIndex;
+                    }
+                    return a.order - b.order;
+                });
 
                 resetBottomSpace();
                 bookList.innerHTML = '';
@@ -1149,29 +1468,29 @@
                 rememberBookHeights();
             }
 
-            function selectFirstAvailableAuthor() {
-                var current = getSelectedAuthor();
+            function selectFirstAvailableCategory() {
+                var current = getSelectedCategory();
                 if (current === '全部' && books.length) return;
 
                 var hasCurrent = books.some(function (book) {
-                    return book.author === current;
+                    return book.category === current;
                 });
                 if (hasCurrent) return;
 
-                var firstAuthor = AUTHOR_ORDER.find(function (author) {
+                var firstCategory = CATEGORY_ORDER.find(function (category) {
                     return books.some(function (book) {
-                        return book.author === author;
+                        return book.category === category;
                     });
                 });
-                if (!firstAuthor) return;
+                if (!firstCategory) return;
 
                 var radio = radios.find(function (item) {
-                    return item.value === firstAuthor;
+                    return item.value === firstCategory;
                 });
                 if (radio) {
                     radio.checked = true;
                     updateSlider();
-                    syncAuthorSelect();
+                    syncCategorySelect();
                 }
             }
 
@@ -1182,16 +1501,24 @@
                 bookList.innerHTML = '';
 
                 try {
-                    var response = await fetch(BOOKS_CONFIG_URL + '?t=' + Date.now(), {
-                        cache: 'no-store'
-                    });
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    var stamp = Date.now();
+                    var categoryBooks = await Promise.all(CATEGORY_ORDER.map(async function (category, categoryIndex) {
+                        var configUrl = LIBRARY_CONFIG_DIR + encodeURIComponent(category) + '.yml?t=' + stamp;
+                        var response = await fetch(configUrl, {
+                            cache: 'no-store'
+                        });
+                        if (!response.ok) throw new Error(category + '：HTTP ' + response.status);
 
-                    var yamlText = await response.text();
-                    books = parseBooksYaml(yamlText).map(normalizeBook).filter(Boolean);
+                        var yamlText = await response.text();
+                        return parseBooksYaml(yamlText).map(function (raw, order) {
+                            return normalizeBook(raw, category, categoryIndex, order);
+                        }).filter(Boolean);
+                    }));
+
+                    books = mergeBookVariants([].concat.apply([], categoryBooks));
 
                     if (!initialSelectionDone) {
-                        selectFirstAvailableAuthor();
+                        selectFirstAvailableCategory();
                         initialSelectionDone = true;
                     }
 
@@ -1208,7 +1535,7 @@
             radios.forEach(function (radio) {
                 radio.addEventListener('change', function () {
                     updateSlider();
-                    syncAuthorSelect();
+                    syncCategorySelect();
                     renderBooks();
                 });
             });
@@ -1265,6 +1592,25 @@
                 });
             });
 
+            document.addEventListener('click', function (event) {
+                Array.prototype.forEach.call(
+                    bookList.querySelectorAll('.book-download[open]'),
+                    function (download) {
+                        if (!download.contains(event.target)) download.removeAttribute('open');
+                    }
+                );
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key !== 'Escape') return;
+                Array.prototype.forEach.call(
+                    bookList.querySelectorAll('.book-download[open]'),
+                    function (download) {
+                        download.removeAttribute('open');
+                    }
+                );
+            });
+
             if (hoverMedia.addEventListener) {
                 hoverMedia.addEventListener('change', resetBottomSpace);
             } else if (hoverMedia.addListener) {
@@ -1278,7 +1624,7 @@
             }
 
             applyViewMode();
-            syncAuthorSelect();
+            syncCategorySelect();
             updateSlider();
             updateBackToTop();
             loadBooks();
