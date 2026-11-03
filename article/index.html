@@ -4,8 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>文章 | GuLi 马列毛主义学习站</title>
+    <meta name="description" content="GuLi 马列毛主义学习站文章栏目：按主题分类整理理论学习文章，供阅读与参考。" />
     <style>
-        /* 重置所有边距，页面主体保持空白 */
+        :root {
+            --paper: #faf9f5;
+            --ink: #1d1b19;
+            --muted: #68625b;
+            --red: #9e1414;
+            --red-dark: #7c0d0d;
+            --line: #e2ddd2;
+            --card: #fffefb;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,23 +25,375 @@
         }
 
         body {
-            background-color: #faf9f5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
-        #nav-placeholder {
-            flex-shrink: 0;
-        }
-
+        #nav-placeholder,
         #footer-placeholder {
             flex-shrink: 0;
         }
 
-        /* 主体内容区域当前留空，待后续填充文章列表 */
-        .main-content {
+        .article-page {
             flex: 1;
+            display: grid;
+            grid-template-columns: 200px minmax(0, 1fr);
+            gap: clamp(2rem, 5vw, 4.5rem);
+            align-items: start;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: clamp(44px, 6vw, 68px) 2rem clamp(56px, 8vw, 84px);
+        }
+
+        /* ----- 左侧分类栏 ----- */
+        .article-sidebar {
+            position: sticky;
+            top: 96px;
+        }
+
+        .sidebar-title {
+            font-family: var(--serif);
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1.2;
+        }
+
+        .sidebar-title a {
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .sidebar-title a:hover {
+            color: var(--red);
+        }
+
+        .category-tabs {
+            margin-top: 26px;
+            border-top: 1px solid var(--line);
+        }
+
+        .category-tabs a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+            color: #4b463f;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .category-tabs a::before {
+            content: "";
+            width: 3px;
+            height: 15px;
+            flex-shrink: 0;
+            background: transparent;
+        }
+
+        .category-tabs a:hover {
+            color: var(--red);
+        }
+
+        .category-tabs a.is-active {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        .category-tabs a.is-active::before {
+            background: var(--red);
+        }
+
+        /* ----- 右侧正文区 ----- */
+        .article-main {
+            min-width: 0;
+            max-width: 760px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 18px;
+            padding: 2px 0;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+
+        .back-link:hover {
+            color: var(--red);
+        }
+
+        .back-link[hidden] {
+            display: none;
+        }
+
+        .back-link svg {
+            width: 17px;
+            height: 17px;
+            flex-shrink: 0;
+        }
+
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            line-height: 1.5;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 24px;
+            height: 2px;
+            flex-shrink: 0;
+            background: var(--red);
+        }
+
+        .home-intro h2 {
+            font-family: var(--serif);
+            font-size: clamp(27px, 3.2vw, 32px);
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            line-height: 1.4;
+        }
+
+        .home-intro p {
+            margin-top: 14px;
+            color: #3d3934;
+            font-size: 17px;
+            line-height: 1.95;
+        }
+
+        .home-intro p + p {
+            margin-top: 10px;
+        }
+
+        .mobile-page-title {
+            display: none;
+        }
+
+        .mobile-category-list {
+            display: none;
+        }
+
+        .category-title {
+            font-family: var(--serif);
+            font-size: clamp(27px, 3.4vw, 33px);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1.4;
+        }
+
+        .category-intro {
+            max-width: 680px;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        .article-list {
+            margin-top: 24px;
+            border-top: 1px solid var(--line);
+            list-style: none;
+        }
+
+        .article-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 17px 4px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .article-row-title {
+            font-family: var(--sans);
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .read-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            min-height: 36px;
+            padding: 6px 16px;
+            border: 1px solid var(--red);
+            border-radius: 2px;
+            background: var(--red);
+            color: #fffaf2;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            text-decoration: none;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .read-btn:hover {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .empty-note {
+            padding: 26px 0;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .article-kicker {
+            margin-bottom: 8px;
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .article-page-title {
+            font-family: var(--serif);
+            font-size: clamp(28px, 3.4vw, 34px);
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            line-height: 1.4;
+        }
+
+        .article-body {
+            max-width: 700px;
+            margin-top: 26px;
+            padding-top: 22px;
+            border-top: 1px solid var(--line);
+        }
+
+        .article-body p {
+            color: #3d3934;
+            font-family: var(--serif);
+            font-size: 17px;
+            line-height: 2;
+        }
+
+        .article-body p + p {
+            margin-top: 14px;
+        }
+
+        @media (max-width: 960px) {
+            .article-page {
+                display: block;
+                padding: 36px 1.25rem 56px;
+            }
+
+            .article-sidebar {
+                display: none;
+            }
+
+            .article-main {
+                max-width: none;
+            }
+
+            .mobile-page-title {
+                display: block;
+                margin-bottom: 18px;
+                font-family: var(--serif);
+                font-size: 2.4rem;
+                font-weight: 700;
+                letter-spacing: 0.06em;
+                line-height: 1.3;
+            }
+
+            .mobile-category-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 28px;
+            }
+
+            .mobile-category-list a {
+                display: inline-flex;
+                align-items: center;
+                min-height: 38px;
+                padding: 6px 16px;
+                border: 1px solid var(--line);
+                border-radius: 2px;
+                background: var(--card);
+                color: #4b463f;
+                font-size: 15px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: color 0.15s ease, border-color 0.15s ease;
+            }
+
+            .mobile-category-list a:hover {
+                color: var(--red);
+                border-color: rgba(158, 20, 20, 0.4);
+            }
+
+            .category-title::before {
+                content: "文章-";
+            }
+
+            .home-intro h2 {
+                font-size: 27px;
+            }
+
+            .home-intro p {
+                font-size: 16px;
+            }
+
+            .back-link {
+                margin-bottom: 14px;
+            }
+
+            .category-title,
+            .article-page-title {
+                font-size: 28px;
+            }
+
+            .article-row {
+                align-items: flex-start;
+                gap: 12px;
+                padding: 16px 0;
+            }
+
+            .article-row-title {
+                font-size: 1.08rem;
+            }
+
+            .read-btn {
+                min-height: 34px;
+                padding: 5px 13px;
+            }
+
+            .article-body p {
+                font-size: 16px;
+                line-height: 1.95;
+            }
         }
     </style>
 </head>
@@ -38,11 +402,306 @@
     <!-- 顶栏占位 -->
     <div id="nav-placeholder"></div>
 
-    <!-- 主体：暂时空白 -->
-    <div class="main-content"></div>
+    <main class="article-page">
+        <aside class="article-sidebar" aria-label="文章分类">
+            <h1 class="sidebar-title">
+                <a href="/article" data-route="/article">文章</a>
+            </h1>
+            <nav class="category-tabs" id="categoryTabs" aria-label="文章分类"></nav>
+        </aside>
+
+        <section class="article-main" aria-label="文章内容">
+            <button class="back-link" id="backLink" type="button" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                <span>返回</span>
+            </button>
+            <div id="articleView"></div>
+        </section>
+    </main>
 
     <!-- 页脚占位 -->
     <div id="footer-placeholder"></div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var SITE_NAME = 'GuLi 马列毛主义学习站';
+            var CATEGORIES = [
+                {
+                    slug: '分类1',
+                    name: '标签1',
+                    intro: '这是标签1的临时介绍。之后会在这里说明该分类收录的文章范围与阅读顺序。',
+                    articles: [
+                        {
+                            slug: '《文章1》',
+                            title: '文章1',
+                            content: [
+                                '这是文章1的临时内容。文章页面还在搭建中，先放几句占位文字。',
+                                '之后这里会显示完整的文章正文，并接入文章配置文件。现在可以先通过左侧分类和右侧列表熟悉页面结构。'
+                            ]
+                        },
+                        {
+                            slug: '《文章2》',
+                            title: '文章2',
+                            content: [
+                                '这是文章2的临时内容。正文区域会保留舒适的阅读宽度和行距。',
+                                '这篇文章目前只是占位，用来测试从分类列表进入文章页的路径与返回按钮。'
+                            ]
+                        },
+                        {
+                            slug: '《文章3》',
+                            title: '文章3',
+                            content: [
+                                '这是文章3的临时内容。文章页会显示标题、分类和正文。',
+                                '后续可以在不改动页面结构的情况下替换这些占位文字。'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    slug: '分类2',
+                    name: '标签2',
+                    intro: '这是标签2的临时介绍。这里以后可以放专题说明、文章目录或阅读提示。',
+                    articles: [
+                        {
+                            slug: '《文章1》',
+                            title: '文章1',
+                            content: [
+                                '这是标签2下文章1的临时内容。',
+                                '文章页的返回按钮会回到当前分类，而不是直接回到文章首页。'
+                            ]
+                        },
+                        {
+                            slug: '《文章2》',
+                            title: '文章2',
+                            content: [
+                                '这是标签2下文章2的临时内容。',
+                                '目前所有分类和文章都在同一个页面中根据地址渲染，不需要为每个分类建立单独文件夹。'
+                            ]
+                        }
+                    ]
+                },
+                {
+                    slug: '分类3',
+                    name: '标签3',
+                    intro: '这是标签3的临时介绍。分类名称和文章内容之后都会从配置中读取。',
+                    articles: [
+                        {
+                            slug: '《文章1》',
+                            title: '文章1',
+                            content: [
+                                '这是标签3下文章1的临时内容。',
+                                '现在先确认桌面端和手机端的阅读路径都可以正常使用。'
+                            ]
+                        },
+                        {
+                            slug: '《文章2》',
+                            title: '文章2',
+                            content: [
+                                '这是标签3下文章2的临时内容。',
+                                '后续接入配置文件后，分类、文章标题和正文都可以直接替换。'
+                            ]
+                        },
+                        {
+                            slug: '《文章3》',
+                            title: '文章3',
+                            content: [
+                                '这是标签3下文章3的临时内容。',
+                                '页面结构暂时保持简单，方便之后继续调整。'
+                            ]
+                        }
+                    ]
+                }
+            ];
+
+            var tabs = document.getElementById('categoryTabs');
+            var view = document.getElementById('articleView');
+            var backLink = document.getElementById('backLink');
+
+            function escapeHtml(value) {
+                return String(value).replace(/[&<>"']/g, function (char) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;'
+                    }[char];
+                });
+            }
+
+            function categoryHref(category) {
+                return '/article/' + encodeURIComponent(category.slug);
+            }
+
+            function articleHref(category, article) {
+                return categoryHref(category) + '/' + encodeURIComponent(article.slug);
+            }
+
+            function findCategory(slug) {
+                return CATEGORIES.find(function (category) {
+                    return category.slug === slug;
+                });
+            }
+
+            function findArticle(category, slug) {
+                return category.articles.find(function (article) {
+                    return article.slug === slug;
+                });
+            }
+
+            function getRouteSegments() {
+                var path = window.location.pathname.replace(/\/+$/, '');
+                var parts = path.split('/').filter(Boolean);
+                if (!parts.length || parts[0] !== 'article') return [];
+
+                return parts.slice(1).map(function (part) {
+                    try {
+                        return decodeURIComponent(part);
+                    } catch (error) {
+                        return part;
+                    }
+                }).filter(function (part) {
+                    return part !== 'index.html';
+                });
+            }
+
+            function renderTabs(activeSlug) {
+                tabs.innerHTML = CATEGORIES.map(function (category) {
+                    var href = categoryHref(category);
+                    var active = category.slug === activeSlug;
+                    return '<a href="' + href + '" data-route="' + href + '"' +
+                        (active ? ' class="is-active" aria-current="page"' : '') +
+                        '>' + escapeHtml(category.name) + '</a>';
+                }).join('');
+            }
+
+            function setBackTarget(target) {
+                if (!target) {
+                    backLink.hidden = true;
+                    backLink.removeAttribute('data-target');
+                    return;
+                }
+
+                backLink.hidden = false;
+                backLink.setAttribute('data-target', target);
+            }
+
+            function renderHome() {
+                document.title = '文章 | ' + SITE_NAME;
+                renderTabs(null);
+                setBackTarget(null);
+
+                var mobileCategories = CATEGORIES.map(function (category) {
+                    var href = categoryHref(category);
+                    return '<a href="' + href + '" data-route="' + href + '">' +
+                        escapeHtml(category.name) + '</a>';
+                }).join('');
+
+                view.innerHTML =
+                    '<h1 class="mobile-page-title">文章</h1>' +
+                    '<div class="home-intro">' +
+                        '<p class="eyebrow">文章页面</p>' +
+                        '<h2>在阅读中把理论变成方法</h2>' +
+                        '<p>这里会陆续整理一些理论学习、历史与现实相关的文章。目前页面还在搭建中，先保留分类和文章的基本结构。</p>' +
+                        '<p>可以按左侧的分类浏览文章，也可以从下面的标签进入。之后分类与正文会改为读取配置文件。</p>' +
+                    '</div>' +
+                    '<nav class="mobile-category-list" aria-label="文章分类">' + mobileCategories + '</nav>';
+            }
+
+            function renderCategory(category) {
+                document.title = category.name + ' | 文章 | ' + SITE_NAME;
+                renderTabs(category.slug);
+                setBackTarget('/article');
+
+                var articles = category.articles.length
+                    ? '<ul class="article-list">' + category.articles.map(function (article) {
+                        var href = articleHref(category, article);
+                        return '<li class="article-row">' +
+                            '<h2 class="article-row-title">' + escapeHtml(article.title) + '</h2>' +
+                            '<a class="read-btn" href="' + href + '" data-route="' + href + '">阅读</a>' +
+                        '</li>';
+                    }).join('') + '</ul>'
+                    : '<p class="empty-note">这个分类暂时还没有文章。</p>';
+
+                view.innerHTML =
+                    '<h1 class="category-title">' + escapeHtml(category.name) + '</h1>' +
+                    '<p class="category-intro">' + escapeHtml(category.intro) + '</p>' +
+                    articles;
+            }
+
+            function renderArticle(category, article) {
+                document.title = article.title + ' | ' + category.name + ' | 文章 | ' + SITE_NAME;
+                renderTabs(category.slug);
+                setBackTarget(categoryHref(category));
+
+                view.innerHTML =
+                    '<p class="article-kicker">' + escapeHtml(category.name) + '</p>' +
+                    '<h1 class="article-page-title">' + escapeHtml(article.title) + '</h1>' +
+                    '<div class="article-body">' +
+                        article.content.map(function (paragraph) {
+                            return '<p>' + escapeHtml(paragraph) + '</p>';
+                        }).join('') +
+                    '</div>';
+            }
+
+            function render() {
+                var segments = getRouteSegments();
+                var category = findCategory(segments[0]);
+
+                if (!category) {
+                    if (segments.length) {
+                        window.history.replaceState({}, '', '/article');
+                    }
+                    renderHome();
+                    return;
+                }
+
+                var article = findArticle(category, segments[1]);
+
+                if (segments[1] && !article) {
+                    window.history.replaceState({}, '', categoryHref(category));
+                    renderCategory(category);
+                    return;
+                }
+
+                if (article) {
+                    renderArticle(category, article);
+                } else {
+                    renderCategory(category);
+                }
+            }
+
+            function navigate(path) {
+                if (window.location.pathname !== path) {
+                    window.history.pushState({}, '', path);
+                }
+                render();
+                window.scrollTo({ top: 0, behavior: 'auto' });
+            }
+
+            document.addEventListener('click', function (event) {
+                var link = event.target.closest('a[data-route]');
+                if (!link) return;
+                if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+                event.preventDefault();
+                navigate(link.getAttribute('data-route'));
+            });
+
+            backLink.addEventListener('click', function () {
+                var target = backLink.getAttribute('data-target');
+                if (target) navigate(target);
+            });
+
+            window.addEventListener('popstate', render);
+
+            render();
+        })();
+    </script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
