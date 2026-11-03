@@ -428,7 +428,6 @@
         (function () {
             'use strict';
 
-            var SITE_NAME = 'GuLi 马列毛主义学习站';
             var CATEGORIES = [
                 {
                     slug: '分类1',
@@ -591,7 +590,6 @@
             }
 
             function renderHome() {
-                document.title = '文章 | ' + SITE_NAME;
                 renderTabs(null);
                 setBackTarget(null);
 
@@ -613,7 +611,6 @@
             }
 
             function renderCategory(category) {
-                document.title = category.name + ' | 文章 | ' + SITE_NAME;
                 renderTabs(category.slug);
                 setBackTarget('/article');
 
@@ -634,7 +631,6 @@
             }
 
             function renderArticle(category, article) {
-                document.title = article.title + ' | ' + category.name + ' | 文章 | ' + SITE_NAME;
                 renderTabs(category.slug);
                 setBackTarget(categoryHref(category));
 
