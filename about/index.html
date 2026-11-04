@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#9e1414" />
+    <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
     <title>关于 | GuLi 马列毛主义学习站</title>
     <style>
         :root {
@@ -622,7 +625,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=15')
+        fetch('/components/nav.html?v=16')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -879,6 +882,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js?v=7"></script>
+    <script src="/components/nav.js?v=8"></script>
 </body>
 </html>

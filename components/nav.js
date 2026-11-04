@@ -79,3 +79,60 @@
         }
     });
 })();
+
+/* PWA：注册 Service Worker，并接管“安装到电脑桌面”入口。 */
+(function () {
+    'use strict';
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(function (error) {
+            console.warn('Service Worker 注册失败:', error);
+        });
+    }
+
+    var deferredInstallPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', function (event) {
+        event.preventDefault();
+        deferredInstallPrompt = event;
+        document.documentElement.classList.add('pwa-install-ready');
+    });
+
+    window.addEventListener('appinstalled', function () {
+        deferredInstallPrompt = null;
+        document.documentElement.classList.remove('pwa-install-ready');
+    });
+
+    document.addEventListener('click', function (event) {
+        var trigger = event.target && event.target.closest
+            ? event.target.closest('[data-install-app]')
+            : null;
+        if (!trigger) return;
+
+        event.preventDefault();
+
+        var details = trigger.closest('details');
+        if (details) details.open = false;
+
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            window.alert('本站已经安装到桌面。');
+            return;
+        }
+
+        if (!deferredInstallPrompt) {
+            window.alert('当前浏览器没有提供安装入口。请使用 Chrome 或 Edge 打开本站，再点击地址栏右侧的“安装”图标。');
+            return;
+        }
+
+        var promptEvent = deferredInstallPrompt;
+        deferredInstallPrompt = null;
+        promptEvent.prompt();
+        promptEvent.userChoice.then(function (choice) {
+            if (choice.outcome !== 'accepted') {
+                console.info('用户取消了网站安装。');
+            }
+        }).catch(function (error) {
+            console.warn('网站安装失败:', error);
+        });
+    });
+})();

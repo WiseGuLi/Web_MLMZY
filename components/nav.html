@@ -80,7 +80,7 @@
     .nav-links {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         list-style: none;
         margin: 0;
         padding: 0;
@@ -90,7 +90,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        padding: 6px 12px;
+        padding: 6px 10px;
         border-radius: 8px;
         text-decoration: none;
         color: #222;
@@ -110,8 +110,8 @@
     }
 
     .nav-links a img {
-        width: 19px;
-        height: 19px;
+        width: 18px;
+        height: 18px;
         display: block;
         flex-shrink: 0;
         object-fit: contain;
@@ -137,7 +137,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        padding: 6px 12px;
+        padding: 6px 10px;
         border-radius: 8px;
         color: #222;
         font-size: 15px;
@@ -150,8 +150,8 @@
     }
 
     .nav-more summary img {
-        width: 19px;
-        height: 19px;
+        width: 18px;
+        height: 18px;
         display: block;
         flex-shrink: 0;
         object-fit: contain;
@@ -217,8 +217,8 @@
     }
 
     .nav-sub a img {
-        width: 19px;
-        height: 19px;
+        width: 18px;
+        height: 18px;
         object-fit: contain;
         object-position: center;
     }
@@ -239,13 +239,25 @@
     }
 
     .nav-sub .nav-sub-link img {
-        width: 19px;
-        height: 19px;
+        width: 18px;
+        height: 18px;
         display: block;
         flex-shrink: 0;
         object-fit: contain;
         object-position: center;
         opacity: 0.8;
+    }
+
+    .nav-sub a.nav-install {
+        color: #222;
+        cursor: pointer;
+    }
+
+    .nav-sub a.nav-install:hover,
+    .nav-sub a.nav-install:focus-visible {
+        background: rgba(255, 0, 0, 0.06);
+        color: #cc0000;
+        outline: none;
     }
 
     .nav-sub .ext {
@@ -266,8 +278,8 @@
     }
 
     .nav-sub a.nav-xi .sub-icon {
-        width: 19px;
-        height: 19px;
+        width: 18px;
+        height: 18px;
         display: block;
         flex-shrink: 0;
         background-color: currentColor;
@@ -334,19 +346,19 @@
         transition: transform 0.25s ease, opacity 0.2s ease;
     }
 
-    /* ===== 宽屏：直接入口等宽；“教程/下载”因含图标和箭头适当加宽 ===== */
+    /* ===== 宽屏：直接入口等宽；“资源/教程/下载”因含图标和箭头适当加宽 ===== */
     @media (min-width: 961px) {
         .nav-links > li {
             flex-shrink: 0;
         }
 
         .nav-links > li > a {
-            width: 84px;
+            width: 82px;
             height: 34px;
         }
 
-        .nav-links > li.nav-history > a {
-            width: 110px;
+        .nav-links > li.nav-international > a {
+            width: 108px;
         }
 
         /* 宽屏下按钮内的图标、文字和箭头整体居中 */
@@ -356,7 +368,7 @@
         }
 
         .nav-more--icon > details > summary {
-            width: 96px;
+            width: 94px;
             height: 34px;
         }
 
@@ -367,13 +379,13 @@
 
         /* “更多”与普通入口“关于”等宽，文字与箭头居中 */
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 84px;
+            width: 82px;
             height: 34px;
             justify-content: center;
         }
     }
 
-    /* ===== 中等屏幕：稍微收紧，避免九个栏目拥挤 ===== */
+    /* ===== 中等屏幕：稍微收紧，避免十个栏目拥挤 ===== */
     @media (min-width: 961px) and (max-width: 1200px) {
         .top-bar {
             padding: 0 1.25rem;
@@ -385,38 +397,38 @@
             font-size: 23px;
         }
         .nav-links {
-            gap: 2px;
+            gap: 1px;
         }
         .nav-links > li > a {
-            width: 80px;
+            width: 78px;
             padding: 6px 6px;
             font-size: 14px;
         }
-        .nav-links > li.nav-history > a {
-            width: 92px;
+        .nav-links > li.nav-international > a {
+            width: 90px;
         }
         .nav-more--icon > details > summary {
-            width: 92px;
+            width: 90px;
             padding: 6px 6px;
             font-size: 14px;
         }
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 80px;
+            width: 78px;
             padding: 6px 8px;
             font-size: 14px;
         }
         .nav-links > li > a img {
-            width: 18px;
-            height: 18px;
+            width: 17px;
+            height: 17px;
         }
 
         .nav-more summary img {
-            width: 18px;
-            height: 18px;
+            width: 17px;
+            height: 17px;
         }
     }
 
-    /* ===== 961–1080px：进一步压缩，保证九个栏目不挤在一起 ===== */
+    /* ===== 961–1080px：进一步压缩，保证十个栏目不挤在一起 ===== */
     @media (min-width: 961px) and (max-width: 1080px) {
         .top-bar {
             padding: 0 0.75rem;
@@ -428,23 +440,23 @@
             font-size: 21px;
         }
         .nav-links {
-            gap: 1px;
+            gap: 0;
         }
         .nav-links > li > a {
-            width: 68px;
+            width: 66px;
             padding: 6px;
             font-size: 14px;
         }
-        .nav-links > li.nav-history > a {
-            width: 92px;
+        .nav-links > li.nav-international > a {
+            width: 90px;
         }
         .nav-more--icon > details > summary {
-            width: 82px;
+            width: 79px;
             padding: 6px;
             font-size: 14px;
         }
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 68px;
+            width: 66px;
             padding: 6px;
             font-size: 14px;
         }
@@ -581,18 +593,18 @@
         }
 
         .nav-links a img {
-            width: 21px;
-            height: 21px;
+            width: 20px;
+            height: 20px;
         }
 
         .nav-more summary img {
-            width: 21px;
-            height: 21px;
+            width: 20px;
+            height: 20px;
         }
 
         .nav-sub a .sub-icon {
-            width: 19px;
-            height: 19px;
+            width: 18px;
+            height: 18px;
         }
 
         /* 下拉列表在手机菜单中展开为普通分组 */
@@ -638,8 +650,8 @@
         }
 
         .nav-sub a img {
-            width: 19px;
-            height: 19px;
+            width: 18px;
+            height: 18px;
         }
 
         .nav-sub .nav-sub-link {
@@ -654,8 +666,8 @@
         }
 
         .nav-sub .nav-sub-link img {
-            width: 19px;
-            height: 19px;
+            width: 18px;
+            height: 18px;
         }
 
         .nav-sub a.nav-xi {
@@ -718,10 +730,27 @@
                 <span class="label">文库</span>
             </a>
         </li>
-        <li class="nav-history">
-            <a href="/history">
-                <img src="/icons/顶栏/国际.svg?v=1" alt="革命历史图标">
-                <span class="label">革命历史</span>
+        <li class="nav-more nav-more--icon">
+            <details>
+                <summary>
+                    <img src="/icons/顶栏/资源/资源.svg?v=1" alt="资源图标">
+                    <span class="label">资源</span>
+                    <span class="caret" aria-hidden="true"></span>
+                </summary>
+                <ul class="nav-sub">
+                    <li>
+                        <a href="/resources/revolutionary-art">
+                            <img src="/icons/顶栏/资源/文艺.svg?v=1" alt="革命文艺图标">
+                            <span class="label">革命文艺</span>
+                        </a>
+                    </li>
+                </ul>
+            </details>
+        </li>
+        <li class="nav-international">
+            <a href="/international">
+                <img src="/icons/顶栏/国际.svg?v=1" alt="国际共运图标">
+                <span class="label">国际共运</span>
             </a>
         </li>
         <li class="nav-more nav-more--icon">
@@ -762,10 +791,10 @@
                 </summary>
                 <ul class="nav-sub">
                     <li>
-                        <span class="nav-sub-link" aria-disabled="true" title="功能暂未开放">
+                        <a href="#" class="nav-sub-link nav-install" data-install-app>
                             <img src="/icons/顶栏/下载/电脑.svg?v=2" alt="电脑图标">
                             <span class="label">安装到电脑桌面</span>
-                        </span>
+                        </a>
                     </li>
                     <li>
                         <span class="nav-sub-link" aria-disabled="true" title="功能暂未开放">
