@@ -54,9 +54,18 @@
             gap: clamp(2rem, 5vw, 4.5rem);
             align-items: start;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1140px;
             margin: 0 auto;
-            padding: clamp(44px, 6vw, 68px) 2rem clamp(56px, 8vw, 84px);
+            padding: clamp(44px, 6vw, 68px) 1.5rem clamp(56px, 8vw, 84px);
+        }
+
+        .article-page.sidebar-hidden {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0;
+        }
+
+        .article-page.sidebar-hidden .article-sidebar {
+            display: none;
         }
 
         /* ----- 左侧分类栏 ----- */
@@ -123,7 +132,61 @@
 
         /* ----- 右侧正文区 ----- */
         .article-main {
+            width: 100%;
             min-width: 0;
+            max-width: var(--article-main-max, 760px);
+        }
+
+        .article-page.sidebar-hidden {
+            --article-main-max: 900px;
+        }
+
+        .article-page.sidebar-hidden .article-main {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .article-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 32px;
+            padding: 3px 9px;
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            background: var(--card);
+            color: var(--muted);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .sidebar-toggle:hover {
+            color: var(--red);
+            border-color: rgba(158, 20, 20, 0.4);
+        }
+
+        .sidebar-toggle:focus-visible {
+            outline: 2px solid rgba(158, 20, 20, 0.3);
+            outline-offset: 2px;
+        }
+
+        .sidebar-toggle svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        .article-page.sidebar-hidden .article-body {
             max-width: 760px;
         }
 
@@ -318,6 +381,10 @@
                 display: none;
             }
 
+            .article-toolbar {
+                display: none;
+            }
+
             .article-main {
                 max-width: none;
             }
@@ -408,7 +475,7 @@
     <div id="nav-placeholder"></div>
 
     <main class="article-page">
-        <aside class="article-sidebar" aria-label="文章分类">
+        <aside class="article-sidebar" id="articleSidebar" aria-label="文章分类">
             <h1 class="sidebar-title">
                 <a href="/article" data-route="/article">文章</a>
             </h1>
@@ -416,6 +483,15 @@
         </aside>
 
         <section class="article-main" aria-label="文章内容">
+            <div class="article-toolbar">
+                <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="true" aria-controls="articleSidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="4" width="18" height="16" rx="1"></rect>
+                        <path d="M9 4v16"></path>
+                    </svg>
+                    <span class="sidebar-toggle-label">隐藏侧栏</span>
+                </button>
+            </div>
             <button class="back-link" id="backLink" type="button" hidden>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="m15 18-6-6 6-6"></path>
@@ -524,6 +600,18 @@
             var tabs = document.getElementById('categoryTabs');
             var view = document.getElementById('articleView');
             var backLink = document.getElementById('backLink');
+            var articlePage = document.querySelector('.article-page');
+            var sidebarToggle = document.getElementById('sidebarToggle');
+            var sidebarToggleLabel = sidebarToggle.querySelector('.sidebar-toggle-label');
+
+            function setSidebarHidden(hidden) {
+                articlePage.classList.toggle('sidebar-hidden', hidden);
+                sidebarToggle.setAttribute('aria-expanded', String(!hidden));
+                sidebarToggleLabel.textContent = hidden ? '显示侧栏' : '隐藏侧栏';
+                sidebarToggle.title = hidden ? '显示文章分类侧栏' : '隐藏文章分类侧栏';
+            }
+
+            setSidebarHidden(false);
 
             function escapeHtml(value) {
                 return String(value).replace(/[&<>"']/g, function (char) {
@@ -698,6 +786,10 @@
                 if (target) navigate(target);
             });
 
+            sidebarToggle.addEventListener('click', function () {
+                setSidebarHidden(!articlePage.classList.contains('sidebar-hidden'));
+            });
+
             window.addEventListener('popstate', render);
 
             render();
@@ -731,6 +823,6 @@
             });
     </script>
 
-    <script src="/components/nav.js?v=11"></script>
+    <script src="/components/nav.js?v=12"></script>
 </body>
 </html>

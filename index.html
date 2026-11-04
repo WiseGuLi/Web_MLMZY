@@ -72,6 +72,83 @@
             padding: 0 2rem;
         }
 
+        /* ===== 顶部开站横幅 ===== */
+        .site-banner {
+            flex-shrink: 0;
+            background: linear-gradient(90deg, #701010 0%, #9e1414 58%, #7c0d0d 100%);
+            color: #fffaf2;
+        }
+
+        .site-banner[hidden] {
+            display: none;
+        }
+
+        .site-banner-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 11px 2rem;
+        }
+
+        .site-banner-mark {
+            flex-shrink: 0;
+            color: #ffd86b;
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .site-banner-badge {
+            flex-shrink: 0;
+            padding: 1px 7px;
+            border: 1px solid rgba(255, 250, 242, 0.48);
+            border-radius: 2px;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.6;
+            letter-spacing: 0.08em;
+        }
+
+        .site-banner-text {
+            flex: 1;
+            min-width: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .site-banner-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: rgba(255, 250, 242, 0.86);
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .site-banner-close:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+        }
+
+        .site-banner-close:focus-visible {
+            outline: 2px solid #ffd86b;
+            outline-offset: 2px;
+        }
+
+        .site-banner-close svg {
+            width: 17px;
+            height: 17px;
+            display: block;
+        }
+
         /* ===== 首屏 ===== */
         .hero {
             border-bottom: 1px solid var(--line);
@@ -603,6 +680,16 @@
                 padding-right: 1.25rem;
             }
 
+            .site-banner-inner {
+                gap: 8px;
+                padding: 9px 1.25rem;
+            }
+
+            .site-banner-text {
+                font-size: 14px;
+                line-height: 1.65;
+            }
+
             .section-head {
                 gap: 14px;
             }
@@ -633,6 +720,14 @@
         }
 
         @media (max-width: 560px) {
+            .site-banner-badge {
+                display: none;
+            }
+
+            .site-banner-mark {
+                font-size: 15px;
+            }
+
             .hero h1 {
                 font-size: clamp(2rem, 9vw, 2.55rem);
             }
@@ -695,6 +790,20 @@
 <body>
     <!-- 顶部导航栏占位 -->
     <div id="nav-placeholder"></div>
+
+    <!-- ===== 开站横幅（内容读取 data/横幅.yml） ===== -->
+    <div class="site-banner" id="siteBanner" role="region" aria-label="站点公告" hidden>
+        <div class="site-banner-inner">
+            <span class="site-banner-mark" aria-hidden="true">★</span>
+            <span class="site-banner-badge">开站</span>
+            <p class="site-banner-text" id="siteBannerText"></p>
+            <button class="site-banner-close" id="siteBannerClose" type="button" aria-label="关闭公告">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="m6 6 12 12M18 6 6 18"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
 
     <main>
         <!-- ===== 首屏 ===== -->
@@ -905,6 +1014,90 @@
     <div id="footer-placeholder"></div>
 
     <script>
+        (function () {
+            'use strict';
+
+            var banner = document.getElementById('siteBanner');
+            var bannerText = document.getElementById('siteBannerText');
+            var closeButton = document.getElementById('siteBannerClose');
+            var DISMISS_KEY = 'mlmzy-banner-dismissed';
+            var currentHash = '';
+
+            function parseBannerConfig(text) {
+                var config = { show: false, content: '' };
+
+                String(text).replace(/^\uFEFF/, '').split(/\r?\n/).forEach(function (line) {
+                    var match = line.match(/^\s*(?:-\s*)?([^:：]+)[:：]\s*(.*)$/);
+                    if (!match) return;
+
+                    var key = match[1].trim();
+                    var value = match[2].trim();
+
+                    if (key === '是否显示横幅' || key === '显示') {
+                        config.show = /^(true|1|yes|是|显示)$/i.test(value);
+                    } else if (key === '横幅内容' || key === '内容') {
+                        if ((value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') ||
+                            (value.charAt(0) === "'" && value.charAt(value.length - 1) === "'")) {
+                            value = value.slice(1, -1);
+                        }
+                        config.content = value;
+                    }
+                });
+
+                return config;
+            }
+
+            function hashString(value) {
+                var hash = 2166136261;
+                for (var i = 0; i < value.length; i++) {
+                    hash ^= value.charCodeAt(i);
+                    hash = Math.imul(hash, 16777619);
+                }
+                return (hash >>> 0).toString(36);
+            }
+
+            function getDismissedHash() {
+                try {
+                    return window.localStorage.getItem(DISMISS_KEY) || '';
+                } catch (error) {
+                    return '';
+                }
+            }
+
+            function dismissBanner() {
+                banner.hidden = true;
+                if (!currentHash) return;
+                try {
+                    window.localStorage.setItem(DISMISS_KEY, currentHash);
+                } catch (error) {
+                    /* 隐私模式下无法写入时，本次关闭仍然有效 */
+                }
+            }
+
+            fetch('/data/横幅.yml?t=' + Date.now(), { cache: 'no-store' })
+                .then(function (response) {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.text();
+                })
+                .then(function (text) {
+                    var config = parseBannerConfig(text);
+                    if (!config.show || !config.content) return;
+
+                    currentHash = hashString(config.content);
+                    if (getDismissedHash() === currentHash) return;
+
+                    bannerText.textContent = config.content;
+                    banner.hidden = false;
+                })
+                .catch(function (error) {
+                    console.warn('横幅配置加载失败:', error);
+                });
+
+            closeButton.addEventListener('click', dismissBanner);
+        })();
+    </script>
+
+    <script>
         fetch('/components/nav.html?v=19')
             .then(function (res) {
                 if (!res.ok) throw new Error('导航栏加载失败');
@@ -929,6 +1122,6 @@
                 console.warn('页脚加载失败:', err);
             });
     </script>
-    <script src="/components/nav.js?v=11"></script>
+    <script src="/components/nav.js?v=12"></script>
 </body>
 </html>

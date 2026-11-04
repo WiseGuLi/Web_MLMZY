@@ -102,7 +102,7 @@
     });
 
     function showInstallHelp() {
-        window.alert('当前浏览器没有提供安装提示。请刷新页面后，使用 Chrome 菜单中的“保存和共享 → 安装页面为应用”；如果仍然没有，请确认 Cloudflare 没有拦截 manifest.json 或 sw.js。');
+        window.alert('当前浏览器没有给出安装提示。请使用 Chrome、Edge 等 Chromium 内核的浏览器，并确认本站尚未安装到桌面。你也可以点击浏览器地址栏右侧的“安装应用程序”图标，或使用浏览器菜单中的“保存和共享 → 安装页面为应用”。');
     }
 
     document.addEventListener('click', function (event) {
