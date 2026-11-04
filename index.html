@@ -5,7 +5,7 @@
     <meta name="google" content="notranslate" />
     <meta http-equiv="content-language" content="zh-CN" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/manifest.webmanifest?v=1" />
+    <link rel="manifest" href="/manifest.json?v=1" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
     <title>GuLi 马列毛主义学习站</title>
@@ -905,7 +905,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=18')
+        fetch('/components/nav.html?v=19')
             .then(function (res) {
                 if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();
@@ -929,6 +929,6 @@
                 console.warn('页脚加载失败:', err);
             });
     </script>
-    <script src="/components/nav.js?v=9"></script>
+    <script src="/components/nav.js?v=11"></script>
 </body>
 </html>

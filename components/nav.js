@@ -95,16 +95,14 @@
     window.addEventListener('beforeinstallprompt', function (event) {
         /* 不调用 preventDefault，保留 Chrome 地址栏右侧的原生安装图标。 */
         deferredInstallPrompt = event;
-        document.documentElement.classList.add('pwa-install-ready');
     });
 
     window.addEventListener('appinstalled', function () {
         deferredInstallPrompt = null;
-        document.documentElement.classList.remove('pwa-install-ready');
     });
 
     function showInstallHelp() {
-        window.alert('请点击 Chrome 地址栏右侧的“安装”图标安装本站。如果看不到图标，请刷新页面后再试。');
+        window.alert('当前浏览器没有提供安装提示。请刷新页面后，使用 Chrome 菜单中的“保存和共享 → 安装页面为应用”；如果仍然没有，请确认 Cloudflare 没有拦截 manifest.json 或 sw.js。');
     }
 
     document.addEventListener('click', function (event) {
