@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" translate="no">
 <head>
     <meta charset="UTF-8">
+    <meta name="google" content="notranslate" />
+    <meta http-equiv="content-language" content="zh-CN" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="/manifest.webmanifest?v=1" />
     <meta name="theme-color" content="#9e1414" />
@@ -865,7 +867,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=17')
+        fetch('/components/nav.html?v=18')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;

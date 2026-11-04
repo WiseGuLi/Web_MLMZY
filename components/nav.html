@@ -311,6 +311,65 @@
         opacity: 1;
     }
 
+    /* ===== PWA 安装按钮（仅在浏览器判定可安装时显示） ===== */
+    .pwa-install-button {
+        position: fixed;
+        left: 24px;
+        bottom: 24px;
+        z-index: 950;
+        display: none;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 17px;
+        border: 1px solid #7c0d0d;
+        border-radius: 999px;
+        background: #9e1414;
+        color: #fffaf2;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(80, 12, 12, 0.24);
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    html.pwa-install-ready .pwa-install-button {
+        display: inline-flex;
+    }
+
+    .pwa-install-button:hover {
+        background: #7c0d0d;
+        transform: translateY(-1px);
+    }
+
+    .pwa-install-button:focus-visible {
+        outline: 2px solid #9e1414;
+        outline-offset: 3px;
+    }
+
+    .pwa-install-button svg {
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 960px) {
+        .pwa-install-button {
+            left: 16px;
+            bottom: max(16px, env(safe-area-inset-bottom));
+            min-height: 42px;
+            padding: 0 15px;
+        }
+    }
+
+    @media (display-mode: standalone) {
+        .pwa-install-button {
+            display: none !important;
+        }
+    }
+
     /* ===== 折叠按钮（移动端才显示） ===== */
     .nav-toggle,
     .nav-toggle-input {
@@ -837,3 +896,12 @@
         </li>
     </ul>
 </header>
+
+<button class="pwa-install-button" type="button" data-install-app aria-label="安装本站到电脑桌面">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3v12"></path>
+        <path d="m7 10 5 5 5-5"></path>
+        <path d="M5 21h14"></path>
+    </svg>
+    <span>安装本站</span>
+</button>
