@@ -93,7 +93,7 @@
     var deferredInstallPrompt = null;
 
     window.addEventListener('beforeinstallprompt', function (event) {
-        event.preventDefault();
+        /* 不调用 preventDefault，保留 Chrome 地址栏右侧的原生安装图标。 */
         deferredInstallPrompt = event;
         document.documentElement.classList.add('pwa-install-ready');
     });
@@ -102,6 +102,10 @@
         deferredInstallPrompt = null;
         document.documentElement.classList.remove('pwa-install-ready');
     });
+
+    function showInstallHelp() {
+        window.alert('请点击 Chrome 地址栏右侧的“安装”图标安装本站。如果看不到图标，请刷新页面后再试。');
+    }
 
     document.addEventListener('click', function (event) {
         var trigger = event.target && event.target.closest
@@ -120,13 +124,26 @@
         }
 
         if (!deferredInstallPrompt) {
-            window.alert('当前浏览器没有提供安装入口。请使用 Chrome 或 Edge 打开本站，再点击地址栏右侧的“安装”图标。');
+            showInstallHelp();
             return;
         }
 
         var promptEvent = deferredInstallPrompt;
         deferredInstallPrompt = null;
-        promptEvent.prompt();
+
+        try {
+            var promptResult = promptEvent.prompt();
+            if (promptResult && typeof promptResult.catch === 'function') {
+                promptResult.catch(function () {
+                    showInstallHelp();
+                });
+            }
+        } catch (error) {
+            console.warn('网站安装提示不可用:', error);
+            showInstallHelp();
+            return;
+        }
+
         promptEvent.userChoice.then(function (choice) {
             if (choice.outcome !== 'accepted') {
                 console.info('用户取消了网站安装。');

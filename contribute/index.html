@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="manifest" href="/manifest.webmanifest?v=1" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
     <title>投稿 | GuLi 马列毛主义学习站</title>
@@ -313,7 +313,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=16')
+        fetch('/components/nav.html?v=17')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -338,6 +338,6 @@
             });
     </script>
 
-    <script src="/components/nav.js?v=8"></script>
+    <script src="/components/nav.js?v=9"></script>
 </body>
 </html>
