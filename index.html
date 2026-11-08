@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN" translate="no">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <meta name="google" content="notranslate" />
     <meta http-equiv="content-language" content="zh-CN" />
+    <meta name="application-name" content="马列毛主义学习站" />
+    <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/manifest.json?v=1" crossorigin="use-credentials" />
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
     <title>GuLi 马列毛主义学习站</title>
@@ -90,32 +91,57 @@
             width: 100%;
             max-width: var(--max);
             margin: 0 auto;
-            padding: 11px 2rem;
-        }
-
-        .site-banner-mark {
-            flex-shrink: 0;
-            color: #ffd86b;
-            font-size: 17px;
-            line-height: 1;
-        }
-
-        .site-banner-badge {
-            flex-shrink: 0;
-            padding: 1px 7px;
-            border: 1px solid rgba(255, 250, 242, 0.48);
-            border-radius: 2px;
-            font-size: 14px;
-            font-weight: 700;
-            line-height: 1.6;
-            letter-spacing: 0.08em;
+            padding: 9px 2rem;
         }
 
         .site-banner-text {
             flex: 1;
             min-width: 0;
+            overflow: hidden;
+            white-space: nowrap;
             font-size: 15px;
-            line-height: 1.7;
+            line-height: 1.55;
+        }
+
+        .site-banner-track {
+            display: inline-flex;
+            white-space: nowrap;
+            will-change: transform;
+        }
+
+        .site-banner-run {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .site-banner-run + .site-banner-run {
+            display: none;
+        }
+
+        .site-banner-text.is-scrolling .site-banner-track {
+            animation: site-banner-marquee 26s linear infinite;
+        }
+
+        .site-banner-text.is-scrolling .site-banner-run {
+            padding-right: 64px;
+        }
+
+        .site-banner-text.is-scrolling .site-banner-run + .site-banner-run {
+            display: inline-block;
+        }
+
+        .site-banner:hover .site-banner-track,
+        .site-banner:focus-within .site-banner-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes site-banner-marquee {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-50%);
+            }
         }
 
         .site-banner-close {
@@ -720,14 +746,6 @@
         }
 
         @media (max-width: 560px) {
-            .site-banner-badge {
-                display: none;
-            }
-
-            .site-banner-mark {
-                font-size: 15px;
-            }
-
             .hero h1 {
                 font-size: clamp(2rem, 9vw, 2.55rem);
             }
@@ -780,6 +798,14 @@
                 scroll-behavior: auto;
             }
 
+            .site-banner-text.is-scrolling {
+                overflow-x: auto;
+            }
+
+            .site-banner-text.is-scrolling .site-banner-track {
+                animation: none;
+            }
+
             .btn,
             .feature-card {
                 transition: none;
@@ -794,9 +820,12 @@
     <!-- ===== 开站横幅（内容读取 data/横幅.yml） ===== -->
     <div class="site-banner" id="siteBanner" role="region" aria-label="站点公告" hidden>
         <div class="site-banner-inner">
-            <span class="site-banner-mark" aria-hidden="true">★</span>
-            <span class="site-banner-badge">开站</span>
-            <p class="site-banner-text" id="siteBannerText"></p>
+            <div class="site-banner-text" id="siteBannerViewport">
+                <div class="site-banner-track" id="siteBannerTrack">
+                    <span class="site-banner-run" id="siteBannerRun"></span>
+                    <span class="site-banner-run" aria-hidden="true"></span>
+                </div>
+            </div>
             <button class="site-banner-close" id="siteBannerClose" type="button" aria-label="关闭公告">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
                     <path d="m6 6 12 12M18 6 6 18"></path>
@@ -1018,9 +1047,12 @@
             'use strict';
 
             var banner = document.getElementById('siteBanner');
-            var bannerText = document.getElementById('siteBannerText');
+            var bannerViewport = document.getElementById('siteBannerViewport');
+            var bannerTrack = document.getElementById('siteBannerTrack');
+            var bannerRun = document.getElementById('siteBannerRun');
+            var bannerRuns = bannerTrack.querySelectorAll('.site-banner-run');
             var closeButton = document.getElementById('siteBannerClose');
-            var DISMISS_KEY = 'mlmzy-banner-dismissed';
+            var DISMISS_KEY = 'mlmzy-banner-dismissed-v2';
             var currentHash = '';
 
             function parseBannerConfig(text) {
@@ -1074,6 +1106,19 @@
                 }
             }
 
+            function applyBannerMarquee() {
+                if (banner.hidden) return;
+
+                bannerViewport.classList.remove('is-scrolling');
+                bannerTrack.style.animationDuration = '';
+
+                var needsScroll = bannerRun.scrollWidth > bannerViewport.clientWidth;
+                if (!needsScroll) return;
+
+                bannerViewport.classList.add('is-scrolling');
+                bannerTrack.style.animationDuration = Math.max(18, Math.round(bannerRun.scrollWidth / 32)) + 's';
+            }
+
             fetch('/data/横幅.yml?t=' + Date.now(), { cache: 'no-store' })
                 .then(function (response) {
                     if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -1086,19 +1131,23 @@
                     currentHash = hashString(config.content);
                     if (getDismissedHash() === currentHash) return;
 
-                    bannerText.textContent = config.content;
+                    Array.prototype.forEach.call(bannerRuns, function (run) {
+                        run.textContent = config.content;
+                    });
                     banner.hidden = false;
+                    window.requestAnimationFrame(applyBannerMarquee);
                 })
                 .catch(function (error) {
                     console.warn('横幅配置加载失败:', error);
                 });
 
             closeButton.addEventListener('click', dismissBanner);
+            window.addEventListener('resize', applyBannerMarquee, { passive: true });
         })();
     </script>
 
     <script>
-        fetch('/components/nav.html?v=19')
+        fetch('/components/nav.html?v=20')
             .then(function (res) {
                 if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();

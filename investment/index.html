@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-language" content="zh-CN" />
+    <meta name="application-name" content="马列毛主义学习站" />
+    <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
+    <meta name="theme-color" content="#9e1414" />
+    <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
+    <title>网站投入 | GuLi 马列毛主义学习站</title>
+    <meta name="description" content="GuLi 马列毛主义学习站网站投入、预算与捐赠账目公开页面。" />
+    <style>
+        :root {
+            --paper: #faf9f5;
+            --ink: #1d1b19;
+            --muted: #68625b;
+            --red: #9e1414;
+            --red-dark: #7c0d0d;
+            --line: #e2ddd2;
+            --card: #fffefb;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        #nav-placeholder,
+        #footer-placeholder {
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: clamp(48px, 7vw, 76px) 2rem clamp(56px, 8vw, 88px);
+        }
+
+        .page {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .page-head {
+            padding-bottom: 26px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .page-kicker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            line-height: 1.5;
+        }
+
+        .page-kicker::before {
+            content: "";
+            width: 26px;
+            height: 2px;
+            flex-shrink: 0;
+            background: var(--red);
+        }
+
+        h1 {
+            margin-top: 10px;
+            font-family: var(--serif);
+            font-size: clamp(30px, 4.2vw, 38px);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            line-height: 1.35;
+        }
+
+        .lead {
+            max-width: 760px;
+            margin-top: 14px;
+            color: #4b463f;
+            font-size: 17px;
+            line-height: 1.9;
+        }
+
+        .section {
+            margin-top: 38px;
+        }
+
+        h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        h2::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            flex-shrink: 0;
+            border-radius: 1px;
+            background: var(--red);
+        }
+
+        p {
+            color: #3d3934;
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        p + p {
+            margin-top: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 120px minmax(0, 1fr);
+            margin-top: 14px;
+            border-top: 1px solid var(--line);
+        }
+
+        .info-grid dt,
+        .info-grid dd {
+            padding: 13px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .info-grid dt {
+            color: var(--muted);
+        }
+
+        .info-grid dd {
+            color: #2d2925;
+        }
+
+        .budget-intro,
+        .budget-status,
+        .section-note {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .budget-status {
+            margin-top: 14px;
+        }
+
+        .budget-status[hidden] {
+            display: none;
+        }
+
+        .budget-chart {
+            margin-top: 18px;
+        }
+
+        .budget-legend {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 24px;
+            margin: 0 0 22px;
+            padding: 14px 16px;
+            border: 1px solid var(--line);
+            background: #f7f4ee;
+            list-style: none;
+        }
+
+        .budget-legend li {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            color: #4b463f;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .budget-legend strong {
+            display: block;
+            color: var(--ink);
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .budget-legend small {
+            display: block;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .budget-swatch {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+            margin-top: 5px;
+            border-radius: 2px;
+        }
+
+        .budget-writing {
+            background: #9e1414;
+        }
+
+        .budget-maintenance {
+            background: #c2602f;
+        }
+
+        .budget-data {
+            background: #d3a128;
+        }
+
+        .budget-other {
+            background: #7b7267;
+        }
+
+        .budget-unused {
+            background: repeating-linear-gradient(135deg, #e8e2d8 0 8px, #f3efe8 8px 16px);
+        }
+
+        .budget-year + .budget-year {
+            margin-top: 24px;
+        }
+
+        .budget-year-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 8px 16px;
+            flex-wrap: wrap;
+        }
+
+        .budget-year-label {
+            color: var(--ink);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .budget-year-money {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .budget-bar {
+            display: flex;
+            width: 100%;
+            height: 24px;
+            margin-top: 8px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            background: #ece7de;
+        }
+
+        .budget-segment {
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .budget-segment + .budget-segment {
+            box-shadow: inset 1px 0 rgba(255, 255, 255, 0.42);
+        }
+
+        .budget-amounts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            list-style: none;
+        }
+
+        .budget-amounts li {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .budget-amounts .budget-swatch {
+            width: 8px;
+            height: 8px;
+            margin-top: 0;
+        }
+
+        .budget-note {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .table-wrap {
+            margin-top: 14px;
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            background: var(--card);
+        }
+
+        table {
+            width: 100%;
+            min-width: 580px;
+            border-collapse: collapse;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        th,
+        td {
+            padding: 11px 13px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f5f2eb;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .amount-cell {
+            color: var(--red-dark);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .empty-cell {
+            padding: 22px 13px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .donation-status {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .donation-status[hidden] {
+            display: none;
+        }
+
+        .donation-charts {
+            margin-top: 26px;
+        }
+
+        .donation-charts[hidden] {
+            display: none;
+        }
+
+        .fund-progress-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px 20px;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .fund-progress-head strong {
+            color: var(--ink);
+        }
+
+        .fund-progress-track {
+            height: 24px;
+            margin-top: 8px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            background: #ece7de;
+        }
+
+        .fund-progress-fill {
+            display: block;
+            width: 0;
+            height: 100%;
+            background: var(--red);
+            transition: width 0.3s ease;
+        }
+
+        .donation-pie-layout {
+            display: grid;
+            grid-template-columns: 210px minmax(0, 1fr);
+            gap: 28px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .donation-pie {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: #e8e2d8;
+        }
+
+        .donation-pie-hole {
+            position: absolute;
+            inset: 38px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--card);
+            text-align: center;
+        }
+
+        .donation-pie-hole span {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .donation-pie-hole strong {
+            margin-top: 2px;
+            color: var(--red-dark);
+            font-size: 21px;
+            line-height: 1.3;
+        }
+
+        .donation-legend {
+            list-style: none;
+        }
+
+        .donation-legend li {
+            display: grid;
+            grid-template-columns: 14px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--line);
+            color: #4b463f;
+            font-size: 15px;
+        }
+
+        .donation-legend li:last-child {
+            border-bottom: 0;
+        }
+
+        .donation-legend .legend-label {
+            min-width: 0;
+        }
+
+        .donation-legend .legend-value {
+            color: var(--muted);
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .donation-note {
+            margin-top: 22px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .donation-note a {
+            color: var(--red);
+            text-underline-offset: 3px;
+        }
+
+        .donation-card {
+            margin-top: 16px;
+            padding: 20px 22px;
+            border: 1px solid rgba(158, 20, 20, 0.24);
+            border-left: 3px solid var(--red);
+            background: #f7f1e8;
+        }
+
+        .donation-card p {
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .donation-card a {
+            color: var(--red);
+            font-weight: 700;
+            text-underline-offset: 3px;
+            word-break: break-all;
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 40px 1.25rem 56px;
+            }
+
+            .page-head {
+                padding-bottom: 21px;
+            }
+
+            .lead {
+                font-size: 16px;
+            }
+
+            .section {
+                margin-top: 30px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid dt {
+                padding-bottom: 2px;
+                border-bottom: none;
+            }
+
+            .info-grid dd {
+                padding-top: 0;
+            }
+
+            .budget-legend {
+                grid-template-columns: 1fr;
+                gap: 9px;
+                padding: 14px;
+            }
+
+            .budget-bar {
+                height: 22px;
+            }
+
+            .donation-pie-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .donation-pie {
+                width: 180px;
+                height: 180px;
+            }
+
+            .donation-card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="nav-placeholder"></div>
+
+    <main class="main-content">
+        <article class="page">
+            <header class="page-head">
+                <p class="page-kicker">财务公开</p>
+                <h1>网站投入与捐赠</h1>
+                <p class="lead">
+                    这里公开本站的投入、年度预算和捐赠账目。本站为公益学习网站，所有捐赠仅用于网站建设与维护。
+                </p>
+            </header>
+
+            <section class="section" aria-labelledby="cost">
+                <h2 id="cost">网站投入</h2>
+                <p>截至目前的累计投入成本：</p>
+                <dl class="info-grid">
+                    <dt>金钱</dt>
+                    <dd>约 30 元</dd>
+                    <dt>时间</dt>
+                    <dd>约 8 小时</dd>
+                </dl>
+            </section>
+
+            <section class="section" aria-labelledby="budget">
+                <h2 id="budget">预算</h2>
+                <p class="budget-intro">每年一条等长进度条，按各项支出占当年预算的比例显示。</p>
+                <p class="budget-status" id="budgetStatus" role="status">正在加载预算…</p>
+                <div class="budget-chart" id="budgetChart" hidden>
+                    <ul class="budget-legend" aria-label="预算分类图例">
+                        <li>
+                            <span class="budget-swatch budget-writing" aria-hidden="true"></span>
+                            <span><strong>网站编写</strong><small>如 AI 工具等</small></span>
+                        </li>
+                        <li>
+                            <span class="budget-swatch budget-maintenance" aria-hidden="true"></span>
+                            <span><strong>网站维护</strong><small>如域名、服务费、安全维护等</small></span>
+                        </li>
+                        <li>
+                            <span class="budget-swatch budget-data" aria-hidden="true"></span>
+                            <span><strong>网站数据</strong><small>如下载服务、数据存储等</small></span>
+                        </li>
+                        <li>
+                            <span class="budget-swatch budget-other" aria-hidden="true"></span>
+                            <span><strong>其他费用</strong></span>
+                        </li>
+                    </ul>
+                    <div id="budgetYears"></div>
+                    <p class="budget-note">彩色部分按支出占当年预算的比例绘制，灰色斜纹为尚未使用的预算。</p>
+                </div>
+            </section>
+
+            <section class="section" aria-labelledby="donations">
+                <h2 id="donations">捐赠账目</h2>
+                <p>所有捐赠账目公开如下，欢迎监督。</p>
+                <div class="table-wrap" id="donationTableWrap" hidden>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">日期</th>
+                                <th scope="col">渠道</th>
+                                <th scope="col">金额</th>
+                                <th scope="col">备注</th>
+                            </tr>
+                        </thead>
+                        <tbody id="donationTableBody"></tbody>
+                    </table>
+                </div>
+                <p class="donation-status" id="donationStatus" role="status">正在加载捐赠数据…</p>
+
+                <div class="donation-charts" id="donationCharts" hidden>
+                    <div class="fund-progress">
+                        <div class="fund-progress-head">
+                            <span>已用 / 捐赠总额</span>
+                            <strong id="fundProgressText">¥0 / ¥0</strong>
+                        </div>
+                        <div class="fund-progress-track" role="img" aria-label="捐赠资金使用进度">
+                            <span class="fund-progress-fill" id="fundProgressBar"></span>
+                        </div>
+                    </div>
+
+                    <div class="donation-pie-layout">
+                        <div class="donation-pie" id="donationPie" role="img" aria-label="捐赠资金用途饼图">
+                            <div class="donation-pie-hole">
+                                <span>捐赠总额</span>
+                                <strong id="donationTotal">¥0</strong>
+                            </div>
+                        </div>
+                        <ul class="donation-legend" id="donationLegend" aria-label="捐赠资金用途"></ul>
+                    </div>
+                </div>
+
+                <div class="donation-note">
+                    <p>备注：如需核对捐赠账单、投入账单或相关凭证，可发送邮件至 <a href="mailto:contact@mlmzy.org?subject=MLMZY%E7%BD%91%E7%AB%99-%E6%8D%90%E8%B5%A0">contact@mlmzy.org</a> 向网站管理者索取。我们会保护捐赠者的隐私信息。</p>
+                </div>
+
+                <div class="donation-card">
+                    <p>捐赠渠道：<a href="https://afdian.com/a/guliweb" target="_blank" rel="noopener noreferrer">爱发电 · guliweb</a></p>
+                    <p>每笔捐赠请勿超过 20 元。捐赠无法退还，且网站目前的金钱成本不高，请量力而行。</p>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var BUDGET_CSV_URL = '/data/关于/预算.csv';
+            var DONATION_CSV_URL = '/data/捐赠.csv';
+            var BUDGET_CATEGORIES = [
+                { key: 'writing', label: '编写', fullLabel: '网站编写', className: 'budget-writing' },
+                { key: 'maintenance', label: '维护', fullLabel: '网站维护', className: 'budget-maintenance' },
+                { key: 'data', label: '数据', fullLabel: '网站数据', className: 'budget-data' },
+                { key: 'other', label: '其他', fullLabel: '其他费用', className: 'budget-other' }
+            ];
+            var DONATION_CATEGORIES = [
+                { key: 'writing', label: '编写', className: 'budget-writing', color: '#9e1414' },
+                { key: 'maintenance', label: '维护', className: 'budget-maintenance', color: '#c2602f' },
+                { key: 'data', label: '数据', className: 'budget-data', color: '#d3a128' },
+                { key: 'other', label: '其他', className: 'budget-other', color: '#7b7267' }
+            ];
+
+            function parseCsv(text) {
+                var input = String(text).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+                var rows = [];
+                var row = [];
+                var field = '';
+                var inQuotes = false;
+
+                for (var i = 0; i < input.length; i++) {
+                    var ch = input.charAt(i);
+                    if (inQuotes) {
+                        if (ch === '"') {
+                            if (input.charAt(i + 1) === '"') {
+                                field += '"';
+                                i++;
+                            } else {
+                                inQuotes = false;
+                            }
+                        } else {
+                            field += ch;
+                        }
+                    } else if (ch === '"') {
+                        inQuotes = true;
+                    } else if (ch === ',') {
+                        row.push(field);
+                        field = '';
+                    } else if (ch === '\n') {
+                        row.push(field);
+                        rows.push(row);
+                        row = [];
+                        field = '';
+                    } else {
+                        field += ch;
+                    }
+                }
+
+                if (field.length || row.length) {
+                    row.push(field);
+                    rows.push(row);
+                }
+
+                return rows.filter(function (cells) {
+                    return cells.some(function (cell) {
+                        return cell.trim() !== '';
+                    });
+                });
+            }
+
+            function parseAmount(raw) {
+                var value = parseFloat(String(raw == null ? '' : raw).replace(/[^\d.-]/g, ''));
+                return isFinite(value) ? Math.max(0, value) : 0;
+            }
+
+            function formatMoney(value) {
+                var rounded = Math.round(value * 100) / 100;
+                return '¥' + String(rounded);
+            }
+
+            function findColumn(headers, names) {
+                for (var i = 0; i < names.length; i++) {
+                    var index = headers.indexOf(names[i]);
+                    if (index !== -1) return index;
+                }
+                return -1;
+            }
+
+            function makeBudgetSegment(className, width, label) {
+                var segment = document.createElement('span');
+                segment.className = 'budget-segment ' + className;
+                segment.style.width = width + '%';
+                segment.title = label;
+                return segment;
+            }
+
+            function renderBudget(items) {
+                var statusBox = document.getElementById('budgetStatus');
+                var chart = document.getElementById('budgetChart');
+                var yearsBox = document.getElementById('budgetYears');
+                yearsBox.innerHTML = '';
+
+                items.forEach(function (item) {
+                    var total = item.writing + item.maintenance + item.data + item.other;
+                    var scale = Math.max(item.budget, total);
+                    var unused = Math.max(0, item.budget - total);
+                    var year = document.createElement('div');
+                    year.className = 'budget-year';
+
+                    var head = document.createElement('div');
+                    head.className = 'budget-year-head';
+                    var yearLabel = document.createElement('span');
+                    yearLabel.className = 'budget-year-label';
+                    yearLabel.textContent = item.year + ' 年';
+                    var money = document.createElement('span');
+                    money.className = 'budget-year-money';
+                    money.textContent = '预算 ' + formatMoney(item.budget) + ' · 已使用 ' + formatMoney(total);
+                    head.appendChild(yearLabel);
+                    head.appendChild(money);
+
+                    var bar = document.createElement('div');
+                    bar.className = 'budget-bar';
+                    bar.setAttribute('role', 'img');
+
+                    var ariaParts = [item.year + ' 年预算 ' + formatMoney(item.budget), '已使用 ' + formatMoney(total)];
+                    if (scale > 0) {
+                        BUDGET_CATEGORIES.forEach(function (category) {
+                            var amount = item[category.key];
+                            if (amount <= 0) return;
+                            bar.appendChild(makeBudgetSegment(category.className, amount / scale * 100,
+                                category.fullLabel + ' ' + formatMoney(amount)));
+                        });
+                        if (unused > 0) {
+                            bar.appendChild(makeBudgetSegment('budget-unused', unused / scale * 100,
+                                '未使用预算 ' + formatMoney(unused)));
+                        }
+                    }
+
+                    BUDGET_CATEGORIES.forEach(function (category) {
+                        ariaParts.push(category.fullLabel + ' ' + formatMoney(item[category.key]));
+                    });
+                    if (unused > 0) ariaParts.push('未使用预算 ' + formatMoney(unused));
+                    bar.setAttribute('aria-label', ariaParts.join('；'));
+
+                    var amounts = document.createElement('ul');
+                    amounts.className = 'budget-amounts';
+                    BUDGET_CATEGORIES.forEach(function (category) {
+                        var li = document.createElement('li');
+                        var swatch = document.createElement('span');
+                        swatch.className = 'budget-swatch ' + category.className;
+                        swatch.setAttribute('aria-hidden', 'true');
+                        var text = document.createElement('span');
+                        text.textContent = category.label + ' ' + formatMoney(item[category.key]);
+                        li.appendChild(swatch);
+                        li.appendChild(text);
+                        amounts.appendChild(li);
+                    });
+
+                    year.appendChild(head);
+                    year.appendChild(bar);
+                    year.appendChild(amounts);
+                    yearsBox.appendChild(year);
+                });
+
+                statusBox.hidden = true;
+                chart.hidden = false;
+            }
+
+            async function loadBudget() {
+                var statusBox = document.getElementById('budgetStatus');
+                try {
+                    var response = await fetch(BUDGET_CSV_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    var rows = parseCsv(await response.text());
+                    if (rows.length < 2) throw new Error('CSV 没有预算数据');
+
+                    var headers = rows[0].map(function (cell) { return cell.trim(); });
+                    var columns = {
+                        year: findColumn(headers, ['年份']),
+                        budget: findColumn(headers, ['预算']),
+                        writing: findColumn(headers, ['编写', '网站编写']),
+                        maintenance: findColumn(headers, ['维护', '网站维护']),
+                        data: findColumn(headers, ['数据', '网站数据']),
+                        other: findColumn(headers, ['其他', '其他费用'])
+                    };
+
+                    Object.keys(columns).forEach(function (key) {
+                        if (columns[key] === -1) throw new Error('预算 CSV 缺少列：' + key);
+                    });
+
+                    var items = rows.slice(1).map(function (cells) {
+                        var year = String(cells[columns.year] || '').trim();
+                        if (!year) return null;
+                        return {
+                            year: year,
+                            budget: parseAmount(cells[columns.budget]),
+                            writing: parseAmount(cells[columns.writing]),
+                            maintenance: parseAmount(cells[columns.maintenance]),
+                            data: parseAmount(cells[columns.data]),
+                            other: parseAmount(cells[columns.other])
+                        };
+                    }).filter(Boolean);
+
+                    items.sort(function (a, b) {
+                        return (Number(a.year) || 0) - (Number(b.year) || 0);
+                    });
+
+                    if (!items.length) {
+                        statusBox.textContent = '暂无预算数据。';
+                        return;
+                    }
+                    renderBudget(items);
+                } catch (error) {
+                    console.error('预算数据加载失败:', error);
+                    statusBox.hidden = false;
+                    statusBox.textContent = '预算数据加载失败，请稍后刷新重试。';
+                }
+            }
+
+            function makeCell(text, className) {
+                var td = document.createElement('td');
+                td.textContent = text;
+                if (className) td.className = className;
+                return td;
+            }
+
+            function renderDonations(records) {
+                var statusBox = document.getElementById('donationStatus');
+                var tableWrap = document.getElementById('donationTableWrap');
+                var tableBody = document.getElementById('donationTableBody');
+                var charts = document.getElementById('donationCharts');
+                var progressText = document.getElementById('fundProgressText');
+                var progressBar = document.getElementById('fundProgressBar');
+                var pie = document.getElementById('donationPie');
+                var totalLabel = document.getElementById('donationTotal');
+                var legend = document.getElementById('donationLegend');
+
+                tableBody.innerHTML = '';
+                legend.innerHTML = '';
+
+                if (!records.length) {
+                    statusBox.hidden = true;
+                    tableWrap.hidden = false;
+                    var emptyRow = document.createElement('tr');
+                    var emptyCell = makeCell('暂无捐赠记录。', 'empty-cell');
+                    emptyCell.colSpan = 4;
+                    emptyRow.appendChild(emptyCell);
+                    tableBody.appendChild(emptyRow);
+                } else {
+                    statusBox.hidden = true;
+                    tableWrap.hidden = false;
+                    records.forEach(function (record) {
+                        var tr = document.createElement('tr');
+                        tr.appendChild(makeCell(record.date || '—'));
+                        tr.appendChild(makeCell(record.channel || '—'));
+                        tr.appendChild(makeCell(formatMoney(record.amount), 'amount-cell'));
+                        tr.appendChild(makeCell(record.note || '—'));
+                        tableBody.appendChild(tr);
+                    });
+                }
+
+                var total = records.reduce(function (sum, record) { return sum + record.amount; }, 0);
+                var used = records.reduce(function (sum, record) { return sum + record.used; }, 0);
+                var categoryTotals = {};
+                DONATION_CATEGORIES.forEach(function (category) {
+                    categoryTotals[category.key] = records.reduce(function (sum, record) {
+                        return sum + record[category.key];
+                    }, 0);
+                });
+                var categoryTotal = DONATION_CATEGORIES.reduce(function (sum, category) {
+                    return sum + categoryTotals[category.key];
+                }, 0);
+                if (used <= 0 && categoryTotal > 0) used = categoryTotal;
+
+                var percent = total > 0 ? Math.min(100, used / total * 100) : 0;
+                progressText.textContent = '已用 ' + formatMoney(used) + ' / 捐赠总额 ' + formatMoney(total);
+                progressBar.style.width = percent + '%';
+                totalLabel.textContent = formatMoney(total);
+
+                var gradientParts = [];
+                var start = 0;
+                DONATION_CATEGORIES.forEach(function (category) {
+                    var amount = categoryTotals[category.key];
+                    var share = categoryTotal > 0 ? amount / categoryTotal * 100 : 0;
+                    if (share > 0) {
+                        var end = start + share;
+                        gradientParts.push(category.color + ' ' + start.toFixed(2) + '% ' + end.toFixed(2) + '%');
+                        start = end;
+                    }
+
+                    var li = document.createElement('li');
+                    var dot = document.createElement('span');
+                    dot.className = 'budget-swatch ' + category.className;
+                    dot.setAttribute('aria-hidden', 'true');
+                    var label = document.createElement('span');
+                    label.className = 'legend-label';
+                    label.textContent = category.label;
+                    var value = document.createElement('span');
+                    value.className = 'legend-value';
+                    value.textContent = formatMoney(amount) + ' · ' + share.toFixed(1) + '%';
+                    li.appendChild(dot);
+                    li.appendChild(label);
+                    li.appendChild(value);
+                    legend.appendChild(li);
+                });
+
+                if (gradientParts.length) {
+                    pie.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
+                    pie.setAttribute('aria-label', '捐赠资金用途：' + DONATION_CATEGORIES.map(function (category) {
+                        return category.label + ' ' + formatMoney(categoryTotals[category.key]);
+                    }).join('，'));
+                } else {
+                    pie.style.background = '#e8e2d8';
+                }
+
+                if (records.length) {
+                    statusBox.hidden = true;
+                    tableWrap.hidden = false;
+                }
+                charts.hidden = false;
+            }
+
+            async function loadDonations() {
+                var statusBox = document.getElementById('donationStatus');
+                try {
+                    var response = await fetch(DONATION_CSV_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    var rows = parseCsv(await response.text());
+                    if (rows.length < 2) {
+                        renderDonations([]);
+                        return;
+                    }
+
+                    var headers = rows[0].map(function (cell) { return cell.trim(); });
+                    var columns = {
+                        date: findColumn(headers, ['日期']),
+                        channel: findColumn(headers, ['渠道']),
+                        amount: findColumn(headers, ['金额']),
+                        note: findColumn(headers, ['备注']),
+                        used: findColumn(headers, ['已用']),
+                        writing: findColumn(headers, ['编写']),
+                        maintenance: findColumn(headers, ['维护']),
+                        data: findColumn(headers, ['数据']),
+                        other: findColumn(headers, ['其他'])
+                    };
+
+                    ['date', 'channel', 'amount', 'note'].forEach(function (key) {
+                        if (columns[key] === -1) throw new Error('捐赠 CSV 缺少列：' + key);
+                    });
+
+                    var records = rows.slice(1).map(function (cells) {
+                        var record = {
+                            date: String(cells[columns.date] || '').trim(),
+                            channel: String(cells[columns.channel] || '').trim(),
+                            amount: parseAmount(cells[columns.amount]),
+                            note: String(cells[columns.note] || '').trim(),
+                            used: columns.used === -1 ? 0 : parseAmount(cells[columns.used])
+                        };
+                        DONATION_CATEGORIES.forEach(function (category) {
+                            record[category.key] = columns[category.key] === -1
+                                ? 0
+                                : parseAmount(cells[columns[category.key]]);
+                        });
+                        return record;
+                    }).filter(function (record) {
+                        return record.date || record.channel || record.amount || record.note;
+                    });
+
+                    renderDonations(records);
+                } catch (error) {
+                    console.error('捐赠数据加载失败:', error);
+                    statusBox.hidden = false;
+                    statusBox.textContent = '捐赠数据加载失败，请稍后刷新重试。';
+                }
+            }
+
+            loadBudget();
+            loadDonations();
+        })();
+    </script>
+
+    <script>
+        fetch('/components/nav.html?v=20')
+            .then(function (res) {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(function (data) {
+                document.getElementById('nav-placeholder').innerHTML = data;
+            })
+            .catch(function (err) {
+                console.warn('顶栏加载失败:', err);
+            });
+
+        fetch('/components/footer.html?v=6')
+            .then(function (res) {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(function (data) {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(function (err) {
+                console.warn('页脚加载失败:', err);
+            });
+    </script>
+
+    <script src="/components/nav.js?v=12"></script>
+</body>
+</html>

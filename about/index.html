@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN" translate="no">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <meta name="google" content="notranslate" />
     <meta http-equiv="content-language" content="zh-CN" />
+    <meta name="application-name" content="马列毛主义学习站" />
+    <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="manifest" href="/manifest.json?v=1" crossorigin="use-credentials" />
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
     <title>关于 | GuLi 马列毛主义学习站</title>
@@ -540,54 +541,17 @@
                 <p>如相关资源涉及版权或其他问题，请联系本站处理。</p>
             </section>
 
-            <section class="about-section" aria-labelledby="cost">
-                <h2 id="cost">网站投入</h2>
-                <p>截至目前的累计投入成本：</p>
-                <dl class="info-grid">
-                    <dt>金钱</dt>
-                    <dd>约 30 元</dd>
-                    <dt>时间</dt>
-                    <dd>约 8 小时</dd>
-                </dl>
+            <section class="about-section" aria-labelledby="apology">
+                <h2 id="apology">致歉</h2>
+                <p>由于本站创办人水平有限，内容可能会有所谬误，欢迎读者同志们指正错误。</p>
+                <p>由于环境的复杂性和斗争的艰巨性，本站没有进行 ICP 备案，可能导致访问速度较慢，请谅解。</p>
+                <p>为了网站的安全性，我们不得已使用 Cloudflare 的验证码服务，可能会有些烦人，希望谅解。</p>
             </section>
 
-            <section class="about-section" aria-labelledby="budget">
-                <h2 id="budget">预算</h2>
-                <p class="budget-intro">每年一条等长进度条，按各项支出占当年预算的比例显示。</p>
-                <p class="budget-status" id="budgetStatus" role="status">正在加载预算…</p>
-                <div class="budget-chart" id="budgetChart" hidden>
-                    <ul class="budget-legend" aria-label="预算分类图例">
-                        <li>
-                            <span class="budget-swatch budget-writing" aria-hidden="true"></span>
-                            <span>
-                                <strong>网站编写</strong>
-                                <small>如 AI 工具等</small>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="budget-swatch budget-maintenance" aria-hidden="true"></span>
-                            <span>
-                                <strong>网站维护</strong>
-                                <small>如域名、服务费、安全维护等</small>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="budget-swatch budget-data" aria-hidden="true"></span>
-                            <span>
-                                <strong>网站数据</strong>
-                                <small>如下载服务、数据存储等</small>
-                            </span>
-                        </li>
-                        <li>
-                            <span class="budget-swatch budget-other" aria-hidden="true"></span>
-                            <span>
-                                <strong>其他费用</strong>
-                            </span>
-                        </li>
-                    </ul>
-                    <div id="budgetYears"></div>
-                    <p class="budget-note">彩色部分按支出占当年预算的比例绘制，灰色斜纹为尚未使用的预算。</p>
-                </div>
+            <section class="about-section" aria-labelledby="finance">
+                <h2 id="finance">网站投入与捐赠</h2>
+                <p>网站投入、年度预算和捐赠账目已整理到独立页面，所有账目公开，欢迎监督。</p>
+                <p><a href="/investment">查看网站投入与捐赠 →</a></p>
             </section>
 
             <section class="about-section" aria-labelledby="contact">
@@ -627,7 +591,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=19')
+        fetch('/components/nav.html?v=20')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -652,237 +616,6 @@
             });
     </script>
 
-    <!-- 预算：运行时读取 data/关于/预算.csv -->
-    <script>
-        (function () {
-            'use strict';
-
-            var statusBox = document.getElementById('budgetStatus');
-            var chart = document.getElementById('budgetChart');
-            var yearsBox = document.getElementById('budgetYears');
-            var BUDGET_CSV_URL = '/data/关于/预算.csv';
-
-            var CATEGORIES = [
-                { key: 'writing', label: '编写', fullLabel: '网站编写', className: 'budget-writing' },
-                { key: 'maintenance', label: '维护', fullLabel: '网站维护', className: 'budget-maintenance' },
-                { key: 'data', label: '数据', fullLabel: '网站数据', className: 'budget-data' },
-                { key: 'other', label: '其他', fullLabel: '其他费用', className: 'budget-other' }
-            ];
-
-            function parseCsv(text) {
-                var input = String(text).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
-                var rows = [];
-                var row = [];
-                var field = '';
-                var inQuotes = false;
-
-                for (var i = 0; i < input.length; i++) {
-                    var ch = input.charAt(i);
-
-                    if (inQuotes) {
-                        if (ch === '"') {
-                            if (input.charAt(i + 1) === '"') {
-                                field += '"';
-                                i++;
-                            } else {
-                                inQuotes = false;
-                            }
-                        } else {
-                            field += ch;
-                        }
-                    } else if (ch === '"') {
-                        inQuotes = true;
-                    } else if (ch === ',') {
-                        row.push(field);
-                        field = '';
-                    } else if (ch === '\n') {
-                        row.push(field);
-                        rows.push(row);
-                        row = [];
-                        field = '';
-                    } else {
-                        field += ch;
-                    }
-                }
-
-                if (field.length || row.length) {
-                    row.push(field);
-                    rows.push(row);
-                }
-
-                return rows.filter(function (cells) {
-                    return cells.some(function (cell) {
-                        return cell.trim() !== '';
-                    });
-                });
-            }
-
-            function parseAmount(raw) {
-                var value = parseFloat(String(raw == null ? '' : raw).replace(/[^\d.-]/g, ''));
-                return isFinite(value) ? Math.max(0, value) : 0;
-            }
-
-            function formatMoney(value) {
-                var rounded = Math.round(value * 100) / 100;
-                return '¥' + String(rounded);
-            }
-
-            function findColumn(headers, names) {
-                for (var i = 0; i < names.length; i++) {
-                    var index = headers.indexOf(names[i]);
-                    if (index !== -1) return index;
-                }
-                return -1;
-            }
-
-            function makeSegment(className, width, label) {
-                var segment = document.createElement('span');
-                segment.className = 'budget-segment ' + className;
-                segment.style.width = width + '%';
-                segment.title = label;
-                return segment;
-            }
-
-            function renderBudget(items) {
-                yearsBox.innerHTML = '';
-
-                items.forEach(function (item) {
-                    var total = item.writing + item.maintenance + item.data + item.other;
-                    var scale = Math.max(item.budget, total);
-                    var unused = Math.max(0, item.budget - total);
-                    var year = document.createElement('div');
-                    year.className = 'budget-year';
-
-                    var head = document.createElement('div');
-                    head.className = 'budget-year-head';
-
-                    var yearLabel = document.createElement('span');
-                    yearLabel.className = 'budget-year-label';
-                    yearLabel.textContent = item.year + ' 年';
-
-                    var money = document.createElement('span');
-                    money.className = 'budget-year-money';
-                    money.textContent = '预算 ' + formatMoney(item.budget) + ' · 已使用 ' + formatMoney(total);
-
-                    head.appendChild(yearLabel);
-                    head.appendChild(money);
-
-                    var bar = document.createElement('div');
-                    bar.className = 'budget-bar';
-                    bar.setAttribute('role', 'img');
-
-                    var ariaParts = [
-                        item.year + ' 年预算 ' + formatMoney(item.budget),
-                        '已使用 ' + formatMoney(total)
-                    ];
-
-                    if (scale > 0) {
-                        CATEGORIES.forEach(function (category) {
-                            var amount = item[category.key];
-                            if (amount <= 0) return;
-                            var width = amount / scale * 100;
-                            bar.appendChild(makeSegment(category.className, width,
-                                category.fullLabel + ' ' + formatMoney(amount)));
-                        });
-
-                        if (unused > 0) {
-                            bar.appendChild(makeSegment('budget-unused', unused / scale * 100,
-                                '未使用预算 ' + formatMoney(unused)));
-                        }
-                    }
-
-                    CATEGORIES.forEach(function (category) {
-                        ariaParts.push(category.fullLabel + ' ' + formatMoney(item[category.key]));
-                    });
-                    if (unused > 0) ariaParts.push('未使用预算 ' + formatMoney(unused));
-                    bar.setAttribute('aria-label', ariaParts.join('；'));
-
-                    var amounts = document.createElement('ul');
-                    amounts.className = 'budget-amounts';
-
-                    CATEGORIES.forEach(function (category) {
-                        var li = document.createElement('li');
-                        var swatch = document.createElement('span');
-                        swatch.className = 'budget-swatch ' + category.className;
-                        swatch.setAttribute('aria-hidden', 'true');
-                        var text = document.createElement('span');
-                        text.textContent = category.label + ' ' + formatMoney(item[category.key]);
-                        li.appendChild(swatch);
-                        li.appendChild(text);
-                        amounts.appendChild(li);
-                    });
-
-                    year.appendChild(head);
-                    year.appendChild(bar);
-                    year.appendChild(amounts);
-                    yearsBox.appendChild(year);
-                });
-
-                statusBox.hidden = true;
-                chart.hidden = false;
-            }
-
-            async function loadBudget() {
-                try {
-                    var response = await fetch(BUDGET_CSV_URL + '?t=' + Date.now(), {
-                        cache: 'no-store'
-                    });
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
-
-                    var rows = parseCsv(await response.text());
-                    if (rows.length < 2) throw new Error('CSV 没有预算数据');
-
-                    var headers = rows[0].map(function (cell) {
-                        return cell.trim();
-                    });
-
-                    var columns = {
-                        year: findColumn(headers, ['年份']),
-                        budget: findColumn(headers, ['预算']),
-                        writing: findColumn(headers, ['编写', '网站编写']),
-                        maintenance: findColumn(headers, ['维护', '网站维护']),
-                        data: findColumn(headers, ['数据', '网站数据']),
-                        other: findColumn(headers, ['其他', '其他费用'])
-                    };
-
-                    Object.keys(columns).forEach(function (key) {
-                        if (columns[key] === -1) throw new Error('预算 CSV 缺少列：' + key);
-                    });
-
-                    var items = rows.slice(1).map(function (cells) {
-                        var year = String(cells[columns.year] || '').trim();
-                        if (!year) return null;
-
-                        return {
-                            year: year,
-                            budget: parseAmount(cells[columns.budget]),
-                            writing: parseAmount(cells[columns.writing]),
-                            maintenance: parseAmount(cells[columns.maintenance]),
-                            data: parseAmount(cells[columns.data]),
-                            other: parseAmount(cells[columns.other])
-                        };
-                    }).filter(Boolean);
-
-                    items.sort(function (a, b) {
-                        return (Number(a.year) || 0) - (Number(b.year) || 0);
-                    });
-
-                    if (!items.length) {
-                        statusBox.textContent = '暂无预算数据。';
-                        return;
-                    }
-
-                    renderBudget(items);
-                } catch (error) {
-                    console.error('预算数据加载失败:', error);
-                    statusBox.hidden = false;
-                    statusBox.textContent = '预算数据加载失败，请稍后刷新重试。';
-                }
-            }
-
-            loadBudget();
-        })();
-    </script>
 
     <script src="/components/nav.js?v=12"></script>
 </body>
