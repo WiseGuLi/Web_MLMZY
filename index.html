@@ -89,9 +89,8 @@
             align-items: center;
             gap: 12px;
             width: 100%;
-            max-width: var(--max);
             margin: 0 auto;
-            padding: 9px 2rem;
+            padding: 9px 16px;
         }
 
         .site-banner-text {
@@ -128,11 +127,6 @@
 
         .site-banner-text.is-scrolling .site-banner-run + .site-banner-run {
             display: inline-block;
-        }
-
-        .site-banner:hover .site-banner-track,
-        .site-banner:focus-within .site-banner-track {
-            animation-play-state: paused;
         }
 
         @keyframes site-banner-marquee {
@@ -1109,12 +1103,6 @@
             function applyBannerMarquee() {
                 if (banner.hidden) return;
 
-                bannerViewport.classList.remove('is-scrolling');
-                bannerTrack.style.animationDuration = '';
-
-                var needsScroll = bannerRun.scrollWidth > bannerViewport.clientWidth;
-                if (!needsScroll) return;
-
                 bannerViewport.classList.add('is-scrolling');
                 bannerTrack.style.animationDuration = Math.max(18, Math.round(bannerRun.scrollWidth / 32)) + 's';
             }
@@ -1142,12 +1130,11 @@
                 });
 
             closeButton.addEventListener('click', dismissBanner);
-            window.addEventListener('resize', applyBannerMarquee, { passive: true });
         })();
     </script>
 
     <script>
-        fetch('/components/nav.html?v=20')
+        fetch('/components/nav.html?v=21')
             .then(function (res) {
                 if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();

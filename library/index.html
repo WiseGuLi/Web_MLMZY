@@ -371,7 +371,8 @@
         }
 
         .book-list.view-double .book-btn,
-        .book-list.view-double .book-download-select {
+        .book-list.view-double .book-download,
+        .book-list.view-double .book-download > summary {
             width: 100%;
         }
 
@@ -398,7 +399,7 @@
 
         .book-title-mark,
         .book-quote-mark {
-            color: var(--red-dark);
+            color: #c45b5b;
             font-weight: 700;
         }
 
@@ -514,35 +515,85 @@
             border-color: var(--red-dark);
         }
 
-        /* 多格式书籍：使用浏览器原生下拉列表选择格式 */
-        .book-download-select {
-            min-height: 36px;
-            padding: 6px 32px 6px 14px;
-            border: 1px solid var(--red);
-            border-radius: 2px;
+        /* 多格式书籍：自定义下载下拉列表 */
+        .book-download {
+            position: relative;
+            flex: 0 0 auto;
+        }
+
+        .book-download > summary {
+            gap: 6px;
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .book-download > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .book-download > summary::marker {
+            content: '';
+        }
+
+        .book-download[open] > summary {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+        }
+
+        .book-download-caret {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+            transition: transform 0.15s ease;
+        }
+
+        .book-download[open] .book-download-caret {
+            transform: rotate(180deg);
+        }
+
+        .book-download-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            z-index: 30;
+            min-width: 132px;
+            padding: 4px;
+            border: 1px solid var(--line);
+            border-radius: 4px;
             background: var(--card);
-            color: var(--red);
+            box-shadow: 0 10px 28px rgba(33, 27, 20, 0.16);
+        }
+
+        .book-download-menu button {
+            display: block;
+            width: 100%;
+            padding: 9px 10px;
+            border: 0;
+            border-radius: 2px;
+            background: transparent;
+            color: var(--ink);
             font-family: var(--sans);
             font-size: 14px;
             font-weight: 600;
             line-height: 1.4;
+            text-align: left;
+            white-space: nowrap;
             cursor: pointer;
-            appearance: auto;
         }
 
-        .book-download-select:hover {
-            border-color: var(--red-dark);
-            color: var(--red-dark);
+        .book-download-menu button:hover,
+        .book-download-menu button:focus-visible {
+            background: rgba(158, 20, 20, 0.07);
+            color: var(--red);
+            outline: none;
         }
 
-        .book-download-select:focus {
-            outline: 2px solid rgba(158, 20, 20, 0.3);
-            outline-offset: 2px;
-        }
-
-        .book-download-select option {
-            background: var(--card);
-            color: var(--ink);
+        .book-download-menu .download-ext {
+            color: #7b7267;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         /* 回到顶部 */
@@ -634,15 +685,38 @@
             }
 
             .book-item {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                align-items: start;
+                column-gap: 10px;
+                row-gap: 8px;
                 padding: 16px 2px;
             }
 
-            .book-desc,
+            .book-info {
+                display: contents;
+            }
+
+            .book-title-line {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .book-author {
+                grid-column: 1 / -1;
+                grid-row: 2;
+            }
+
+            .book-desc {
+                display: block;
+                grid-column: 1 / -1;
+                grid-row: 3;
+            }
+
             .book-quote {
                 display: block;
+                grid-column: 1 / -1;
+                grid-row: 4;
             }
 
             .book-title {
@@ -650,20 +724,18 @@
             }
 
             .book-actions {
-                width: 100%;
+                grid-column: 2;
+                grid-row: 1;
+                align-self: start;
+                width: auto;
                 flex-direction: row;
-                gap: 8px;
+                gap: 6px;
             }
 
             .book-btn,
-            .book-download-select {
-                width: 100%;
+            .book-download > summary {
                 min-width: 0;
                 padding: 6px 10px;
-            }
-
-            .book-download-select {
-                padding-right: 30px;
             }
 
             .back-to-top {
@@ -736,8 +808,8 @@
                     class="library-search-input"
                     id="librarySearch"
                     type="search"
-                    placeholder="搜索书名、简介或引用"
-                    aria-label="搜索当前分类中的书名、简介或引用"
+                    placeholder="搜索书名、简介或引用 (可用空格分割关键词)"
+                    aria-label="搜索当前分类中的书名、简介或引用，可用空格分割关键词"
                     autocomplete="off"
                     spellcheck="false"
                 />
@@ -809,7 +881,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=20')
+        fetch('/components/nav.html?v=21')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -1182,41 +1254,65 @@
                 });
             }
 
-            function createDownloadSelect(book, files) {
-                var select = document.createElement('select');
-                select.className = 'book-download-select';
-                select.setAttribute('aria-label', '选择' + book.title + '的下载格式');
+            function openDownload(url) {
+                var link = document.createElement('a');
+                link.href = url;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            }
 
-                var placeholder = document.createElement('option');
-                placeholder.value = '';
-                placeholder.textContent = '下载';
-                placeholder.disabled = true;
-                placeholder.selected = true;
-                select.appendChild(placeholder);
+            function createDownloadDropdown(book, files) {
+                var details = document.createElement('details');
+                details.className = 'book-download';
+
+                var summary = document.createElement('summary');
+                summary.className = 'book-btn book-btn-primary';
+                summary.setAttribute('aria-label', '选择' + book.title + '的下载格式');
+
+                var summaryText = document.createElement('span');
+                summaryText.textContent = '下载';
+                summary.appendChild(summaryText);
+                summary.insertAdjacentHTML('beforeend',
+                    '<svg class="book-download-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>'
+                );
+
+                var menu = document.createElement('div');
+                menu.className = 'book-download-menu';
 
                 files.forEach(function (file) {
-                    var option = document.createElement('option');
-                    option.value = file.url;
-                    option.textContent = file.format;
-                    select.appendChild(option);
+                    var option = document.createElement('button');
+                    option.type = 'button';
+                    option.setAttribute('aria-label', '下载' + book.title + '的 ' + file.format + ' 版本');
+
+                    var ext = document.createElement('span');
+                    ext.className = 'download-ext';
+                    ext.textContent = file.format + '版本';
+                    option.appendChild(ext);
+
+                    option.addEventListener('click', function () {
+                        details.removeAttribute('open');
+                        openDownload(file.url);
+                    });
+                    menu.appendChild(option);
                 });
 
-                select.addEventListener('change', function () {
-                    var url = select.value;
-                    if (!url) return;
+                details.appendChild(summary);
+                details.appendChild(menu);
 
-                    var link = document.createElement('a');
-                    link.href = url;
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-
-                    select.selectedIndex = 0;
+                details.addEventListener('toggle', function () {
+                    if (!details.open) return;
+                    Array.prototype.forEach.call(
+                        bookList.querySelectorAll('.book-download[open]'),
+                        function (other) {
+                            if (other !== details) other.removeAttribute('open');
+                        }
+                    );
                 });
 
-                return select;
+                return details;
             }
 
             function createBookItem(book, terms, category) {
@@ -1319,7 +1415,7 @@
                     view.setAttribute('aria-label', '下载' + book.title);
                     actions.appendChild(view);
                 } else {
-                    actions.appendChild(createDownloadSelect(book, files));
+                    actions.appendChild(createDownloadDropdown(book, files));
                 }
 
                 li.appendChild(info);
@@ -1523,6 +1619,32 @@
                     behavior: reducedMotion.matches ? 'auto' : 'smooth'
                 });
             });
+
+            function closeDownloadMenus() {
+                Array.prototype.forEach.call(
+                    bookList.querySelectorAll('.book-download[open]'),
+                    function (download) {
+                        download.removeAttribute('open');
+                    }
+                );
+            }
+
+            document.addEventListener('click', function (event) {
+                Array.prototype.forEach.call(
+                    bookList.querySelectorAll('.book-download[open]'),
+                    function (download) {
+                        if (!download.contains(event.target)) download.removeAttribute('open');
+                    }
+                );
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') closeDownloadMenus();
+            });
+
+            window.addEventListener('scroll', closeDownloadMenus, { passive: true });
+            window.addEventListener('wheel', closeDownloadMenus, { passive: true });
+            window.addEventListener('touchmove', closeDownloadMenus, { passive: true });
 
             if (hoverMedia.addEventListener) {
                 hoverMedia.addEventListener('change', resetBottomSpace);
