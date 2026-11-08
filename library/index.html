@@ -320,7 +320,7 @@
         .book-list.view-double {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            align-items: start;
+            align-items: stretch;
             gap: 16px;
             border-top: 0;
         }
@@ -329,8 +329,8 @@
             display: flex;
             flex-direction: column;
             align-items: stretch;
-            justify-content: flex-start;
-            align-self: start;
+            justify-content: space-between;
+            align-self: stretch;
             gap: 12px;
             height: auto;
             padding: 18px;
@@ -393,11 +393,15 @@
             font-size: 1.32rem;
             font-weight: 600;
             line-height: 1.5;
-            color: var(--ink);
+            color: var(--red);
             word-break: break-word;
         }
 
-        .book-title-mark,
+        .book-title-mark {
+            color: var(--red);
+            font-weight: 700;
+        }
+
         .book-quote-mark {
             color: #c45b5b;
             font-weight: 700;
@@ -572,7 +576,7 @@
             border: 0;
             border-radius: 2px;
             background: transparent;
-            color: var(--ink);
+            color: #3d3934;
             font-family: var(--sans);
             font-size: 14px;
             font-weight: 600;
@@ -585,15 +589,26 @@
         .book-download-menu button:hover,
         .book-download-menu button:focus-visible {
             background: rgba(158, 20, 20, 0.07);
-            color: var(--red);
+            color: #2d2925;
             outline: none;
         }
 
         .book-download-menu .download-ext {
-            color: #7b7267;
-            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            color: #4b463f;
+            font-family: var(--sans);
             font-size: 14px;
             font-weight: 500;
+        }
+
+        .book-list.view-double .book-download-menu {
+            left: 0;
+            right: auto;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .book-list.view-double .book-download-menu button {
+            text-align: center;
         }
 
         /* 回到顶部 */
@@ -867,21 +882,13 @@
         <div class="library-bottom-space" id="libraryBottomSpace" aria-hidden="true"></div>
     </main>
 
-    <button class="back-to-top" id="backToTop" type="button" aria-label="回到顶部">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 19V5"></path>
-            <path d="m5 12 7-7 7 7"></path>
-        </svg>
-        <span>回到顶部</span>
-    </button>
-
     <!-- ===== 页脚占位 ===== -->
     <div id="footer-placeholder"></div>
 
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=21')
+        fetch('/components/nav.html?v=22')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -932,8 +939,6 @@
             var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 180;
             var activeBookItem = null;
             var hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
-            var backToTop = document.getElementById('backToTop');
-            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
             function resetBottomSpace() {
                 if (activeBookItem) {
@@ -1018,11 +1023,6 @@
 
                 resetBottomSpace();
                 window.requestAnimationFrame(rememberBookHeights);
-            }
-
-            function updateBackToTop() {
-                if (!backToTop) return;
-                backToTop.classList.toggle('is-visible', window.scrollY > 360);
             }
 
             var books = [];
@@ -1610,15 +1610,7 @@
                 resetBottomSpace();
                 window.requestAnimationFrame(rememberBookHeights);
             });
-            window.addEventListener('scroll', updateBackToTop, { passive: true });
             window.addEventListener('load', updateSlider);
-
-            backToTop.addEventListener('click', function () {
-                window.scrollTo({
-                    top: 0,
-                    behavior: reducedMotion.matches ? 'auto' : 'smooth'
-                });
-            });
 
             function closeDownloadMenus() {
                 Array.prototype.forEach.call(
@@ -1661,11 +1653,10 @@
             applyViewMode();
             syncCategorySelect();
             updateSlider();
-            updateBackToTop();
             loadBooks();
         })();
     </script>
 
-    <script src="/components/nav.js?v=12"></script>
+    <script src="/components/nav.js?v=13"></script>
 </body>
 </html>

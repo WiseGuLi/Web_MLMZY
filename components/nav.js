@@ -151,3 +151,41 @@
         });
     });
 })();
+
+/* 全站回到顶部按钮 */
+(function () {
+    'use strict';
+
+    var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function updateBackToTop() {
+        var button = document.querySelector('.site-back-to-top');
+        if (!button) return;
+        button.classList.toggle('is-visible', window.scrollY > 360);
+    }
+
+    document.addEventListener('click', function (event) {
+        var trigger = event.target && event.target.closest
+            ? event.target.closest('[data-back-to-top]')
+            : null;
+        if (!trigger) return;
+
+        window.scrollTo({
+            top: 0,
+            behavior: reducedMotion.matches ? 'auto' : 'smooth'
+        });
+    });
+
+    window.addEventListener('scroll', updateBackToTop, { passive: true });
+    window.addEventListener('load', updateBackToTop);
+
+    var placeholder = document.getElementById('nav-placeholder');
+    if (placeholder && typeof window.MutationObserver === 'function') {
+        new window.MutationObserver(updateBackToTop).observe(placeholder, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    updateBackToTop();
+})();

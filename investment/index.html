@@ -9,7 +9,7 @@
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
-    <title>网站投入 | GuLi 马列毛主义学习站</title>
+    <title>投入 | GuLi 马列毛主义学习站</title>
     <meta name="description" content="GuLi 马列毛主义学习站网站投入、预算与捐赠账目公开页面。" />
     <style>
         :root {
@@ -587,10 +587,12 @@
                 <h2 id="cost">网站投入</h2>
                 <p>截至目前的累计投入成本：</p>
                 <dl class="info-grid">
+                    <dt>人数</dt>
+                    <dd id="costPeople">—</dd>
                     <dt>金钱</dt>
-                    <dd>约 30 元</dd>
+                    <dd id="costMoney">—</dd>
                     <dt>时间</dt>
-                    <dd>约 8 小时</dd>
+                    <dd id="costTime">—</dd>
                 </dl>
             </section>
 
@@ -680,8 +682,9 @@
         (function () {
             'use strict';
 
-            var BUDGET_CSV_URL = '/data/关于/预算.csv';
-            var DONATION_CSV_URL = '/data/捐赠.csv';
+            var BUDGET_CSV_URL = '/data/网站投入/预算.csv';
+            var DONATION_CSV_URL = '/data/网站投入/捐赠.csv';
+            var COST_CSV_URL = '/data/网站投入/成本.csv';
             var BUDGET_CATEGORIES = [
                 { key: 'writing', label: '编写', fullLabel: '网站编写', className: 'budget-writing' },
                 { key: 'maintenance', label: '维护', fullLabel: '网站维护', className: 'budget-maintenance' },
@@ -1048,13 +1051,41 @@
                 }
             }
 
+            async function loadCost() {
+                try {
+                    var response = await fetch(COST_CSV_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    var rows = parseCsv(await response.text());
+                    if (rows.length < 2) return;
+
+                    var headers = rows[0].map(function (cell) { return cell.trim(); });
+                    var peopleColumn = findColumn(headers, ['人数']);
+                    var moneyColumn = findColumn(headers, ['金钱', '金额']);
+                    var timeColumn = findColumn(headers, ['时间(小时)', '时间', '小时']);
+                    var totals = { people: 0, money: 0, time: 0 };
+
+                    rows.slice(1).forEach(function (cells) {
+                        totals.people += peopleColumn === -1 ? 0 : parseAmount(cells[peopleColumn]);
+                        totals.money += moneyColumn === -1 ? 0 : parseAmount(cells[moneyColumn]);
+                        totals.time += timeColumn === -1 ? 0 : parseAmount(cells[timeColumn]);
+                    });
+
+                    document.getElementById('costPeople').textContent = String(Math.round(totals.people * 100) / 100) + ' 人';
+                    document.getElementById('costMoney').textContent = '约 ' + formatMoney(totals.money);
+                    document.getElementById('costTime').textContent = '约 ' + String(Math.round(totals.time * 100) / 100) + ' 小时';
+                } catch (error) {
+                    console.error('投入成本数据加载失败:', error);
+                }
+            }
+
+            loadCost();
             loadBudget();
             loadDonations();
         })();
     </script>
 
     <script>
-        fetch('/components/nav.html?v=21')
+        fetch('/components/nav.html?v=22')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -1079,6 +1110,6 @@
             });
     </script>
 
-    <script src="/components/nav.js?v=12"></script>
+    <script src="/components/nav.js?v=13"></script>
 </body>
 </html>
