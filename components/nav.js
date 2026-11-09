@@ -15,10 +15,10 @@
         if (toggle) {
             return window.getComputedStyle(toggle).display === 'none';
         }
-        return window.matchMedia('(min-width: 961px)').matches;
+        return window.matchMedia('(min-width: 1200px)').matches;
     }
 
-    var wideQuery = window.matchMedia('(min-width: 961px)');
+    var wideQuery = window.matchMedia('(min-width: 1200px)');
     var lastMode = wideQuery.matches ? 'wide' : 'narrow';
 
     function resetModeIfChanged() {
@@ -188,4 +188,79 @@
     }
 
     updateBackToTop();
+})();
+
+/* 外观：仅保存并显示当前选择，暂不真正切换页面主题或字体。 */
+(function () {
+    'use strict';
+
+    var THEME_KEY = 'mlmzy-appearance-theme';
+    var FONT_KEY = 'mlmzy-appearance-font';
+    var THEME_TEXT = { light: '亮色模式', dark: '暗色模式' };
+    var FONT_TEXT = { serif: '衬线字体', sans: '系统字体' };
+
+    function readValue(key, allowed, fallback) {
+        try {
+            var value = window.localStorage.getItem(key);
+            return allowed.indexOf(value) !== -1 ? value : fallback;
+        } catch (error) {
+            return fallback;
+        }
+    }
+
+    function saveValue(key, value) {
+        try {
+            window.localStorage.setItem(key, value);
+        } catch (error) {
+            /* 隐私模式下无法写入时，保留本次页面内的选择 */
+        }
+    }
+
+    function renderToggle(button, value, labels) {
+        var label = button.querySelector('[data-appearance-label]');
+        if (label) label.textContent = labels[value];
+        button.setAttribute('data-value', value);
+        button.setAttribute('aria-label', labels[value] + '，点击切换');
+    }
+
+    function initAppearance() {
+        var wrapper = document.querySelector('.nav-appearance');
+        if (!wrapper || wrapper.getAttribute('data-appearance-ready') === 'true') return;
+
+        var themeButton = wrapper.querySelector('[data-appearance-toggle="theme"]');
+        var fontButton = wrapper.querySelector('[data-appearance-toggle="font"]');
+        if (!themeButton || !fontButton) return;
+
+        wrapper.setAttribute('data-appearance-ready', 'true');
+
+        var theme = readValue(THEME_KEY, ['light', 'dark'], 'light');
+        var font = readValue(FONT_KEY, ['serif', 'sans'], 'serif');
+
+        renderToggle(themeButton, theme, THEME_TEXT);
+        renderToggle(fontButton, font, FONT_TEXT);
+
+        themeButton.addEventListener('click', function () {
+            theme = theme === 'light' ? 'dark' : 'light';
+            saveValue(THEME_KEY, theme);
+            renderToggle(themeButton, theme, THEME_TEXT);
+        });
+
+        fontButton.addEventListener('click', function () {
+            font = font === 'serif' ? 'sans' : 'serif';
+            saveValue(FONT_KEY, font);
+            renderToggle(fontButton, font, FONT_TEXT);
+        });
+    }
+
+    initAppearance();
+    document.addEventListener('DOMContentLoaded', initAppearance);
+    window.addEventListener('load', initAppearance);
+
+    var navPlaceholder = document.getElementById('nav-placeholder');
+    if (navPlaceholder && typeof window.MutationObserver === 'function') {
+        new window.MutationObserver(initAppearance).observe(navPlaceholder, {
+            childList: true,
+            subtree: true
+        });
+    }
 })();

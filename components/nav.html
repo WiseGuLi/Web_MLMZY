@@ -276,6 +276,38 @@
         color: #cc0000;
     }
 
+    /* ===== “外观”下拉：两个状态切换键（目前只记录选择，不改变页面外观） ===== */
+    .nav-sub .appearance-toggle {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 42px;
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 4px;
+        background: transparent;
+        color: #3d3934;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+        text-align: left;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-sub .appearance-toggle:hover,
+    .nav-sub .appearance-toggle:focus-visible {
+        background: rgba(255, 0, 0, 0.06);
+        color: #cc0000;
+        outline: none;
+    }
+
+    .nav-sub .appearance-toggle:active {
+        background: rgba(255, 0, 0, 0.1);
+    }
+
     /* “新时代学习”：站内唯一的蓝色主题外链 */
     .nav-sub a.nav-xi {
         color: #1a5fb4;
@@ -424,18 +456,18 @@
     }
 
     /* ===== 宽屏：直接入口等宽；“资源/教程/下载”因含图标和箭头适当加宽 ===== */
-    @media (min-width: 961px) {
+    @media (min-width: 1366px) {
         .nav-links > li {
             flex-shrink: 0;
         }
 
         .nav-links > li > a {
-            width: 82px;
+            width: 80px;
             height: 34px;
         }
 
         .nav-links > li.nav-international > a {
-            width: 108px;
+            width: 104px;
         }
 
         /* 宽屏下按钮内的图标、文字和箭头整体居中 */
@@ -445,7 +477,7 @@
         }
 
         .nav-more--icon > details > summary {
-            width: 94px;
+            width: 92px;
             height: 34px;
         }
 
@@ -456,14 +488,14 @@
 
         /* “更多”与普通入口“关于”等宽，文字与箭头居中 */
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 82px;
+            width: 80px;
             height: 34px;
             justify-content: center;
         }
     }
 
-    /* ===== 中等屏幕：稍微收紧，避免十个栏目拥挤 ===== */
-    @media (min-width: 961px) and (max-width: 1280px) {
+    /* ===== 中等屏幕：稍微收紧，避免十一个栏目拥挤 ===== */
+    @media (min-width: 1200px) and (max-width: 1365px) {
         .top-bar {
             padding: 0 1.25rem;
         }
@@ -477,7 +509,7 @@
             gap: 1px;
         }
         .nav-links > li > a {
-            width: 78px;
+            width: 76px;
             padding: 6px 6px;
             font-size: 14px;
         }
@@ -485,12 +517,12 @@
             width: 90px;
         }
         .nav-more--icon > details > summary {
-            width: 90px;
+            width: 88px;
             padding: 6px 6px;
             font-size: 14px;
         }
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 78px;
+            width: 76px;
             padding: 6px 8px;
             font-size: 14px;
         }
@@ -505,42 +537,8 @@
         }
     }
 
-    /* ===== 961–1120px：进一步压缩，保证十个栏目不挤在一起 ===== */
-    @media (min-width: 961px) and (max-width: 1120px) {
-        .top-bar {
-            padding: 0 0.75rem;
-        }
-        .title-text {
-            font-size: 18px;
-        }
-        .star {
-            font-size: 21px;
-        }
-        .nav-links {
-            gap: 0;
-        }
-        .nav-links > li > a {
-            width: 66px;
-            padding: 6px;
-            font-size: 14px;
-        }
-        .nav-links > li.nav-international > a {
-            width: 90px;
-        }
-        .nav-more--icon > details > summary {
-            width: 79px;
-            padding: 6px;
-            font-size: 14px;
-        }
-        .nav-more:not(.nav-more--icon) > details > summary {
-            width: 66px;
-            padding: 6px;
-            font-size: 14px;
-        }
-    }
-
     /* ===== 移动端：只保留标题 + 三横线折叠菜单 ===== */
-    @media (max-width: 960px) {
+    @media (max-width: 1199px) {
         .top-bar {
             height: 56px;
             padding: 0 1rem;
@@ -742,6 +740,14 @@
             color: #6f675e;
         }
 
+        .nav-sub .appearance-toggle {
+            min-height: 48px;
+            padding: 14px 1.5rem 14px 3.4rem;
+            border-radius: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 15px;
+        }
+
         .nav-sub .nav-sub-link img {
             width: 18px;
             height: 18px;
@@ -893,6 +899,27 @@
                 <img src="/icons/顶栏/关于.svg?v=2" alt="关于图标">
                 <span class="label">关于</span>
             </a>
+        </li>
+        <li class="nav-more nav-more--icon nav-appearance">
+            <details>
+                <summary>
+                    <img src="/icons/顶栏/外观.svg?v=1" alt="外观图标">
+                    <span class="label">外观</span>
+                    <span class="caret" aria-hidden="true"></span>
+                </summary>
+                <ul class="nav-sub nav-appearance-menu">
+                    <li>
+                        <button class="appearance-toggle" type="button" data-appearance-toggle="theme">
+                            <span data-appearance-label>亮色模式</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="appearance-toggle" type="button" data-appearance-toggle="font">
+                            <span data-appearance-label>衬线字体</span>
+                        </button>
+                    </li>
+                </ul>
+            </details>
         </li>
         <li class="nav-more">
             <details>

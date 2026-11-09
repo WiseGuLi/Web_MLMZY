@@ -169,8 +169,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 34px;
-            height: 34px;
+            width: 38px;
+            height: 38px;
             border: 0;
             border-radius: 2px;
             background: transparent;
@@ -191,8 +191,8 @@
 
         .view-btn svg {
             display: block;
-            width: 16px;
-            height: 16px;
+            width: 17px;
+            height: 17px;
         }
 
         /* ----- 作者分类 ----- */
@@ -325,6 +325,13 @@
             border-top: 0;
         }
 
+        /* 屏幕足够宽时，双列模式改为三列（从左到右、逐行排列） */
+        @media (min-width: 1100px) {
+            .book-list.view-double {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
         .book-list.view-double .book-item {
             display: flex;
             flex-direction: column;
@@ -389,7 +396,7 @@
         }
 
         .book-title {
-            font-family: var(--sans);
+            font-family: var(--serif);
             font-size: 1.32rem;
             font-weight: 600;
             line-height: 1.5;
@@ -398,7 +405,7 @@
         }
 
         .book-title-mark {
-            color: var(--red);
+            color: #4b4540;
             font-weight: 700;
         }
 
@@ -667,6 +674,17 @@
             }
         }
 
+        /* 分类较多，中窄屏改用下拉选择，避免合并后的长分类名挤压 */
+        @media (max-width: 960px) {
+            .segmented-control {
+                display: none;
+            }
+
+            .author-select-wrap {
+                display: block;
+            }
+        }
+
         @media (max-width: 700px) {
             .library-tools {
                 margin-bottom: 1.1rem;
@@ -854,11 +872,8 @@
             <input type="radio" name="author" id="author-all" value="全部" checked>
             <label for="author-all">全部</label>
 
-            <input type="radio" name="author" id="author-marx" value="马克思">
-            <label for="author-marx">马克思</label>
-
-            <input type="radio" name="author" id="author-engels" value="恩格斯">
-            <label for="author-engels">恩格斯</label>
+            <input type="radio" name="author" id="author-marx" value="马克思 &amp; 恩格斯">
+            <label for="author-marx">马克思 &amp; 恩格斯</label>
 
             <input type="radio" name="author" id="author-lenin" value="列宁">
             <label for="author-lenin">列宁</label>
@@ -871,6 +886,9 @@
 
             <input type="radio" name="author" id="author-other" value="其他">
             <label for="author-other">其他</label>
+
+            <input type="radio" name="author" id="author-collection" value="全集">
+            <label for="author-collection">全集</label>
         </div>
 
         <div class="author-select-wrap">
@@ -888,7 +906,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=22')
+        fetch('/components/nav.html?v=23')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -903,14 +921,22 @@
             .catch(error => console.error('页脚加载失败:', error));
     </script>
 
-    <!-- 文库：运行时读取 data/文库.csv，不在源码中写死书籍数据 -->
+    <!-- 文库：运行时读取 data/文库/文库.csv 与全集配置，不在源码中写死书籍数据 -->
     <script>
         (function () {
             'use strict';
 
             var R2_BASE = 'https://files.mlmzy.org/';
-            var LIBRARY_CONFIG_URL = '/data/文库.csv';
-            var KNOWN_AUTHORS = ['马克思', '恩格斯', '列宁', '斯大林', '毛泽东'];
+            var LIBRARY_CONFIG_URL = '/data/文库/文库.csv';
+            var COLLECTION_CONFIG_URL = '/data/文库/文库_全集.csv';
+            var MERGED_AUTHOR = '马克思 & 恩格斯';
+            var KNOWN_AUTHORS = ['马克思 & 恩格斯', '列宁', '斯大林', '毛泽东'];
+            var CATEGORY_PATHS = {
+                '马克思 & 恩格斯': '马克思&恩格斯',
+                '列宁': '列宁',
+                '斯大林': '斯大林',
+                '毛泽东': '毛泽东'
+            };
             var CATEGORY_ORDER = [];
             var CATEGORIES = ['全部'];
 
@@ -1123,6 +1149,50 @@
                     .filter(Boolean);
             }
 
+            /* 兼容“马克思，恩格斯”和“马克思&恩格斯”两种写法，统一为合并作者。 */
+            function isMergedAuthor(value) {
+                var text = String(value == null ? '' : value).trim();
+                return text === MERGED_AUTHOR ||
+                    /马克思\s*[&＆]\s*恩格斯/.test(text) ||
+                    /恩格斯\s*[&＆]\s*马克思/.test(text);
+            }
+
+            function normalizeAuthorList(rawAuthors) {
+                var authors = [];
+
+                rawAuthors.forEach(function (author) {
+                    var name = isMergedAuthor(author) ? MERGED_AUTHOR : String(author).trim();
+                    if (name && authors.indexOf(name) === -1) authors.push(name);
+                });
+
+                var hasMerged = authors.indexOf(MERGED_AUTHOR) !== -1;
+                var hasMarx = authors.indexOf('马克思') !== -1;
+                var hasEngels = authors.indexOf('恩格斯') !== -1;
+
+                if (hasMerged || (hasMarx && hasEngels)) {
+                    authors = authors.filter(function (author) {
+                        return author !== '马克思' && author !== '恩格斯';
+                    });
+                    authors.unshift(MERGED_AUTHOR);
+                }
+
+                return authors;
+            }
+
+            function getCategoryForAuthor(author) {
+                if (author === '马克思' || author === '恩格斯' || author === MERGED_AUTHOR) {
+                    return MERGED_AUTHOR;
+                }
+                return KNOWN_AUTHORS.indexOf(author) !== -1 ? author : '其他';
+            }
+
+            function getDownloadPath(author) {
+                if (author === '马克思' || author === '恩格斯' || author === MERGED_AUTHOR) {
+                    return CATEGORY_PATHS[MERGED_AUTHOR];
+                }
+                return CATEGORY_PATHS[author] || author;
+            }
+
             function stripBookMarks(value) {
                 var text = String(value == null ? '' : value).trim();
                 if (text.length >= 2 && text.charAt(0) === '《' && text.charAt(text.length - 1) === '》') {
@@ -1145,7 +1215,7 @@
                 return format.charAt(0) === '.' ? format : '.' + format;
             }
 
-            function normalizeBookRow(cells, columns, order) {
+            function normalizeBookRow(cells, columns, order, isCollection) {
                 var fileName = String(cells[columns.fileName] || '').trim();
                 if (!fileName) return null;
 
@@ -1157,12 +1227,12 @@
                 }
 
                 var title = stripBookMarks(cells[columns.title] || fileName);
-                var authors = splitList(cells[columns.authors]);
+                var authors = normalizeAuthorList(splitList(cells[columns.authors]));
                 if (!authors.length) authors.push('佚名');
 
                 var categories = [];
                 authors.forEach(function (author) {
-                    var category = KNOWN_AUTHORS.indexOf(author) !== -1 ? author : '其他';
+                    var category = getCategoryForAuthor(author);
                     if (categories.indexOf(category) === -1) categories.push(category);
                 });
 
@@ -1189,6 +1259,7 @@
                     searchTitle: ('《' + title + '》').toLowerCase(),
                     searchDescription: description.toLowerCase(),
                     searchQuote: quote.toLowerCase(),
+                    collection: !!isCollection,
                     order: order
                 };
             }
@@ -1210,16 +1281,16 @@
             function getDownloadAuthor(book, category) {
                 if (category === '其他') {
                     var unknown = book.authors.find(function (author) {
-                        return KNOWN_AUTHORS.indexOf(author) === -1;
+                        return getCategoryForAuthor(author) === '其他';
                     });
-                    if (unknown) return unknown;
+                    if (unknown) return getDownloadPath(unknown);
                 }
 
-                if (category !== '全部' && KNOWN_AUTHORS.indexOf(category) !== -1) {
-                    return category;
+                if (category !== '全部' && category !== '全集' && KNOWN_AUTHORS.indexOf(category) !== -1) {
+                    return getDownloadPath(category);
                 }
 
-                return book.authors[0];
+                return getDownloadPath(book.authors[0]);
             }
 
             function escapeRegExp(value) {
@@ -1444,7 +1515,14 @@
                 var category = getSelectedCategory();
                 var terms = getSearchTerms();
                 var filtered = books.filter(function (book) {
-                    var inCategory = category === '全部' || book.categories.indexOf(category) !== -1;
+                    var inCategory;
+                    if (category === '全集') {
+                        inCategory = book.collection;
+                    } else if (category === '全部') {
+                        inCategory = !book.collection;
+                    } else {
+                        inCategory = !book.collection && book.categories.indexOf(category) !== -1;
+                    }
                     return inCategory && matchesSearch(book, terms);
                 });
 
@@ -1464,9 +1542,13 @@
 
                 if (!filtered.length) {
                     statusBox.hidden = false;
-                    statusBox.textContent = terms.length
-                        ? '没有找到匹配的书籍，换个关键词试试。'
-                        : (books.length ? '该分类暂无书籍，敬请期待。' : '文库正在整理中，敬请期待。');
+                    if (terms.length) {
+                        statusBox.textContent = '没有找到匹配的书籍，换个关键词试试。';
+                    } else if (category === '全集') {
+                        statusBox.textContent = '全集正在整理中，敬请期待。';
+                    } else {
+                        statusBox.textContent = books.length ? '该分类暂无书籍，敬请期待。' : '文库正在整理中，敬请期待。';
+                    }
                     return;
                 }
 
@@ -1504,6 +1586,38 @@
                 }
             }
 
+            async function fetchLibraryBooks(url, isCollection) {
+                var response = await fetch(url + '?t=' + Date.now(), {
+                    cache: 'no-store'
+                });
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+
+                var rows = parseCsv(await response.text());
+                if (rows.length < 2) return [];
+
+                var headers = rows[0].map(function (cell) {
+                    return cell.trim();
+                });
+
+                var columns = {
+                    fileName: findColumn(headers, ['文件名']),
+                    title: findColumn(headers, ['书名']),
+                    authors: findColumn(headers, ['作者']),
+                    formats: findColumn(headers, ['格式']),
+                    featured: findColumn(headers, ['推荐']),
+                    description: findColumn(headers, ['简介']),
+                    quote: findColumn(headers, ['引用'])
+                };
+
+                Object.keys(columns).forEach(function (key) {
+                    if (columns[key] === -1) throw new Error('文库 CSV 缺少列：' + key);
+                });
+
+                return rows.slice(1).map(function (cells, order) {
+                    return normalizeBookRow(cells, columns, order, isCollection);
+                }).filter(Boolean);
+            }
+
             async function loadBooks() {
                 statusBox.hidden = false;
                 statusBox.textContent = '正在加载文库…';
@@ -1511,39 +1625,15 @@
                 bookList.innerHTML = '';
 
                 try {
-                    var response = await fetch(LIBRARY_CONFIG_URL + '?t=' + Date.now(), {
-                        cache: 'no-store'
-                    });
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    var results = await Promise.all([
+                        fetchLibraryBooks(LIBRARY_CONFIG_URL, false),
+                        fetchLibraryBooks(COLLECTION_CONFIG_URL, true).catch(function (error) {
+                            console.warn('全集配置加载失败:', error);
+                            return [];
+                        })
+                    ]);
 
-                    var rows = parseCsv(await response.text());
-                    if (rows.length < 2) {
-                        books = [];
-                        renderBooks();
-                        return;
-                    }
-
-                    var headers = rows[0].map(function (cell) {
-                        return cell.trim();
-                    });
-
-                    var columns = {
-                        fileName: findColumn(headers, ['文件名']),
-                        title: findColumn(headers, ['书名']),
-                        authors: findColumn(headers, ['作者']),
-                        formats: findColumn(headers, ['格式']),
-                        featured: findColumn(headers, ['推荐']),
-                        description: findColumn(headers, ['简介']),
-                        quote: findColumn(headers, ['引用'])
-                    };
-
-                    Object.keys(columns).forEach(function (key) {
-                        if (columns[key] === -1) throw new Error('文库 CSV 缺少列：' + key);
-                    });
-
-                    books = rows.slice(1).map(function (cells, order) {
-                        return normalizeBookRow(cells, columns, order);
-                    }).filter(Boolean);
+                    books = results[0].concat(results[1]);
 
                     if (!initialSelectionDone) {
                         selectFirstAvailableCategory();
@@ -1657,6 +1747,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js?v=13"></script>
+    <script src="/components/nav.js?v=14"></script>
 </body>
 </html>

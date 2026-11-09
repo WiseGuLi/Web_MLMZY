@@ -1103,8 +1103,23 @@
             function applyBannerMarquee() {
                 if (banner.hidden) return;
 
-                bannerViewport.classList.add('is-scrolling');
-                bannerTrack.style.animationDuration = Math.max(18, Math.round(bannerRun.scrollWidth / 32)) + 's';
+                /* 先按不滚动状态测量文字宽度，只有放不下时才启用循环滚动。 */
+                bannerViewport.classList.remove('is-scrolling');
+                var textWidth = bannerRun.scrollWidth;
+                var viewportWidth = bannerViewport.clientWidth;
+                var shouldScroll = textWidth > viewportWidth + 1;
+
+                bannerViewport.classList.toggle('is-scrolling', shouldScroll);
+                if (!shouldScroll) {
+                    bannerTrack.style.animationDuration = '';
+                    return;
+                }
+
+                bannerTrack.style.animationDuration = Math.max(18, Math.round(textWidth / 32)) + 's';
+            }
+
+            function refreshBannerMarquee() {
+                window.requestAnimationFrame(applyBannerMarquee);
             }
 
             fetch('/data/横幅.yml?t=' + Date.now(), { cache: 'no-store' })
@@ -1129,12 +1144,14 @@
                     console.warn('横幅配置加载失败:', error);
                 });
 
+            window.addEventListener('resize', refreshBannerMarquee);
+            window.addEventListener('load', refreshBannerMarquee);
             closeButton.addEventListener('click', dismissBanner);
         })();
     </script>
 
     <script>
-        fetch('/components/nav.html?v=22')
+        fetch('/components/nav.html?v=23')
             .then(function (res) {
                 if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();
@@ -1158,6 +1175,6 @@
                 console.warn('页脚加载失败:', err);
             });
     </script>
-    <script src="/components/nav.js?v=13"></script>
+    <script src="/components/nav.js?v=14"></script>
 </body>
 </html>
