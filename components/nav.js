@@ -198,6 +198,8 @@
     var FONT_KEY = 'mlmzy-appearance-font';
     var THEME_TEXT = { light: '亮色模式', dark: '暗色模式' };
     var FONT_TEXT = { serif: '衬线字体', sans: '系统字体' };
+    var theme = null;
+    var font = null;
 
     function readValue(key, allowed, fallback) {
         try {
@@ -216,41 +218,84 @@
         }
     }
 
-    function renderToggle(button, value, labels) {
+    function ensureState() {
+        if (theme === null) {
+            theme = readValue(THEME_KEY, ['light', 'dark'], 'light');
+        }
+        if (font === null) {
+            font = readValue(FONT_KEY, ['serif', 'sans'], 'serif');
+        }
+    }
+
+    function getText(type) {
+        return type === 'theme' ? THEME_TEXT[theme] : FONT_TEXT[font];
+    }
+
+    function syncButton(button) {
+        var type = button.getAttribute('data-appearance-toggle');
+        if (type !== 'theme' && type !== 'font') return;
+
+        var text = getText(type);
+        button.setAttribute('data-value', type === 'theme' ? theme : font);
+
         var label = button.querySelector('[data-appearance-label]');
-        if (label) label.textContent = labels[value];
-        button.setAttribute('data-value', value);
-        button.setAttribute('aria-label', labels[value] + '，点击切换');
+        if (label && label.textContent !== text) label.textContent = text;
+
+        var hint = text + '，单击切换';
+        button.setAttribute('aria-label', hint);
+        button.setAttribute('title', hint);
+    }
+
+    function syncAll() {
+        ensureState();
+        var buttons = document.querySelectorAll('[data-appearance-toggle]');
+        for (var i = 0; i < buttons.length; i++) {
+            syncButton(buttons[i]);
+        }
+    }
+
+    function flashButtons(type) {
+        var buttons = document.querySelectorAll('[data-appearance-toggle="' + type + '"]');
+        for (var i = 0; i < buttons.length; i++) {
+            (function (button) {
+                button.classList.remove('is-switching');
+                /* 强制回流，保证连续点击也能重新播放动画 */
+                void button.offsetWidth;
+                button.classList.add('is-switching');
+                window.clearTimeout(button.appearanceTimer);
+                button.appearanceTimer = window.setTimeout(function () {
+                    button.classList.remove('is-switching');
+                }, 380);
+            })(buttons[i]);
+        }
     }
 
     function initAppearance() {
-        var wrapper = document.querySelector('.nav-appearance');
-        if (!wrapper || wrapper.getAttribute('data-appearance-ready') === 'true') return;
+        if (!document.querySelector('[data-appearance-toggle]')) return;
+        syncAll();
+    }
 
-        var themeButton = wrapper.querySelector('[data-appearance-toggle="theme"]');
-        var fontButton = wrapper.querySelector('[data-appearance-toggle="font"]');
-        if (!themeButton || !fontButton) return;
+    document.addEventListener('click', function (event) {
+        var trigger = event.target && event.target.closest
+            ? event.target.closest('[data-appearance-toggle]')
+            : null;
+        if (!trigger) return;
 
-        wrapper.setAttribute('data-appearance-ready', 'true');
-
-        var theme = readValue(THEME_KEY, ['light', 'dark'], 'light');
-        var font = readValue(FONT_KEY, ['serif', 'sans'], 'serif');
-
-        renderToggle(themeButton, theme, THEME_TEXT);
-        renderToggle(fontButton, font, FONT_TEXT);
-
-        themeButton.addEventListener('click', function () {
+        ensureState();
+        var type = trigger.getAttribute('data-appearance-toggle');
+        if (type === 'theme') {
             theme = theme === 'light' ? 'dark' : 'light';
             saveValue(THEME_KEY, theme);
-            renderToggle(themeButton, theme, THEME_TEXT);
-        });
-
-        fontButton.addEventListener('click', function () {
+        } else if (type === 'font') {
             font = font === 'serif' ? 'sans' : 'serif';
             saveValue(FONT_KEY, font);
-            renderToggle(fontButton, font, FONT_TEXT);
-        });
-    }
+        } else {
+            return;
+        }
+
+        syncAll();
+        flashButtons(type);
+    });
 
     initAppearance();
     document.addEventListener('DOMContentLoaded', initAppearance);

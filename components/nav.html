@@ -280,6 +280,7 @@
     .nav-sub .appearance-toggle {
         display: flex;
         align-items: center;
+        gap: 8px;
         width: 100%;
         min-height: 42px;
         padding: 10px 12px;
@@ -306,6 +307,117 @@
 
     .nav-sub .appearance-toggle:active {
         background: rgba(255, 0, 0, 0.1);
+    }
+
+    .nav-more .nav-appearance-menu {
+        min-width: 236px;
+    }
+
+    .appearance-icon {
+        display: block;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        transform-origin: center;
+        transform-box: fill-box;
+    }
+
+    .appearance-label {
+        display: inline-block;
+    }
+
+    .appearance-hint {
+        margin-left: auto;
+        padding-left: 12px;
+        color: #9a9082;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    .appearance-theme-moon {
+        display: none;
+    }
+
+    [data-appearance-toggle][data-value="dark"] .appearance-theme-sun {
+        display: none;
+    }
+
+    [data-appearance-toggle][data-value="dark"] .appearance-theme-moon {
+        display: block;
+    }
+
+    [data-appearance-toggle][data-value="sans"] .appearance-font-feet {
+        display: none;
+    }
+
+    @keyframes appearance-icon-pop {
+        0% {
+            transform: rotate(0) scale(1);
+        }
+        45% {
+            transform: rotate(-18deg) scale(0.82);
+        }
+        100% {
+            transform: rotate(0) scale(1);
+        }
+    }
+
+    .appearance-toggle.is-switching .appearance-icon,
+    .nav-quick-btn.is-switching .appearance-icon {
+        animation: appearance-icon-pop 0.36s ease;
+    }
+
+    .appearance-sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    /* ===== 窄屏顶栏的外观快捷图标（不进入折叠菜单） ===== */
+    .nav-quick-appearance {
+        display: none;
+        align-items: center;
+        gap: 2px;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .nav-quick-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #3d3934;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-quick-btn:hover,
+    .nav-quick-btn:focus-visible {
+        background: rgba(255, 0, 0, 0.07);
+        color: #cc0000;
+        outline: none;
+    }
+
+    .nav-quick-btn:active {
+        background: rgba(255, 0, 0, 0.12);
+    }
+
+    .nav-quick-btn .appearance-icon {
+        width: 19px;
+        height: 19px;
     }
 
     /* “新时代学习”：站内唯一的蓝色主题外链 */
@@ -470,10 +582,10 @@
             width: 104px;
         }
 
-        /* 宽屏下按钮内的图标、文字和箭头整体居中 */
+        /* 宽屏下图标统一从按钮左侧同一内边距开始，避免不同宽度下出现横向错位 */
         .nav-links > li > a,
         .nav-more > details > summary {
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         .nav-more--icon > details > summary {
@@ -486,11 +598,10 @@
             filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
         }
 
-        /* “更多”与普通入口“关于”等宽，文字与箭头居中 */
+        /* “更多”与普通入口同一内边距 */
         .nav-more:not(.nav-more--icon) > details > summary {
             width: 80px;
             height: 34px;
-            justify-content: center;
         }
     }
 
@@ -545,6 +656,7 @@
             padding-left: max(1rem, env(safe-area-inset-left));
             padding-right: max(1rem, env(safe-area-inset-right));
             justify-content: flex-start;
+            gap: 6px;
         }
 
         .site-title {
@@ -565,6 +677,16 @@
 
         /* 三横线按钮 */
         .nav-toggle {
+            display: flex;
+            margin-left: 8px;
+        }
+
+        /* “外观”不进入折叠菜单，改用顶栏上的两个快捷图标 */
+        .nav-links .nav-appearance {
+            display: none;
+        }
+
+        .nav-quick-appearance {
             display: flex;
         }
 
@@ -787,6 +909,29 @@
         </span>
     </a>
 
+    <div class="nav-quick-appearance" role="group" aria-label="外观快捷切换">
+        <button class="nav-quick-btn" type="button" data-appearance-toggle="theme" data-value="light" aria-label="亮色模式，单击切换" title="亮色模式，单击切换">
+            <svg class="appearance-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <g class="appearance-theme-sun">
+                    <circle cx="12" cy="12" r="4.1"></circle>
+                    <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"></path>
+                </g>
+                <g class="appearance-theme-moon">
+                    <path d="M20.1 14.2A8.3 8.3 0 0 1 9.8 3.9a8.3 8.3 0 1 0 10.3 10.3Z"></path>
+                </g>
+            </svg>
+            <span class="appearance-sr" data-appearance-label>亮色模式</span>
+        </button>
+        <button class="nav-quick-btn" type="button" data-appearance-toggle="font" data-value="serif" aria-label="衬线字体，单击切换" title="衬线字体，单击切换">
+            <svg class="appearance-icon appearance-font-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 19 12 4.6 19 19"></path>
+                <path d="M8.2 13.4h7.6"></path>
+                <path class="appearance-font-feet" d="M3.6 19h3.3M17.1 19h3.3"></path>
+            </svg>
+            <span class="appearance-sr" data-appearance-label>衬线字体</span>
+        </button>
+    </div>
+
     <input type="checkbox" id="nav-toggle" class="nav-toggle-input" aria-label="展开导航菜单" />
     <label for="nav-toggle" class="nav-toggle" aria-hidden="true">
         <span></span>
@@ -909,13 +1054,29 @@
                 </summary>
                 <ul class="nav-sub nav-appearance-menu">
                     <li>
-                        <button class="appearance-toggle" type="button" data-appearance-toggle="theme">
-                            <span data-appearance-label>亮色模式</span>
+                        <button class="appearance-toggle" type="button" data-appearance-toggle="theme" data-value="light">
+                            <svg class="appearance-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <g class="appearance-theme-sun">
+                                    <circle cx="12" cy="12" r="4.1"></circle>
+                                    <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"></path>
+                                </g>
+                                <g class="appearance-theme-moon">
+                                    <path d="M20.1 14.2A8.3 8.3 0 0 1 9.8 3.9a8.3 8.3 0 1 0 10.3 10.3Z"></path>
+                                </g>
+                            </svg>
+                            <span class="appearance-label" data-appearance-label>亮色模式</span>
+                            <span class="appearance-hint" aria-hidden="true">单击切换</span>
                         </button>
                     </li>
                     <li>
-                        <button class="appearance-toggle" type="button" data-appearance-toggle="font">
-                            <span data-appearance-label>衬线字体</span>
+                        <button class="appearance-toggle" type="button" data-appearance-toggle="font" data-value="serif">
+                            <svg class="appearance-icon appearance-font-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M5 19 12 4.6 19 19"></path>
+                                <path d="M8.2 13.4h7.6"></path>
+                                <path class="appearance-font-feet" d="M3.6 19h3.3M17.1 19h3.3"></path>
+                            </svg>
+                            <span class="appearance-label" data-appearance-label>衬线字体</span>
+                            <span class="appearance-hint" aria-hidden="true">单击切换</span>
                         </button>
                     </li>
                 </ul>
