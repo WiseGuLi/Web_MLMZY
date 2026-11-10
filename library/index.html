@@ -401,6 +401,14 @@
             }
         }
 
+        /* 较宽屏单列时，书名和下载按钮两侧留出一点内边距 */
+        @media (min-width: 1100px) {
+            .book-list:not(.view-double) .book-item {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
         .book-list.view-double .book-item {
             display: flex;
             flex-direction: column;
@@ -552,6 +560,19 @@
             animation: book-detail-in 0.22s ease;
         }
 
+        /* 双列、三列和触屏下简介默认展开，不播放“展开”动画 */
+        .book-list.view-double .book-desc,
+        .book-list.view-double .book-quote {
+            animation: none;
+        }
+
+        @media (hover: none) {
+            .book-desc,
+            .book-quote {
+                animation: none;
+            }
+        }
+
         .search-hit {
             padding: 0 1px;
             border-radius: 2px;
@@ -564,6 +585,98 @@
         /* 列表与页脚之间预留的空白：展开简介时由脚本等量收起，页脚位置保持不动 */
         .library-bottom-space {
             height: 180px;
+        }
+
+        /* ===== 底部下载量进度条 ===== */
+        .library-progress {
+            width: 100%;
+            max-width: 912px;
+            margin: 0 auto 2.5rem;
+            padding: 22px 24px 20px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--card);
+            box-shadow: 0 8px 24px rgba(50, 43, 35, 0.045);
+        }
+
+        .library-progress[hidden] {
+            display: none;
+        }
+
+        .library-progress-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .library-progress-kicker {
+            margin-bottom: 4px;
+            color: #8a7f72;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+
+        .library-progress-title {
+            color: var(--ink);
+            font-family: var(--serif);
+            font-size: 1.28rem;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .library-progress-title strong {
+            color: var(--red);
+            font-size: 1.45rem;
+        }
+
+        .library-progress-limit {
+            flex-shrink: 0;
+            color: #746b61;
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: right;
+        }
+
+        .library-progress-track {
+            position: relative;
+            height: 10px;
+            margin-top: 16px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #eee8de;
+        }
+
+        .library-progress-fill {
+            display: block;
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #b21c1c 0%, var(--red) 60%, #c33d3d 100%);
+        }
+
+        .library-progress.is-visible .library-progress-fill {
+            transition: width 0.9s cubic-bezier(0.22, 0.7, 0.3, 1);
+        }
+
+        .library-progress-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 9px;
+            color: #8a7f72;
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .library-progress-percent {
+            color: var(--red);
+            font-weight: 600;
         }
 
         .book-actions {
@@ -634,8 +747,8 @@
         }
 
         .book-download-caret {
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             flex-shrink: 0;
             transition: transform 0.15s ease;
         }
@@ -878,6 +991,29 @@
             .back-to-top span {
                 display: none;
             }
+
+            .library-progress {
+                margin-bottom: 2rem;
+                padding: 18px 16px 17px;
+            }
+
+            .library-progress-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .library-progress-limit {
+                text-align: left;
+            }
+
+            .library-progress-title {
+                font-size: 1.16rem;
+            }
+
+            .library-progress-title strong {
+                font-size: 1.3rem;
+            }
         }
 
         @media (max-width: 450px) {
@@ -918,6 +1054,10 @@
             .book-item.is-expanded .book-quote,
             .book-item.search-open .book-quote {
                 animation: none;
+            }
+
+            .library-progress.is-visible .library-progress-fill {
+                transition: none;
             }
         }
     </style>
@@ -1001,6 +1141,23 @@
         <p class="library-status" id="libraryStatus" role="status">正在加载文库…</p>
         <ul class="book-list" id="bookList" aria-live="polite"></ul>
         <div class="library-bottom-space" id="libraryBottomSpace" aria-hidden="true"></div>
+
+        <section class="library-progress" id="libraryProgress" aria-labelledby="libraryProgressTitle" hidden>
+            <div class="library-progress-head">
+                <div>
+                    <p class="library-progress-kicker">文库下载量</p>
+                    <h2 class="library-progress-title" id="libraryProgressTitle">本月下载 <strong id="downloadMonthly">—</strong> 次</h2>
+                </div>
+                <p class="library-progress-limit">总量上限 <span id="downloadLimit">—</span></p>
+            </div>
+            <div class="library-progress-track" id="downloadTrack" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+                <span class="library-progress-fill" id="downloadFill"></span>
+            </div>
+            <div class="library-progress-foot">
+                <span>数据来自《文库_下载量.csv》</span>
+                <span class="library-progress-percent" id="downloadPercent">—</span>
+            </div>
+        </section>
     </main>
 
     <!-- ===== 页脚占位 ===== -->
@@ -1072,6 +1229,15 @@
             var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 180;
             var activeBookItem = null;
             var hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
+            var progressSection = document.getElementById('libraryProgress');
+            var progressTrack = document.getElementById('downloadTrack');
+            var progressFill = document.getElementById('downloadFill');
+            var progressMonthly = document.getElementById('downloadMonthly');
+            var progressLimit = document.getElementById('downloadLimit');
+            var progressPercent = document.getElementById('downloadPercent');
+            var progressStats = null;
+            var progressTargetPercent = 0;
+            var progressAnimated = false;
 
             function resetBottomSpace() {
                 if (activeBookItem) {
@@ -1106,6 +1272,108 @@
                     .toLowerCase()
                     .split(/[\s\u3000]+/)
                     .filter(Boolean);
+            }
+
+            /* ===== 底部下载量进度条 ===== */
+            function formatCount(value) {
+                return Number(value).toLocaleString('zh-CN');
+            }
+
+            function checkProgressInView() {
+                if (!progressSection || progressSection.hidden || !progressStats || progressAnimated) return;
+
+                var rect = progressSection.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 30 && rect.bottom > 0) {
+                    animateProgress();
+                }
+            }
+
+            function animateProgress() {
+                if (!progressSection || progressSection.hidden || !progressStats || progressAnimated) return;
+                progressAnimated = true;
+                progressSection.classList.add('is-visible');
+
+                /* 使用像素宽度，兼容下载量极小时仍能看到一段进度。 */
+                var trackWidth = progressTrack ? progressTrack.clientWidth : 0;
+                var width = Math.max(4, Math.round(trackWidth * progressTargetPercent / 100));
+                progressFill.style.width = '0px';
+                void progressFill.offsetWidth;
+                window.requestAnimationFrame(function () {
+                    progressFill.style.width = width + 'px';
+                });
+            }
+
+            function setProgressVisible(show) {
+                if (!progressSection) return;
+
+                var canShow = !!progressStats && !!show;
+                if (canShow === !progressSection.hidden) {
+                    if (canShow) window.requestAnimationFrame(checkProgressInView);
+                    return;
+                }
+
+                if (!canShow) {
+                    progressSection.hidden = true;
+                    progressSection.classList.remove('is-visible');
+                    progressAnimated = false;
+                    if (progressFill) progressFill.style.width = '0px';
+                    return;
+                }
+
+                progressSection.hidden = false;
+                progressSection.classList.remove('is-visible');
+                progressAnimated = false;
+                if (progressFill) progressFill.style.width = '0px';
+                window.requestAnimationFrame(checkProgressInView);
+            }
+
+            function parseCount(value) {
+                var number = Number(String(value == null ? '' : value).replace(/[^\d.]/g, ''));
+                return isFinite(number) && number >= 0 ? number : 0;
+            }
+
+            function formatPercent(value) {
+                if (!value) return '0%';
+                if (value < 0.01) return value.toFixed(3) + '%';
+                return value.toFixed(1) + '%';
+            }
+
+            async function loadDownloadStats() {
+                if (!progressSection) return;
+
+                try {
+                    var response = await fetch('/data/文库/文库_下载量.csv?t=' + Date.now(), {
+                        cache: 'no-store'
+                    });
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+
+                    var rows = parseCsv(await response.text());
+                    if (rows.length < 2) return;
+
+                    var headers = rows[0].map(function (cell) { return cell.trim(); });
+                    var monthlyIndex = findColumn(headers, ['本月下载量']);
+                    var limitIndex = findColumn(headers, ['总下载量限制', '总下载量']);
+                    if (monthlyIndex === -1 || limitIndex === -1) return;
+
+                    var monthly = parseCount(rows[1][monthlyIndex]);
+                    var limit = parseCount(rows[1][limitIndex]);
+                    if (!limit) return;
+
+                    progressStats = { monthly: monthly, limit: limit };
+                    progressTargetPercent = Math.min(100, monthly / limit * 100);
+
+                    progressMonthly.textContent = formatCount(monthly);
+                    progressLimit.textContent = formatCount(limit);
+                    progressPercent.textContent = formatPercent(progressTargetPercent);
+                    progressTrack.setAttribute('aria-valuemax', String(limit));
+                    progressTrack.setAttribute('aria-valuenow', String(monthly));
+                    progressTrack.setAttribute('aria-valuetext', '本月下载 ' + formatCount(monthly) + ' 次，总量上限 ' + formatCount(limit) + ' 次');
+
+                    setProgressVisible(getSearchTerms().length === 0);
+                } catch (error) {
+                    console.warn('下载量数据加载失败:', error);
+                    progressSection.hidden = true;
+                }
             }
 
             function matchesSearch(book, terms) {
@@ -1642,6 +1910,7 @@
             function renderBooks() {
                 var category = getSelectedCategory();
                 var terms = getSearchTerms();
+                setProgressVisible(terms.length === 0);
                 var filtered = books.filter(function (book) {
                     var inCategory;
                     if (category === '全集') {
@@ -1888,6 +2157,15 @@
             syncCategorySelect();
             updateSlider();
             loadBooks();
+            loadDownloadStats();
+
+            if (progressSection && typeof window.IntersectionObserver === 'function') {
+                new window.IntersectionObserver(function (entries) {
+                    if (entries.some(function (entry) { return entry.isIntersecting; })) {
+                        animateProgress();
+                    }
+                }, { threshold: 0.2 }).observe(progressSection);
+            }
         })();
     </script>
 
