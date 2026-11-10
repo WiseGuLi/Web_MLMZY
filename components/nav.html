@@ -70,7 +70,8 @@
         white-space: nowrap;
     }
     .title-text .gu {
-        color: #000000;
+        color: #4a4540;
+        margin-right: 5px;
     }
     .title-text .li {
         color: #cc0000;
@@ -330,23 +331,39 @@
         line-height: 1.4;
     }
 
-    .appearance-font-glyph {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-        color: currentColor;
-        font-family: Georgia, 'Times New Roman', 'Noto Serif SC', 'Songti SC', STSong, SimSun, serif;
-        font-size: 22px;
-        font-weight: 700;
-        line-height: 1;
+    .appearance-font-serif {
+        display: block;
     }
 
-    [data-appearance-toggle][data-value="sans"] .appearance-font-glyph {
-        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
-        font-weight: 600;
+    .appearance-font-sans {
+        display: none;
+    }
+
+    [data-appearance-toggle][data-value="sans"] .appearance-font-serif {
+        display: none;
+    }
+
+    [data-appearance-toggle][data-value="sans"] .appearance-font-sans {
+        display: block;
+    }
+
+    .appearance-font-icon path {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 0;
+    }
+
+    .appearance-toggle.is-switching .appearance-font-icon path,
+    .nav-quick-btn.is-switching .appearance-font-icon path {
+        animation: appearance-font-draw 0.44s ease both;
+    }
+
+    @keyframes appearance-font-draw {
+        from {
+            stroke-dashoffset: 1;
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
     }
 
     .appearance-theme-moon {
@@ -435,14 +452,14 @@
         height: 19px;
     }
 
-    .nav-quick-btn .appearance-font-glyph {
+    .nav-quick-btn .appearance-font-icon {
         width: 19px;
         height: 19px;
-        font-size: 23px;
     }
 
-    /* “新时代学习”：站内唯一的蓝色主题外链 */
-    .nav-sub a.nav-xi {
+    /* 蓝色主题入口：学习法律、新时代学习 */
+    .nav-sub a.nav-xi,
+    .nav-sub a.nav-law {
         color: #1a5fb4;
     }
 
@@ -457,20 +474,35 @@
         transition: background-color 0.15s ease;
     }
 
+    .nav-sub a.nav-law .sub-icon {
+        width: 18px;
+        height: 18px;
+        display: block;
+        flex-shrink: 0;
+        background-color: currentColor;
+        -webkit-mask: url('/icons/顶栏/资源/法律.svg?v=1') no-repeat center / contain;
+        mask: url('/icons/顶栏/资源/法律.svg?v=1') no-repeat center / contain;
+        transition: background-color 0.15s ease;
+    }
+
     .nav-sub a.nav-xi .ext {
         color: #1a5fb4;
         opacity: 0.75;
     }
 
     .nav-sub a.nav-xi:hover,
-    .nav-sub a.nav-xi:focus-visible {
+    .nav-sub a.nav-xi:focus-visible,
+    .nav-sub a.nav-law:hover,
+    .nav-sub a.nav-law:focus-visible {
         background: rgba(26, 95, 180, 0.1);
         color: #0b4f9e;
         outline: none;
     }
 
     .nav-sub a.nav-xi:hover .sub-icon,
-    .nav-sub a.nav-xi:focus-visible .sub-icon {
+    .nav-sub a.nav-xi:focus-visible .sub-icon,
+    .nav-sub a.nav-law:hover .sub-icon,
+    .nav-sub a.nav-law:focus-visible .sub-icon {
         background-color: #0b4f9e;
     }
 
@@ -590,17 +622,21 @@
 
     /* ===== 宽屏：直接入口等宽；“资源/教程/下载”因含图标和箭头适当加宽 ===== */
     @media (min-width: 1366px) {
+        .top-bar {
+            padding-right: 1.5rem;
+        }
+
         .nav-links > li {
             flex-shrink: 0;
         }
 
         .nav-links > li > a {
-            width: 80px;
+            width: 78px;
             height: 34px;
         }
 
         .nav-links > li.nav-international > a {
-            width: 104px;
+            width: 102px;
         }
 
         /* 按钮内的图标、文字和下拉箭头作为一个整体居中 */
@@ -610,7 +646,7 @@
         }
 
         .nav-more--icon > details > summary {
-            width: 92px;
+            width: 90px;
             height: 34px;
         }
 
@@ -619,9 +655,9 @@
             filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
         }
 
-        /* “更多”与普通入口同一内边距 */
+        /* “更多”按钮收紧，减少文字和箭头右侧的空白 */
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 80px;
+            width: 70px;
             height: 34px;
         }
     }
@@ -629,7 +665,7 @@
     /* ===== 中等屏幕：稍微收紧，避免十一个栏目拥挤 ===== */
     @media (min-width: 1200px) and (max-width: 1365px) {
         .top-bar {
-            padding: 0 1.25rem;
+            padding: 0 1rem 0 1.25rem;
         }
         .title-text {
             font-size: 19px;
@@ -641,7 +677,7 @@
             gap: 1px;
         }
         .nav-links > li > a {
-            width: 76px;
+            width: 74px;
             padding: 6px 6px;
             font-size: 14px;
         }
@@ -649,12 +685,12 @@
             width: 90px;
         }
         .nav-more--icon > details > summary {
-            width: 88px;
+            width: 86px;
             padding: 6px 6px;
             font-size: 14px;
         }
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 76px;
+            width: 68px;
             padding: 6px 8px;
             font-size: 14px;
         }
@@ -670,6 +706,13 @@
         .nav-more summary img {
             width: 17px;
             height: 17px;
+        }
+    }
+
+    /* ===== 小屏隐藏英文站名，只保留中文名 ===== */
+    @media (max-width: 600px) {
+        .title-text .gu {
+            display: none;
         }
     }
 
@@ -703,7 +746,7 @@
         /* 三横线按钮 */
         .nav-toggle {
             display: flex;
-            margin-left: 8px;
+            margin-left: -2px;
         }
 
         /* “外观”不进入折叠菜单，改用顶栏上的两个快捷图标 */
@@ -900,12 +943,15 @@
             height: 18px;
         }
 
-        .nav-sub a.nav-xi {
+        .nav-sub a.nav-xi,
+        .nav-sub a.nav-law {
             color: #1a5fb4;
         }
 
         .nav-sub a.nav-xi:hover,
-        .nav-sub a.nav-xi:active {
+        .nav-sub a.nav-xi:active,
+        .nav-sub a.nav-law:hover,
+        .nav-sub a.nav-law:active {
             background: rgba(26, 95, 180, 0.1);
             color: #0b4f9e;
         }
@@ -930,7 +976,7 @@
         <span class="star">★</span>
         <span class="title-text">
             <span class="gu">GuLi</span>
-            <span class="li"> 马列毛主义学习站</span>
+            <span class="li">马列毛主义学习站</span>
         </span>
     </a>
 
@@ -948,7 +994,18 @@
             <span class="appearance-sr" data-appearance-label>亮色模式</span>
         </button>
         <button class="nav-quick-btn" type="button" data-appearance-toggle="font" data-value="serif" aria-label="衬线字体，单击切换" title="衬线字体，单击切换">
-            <span class="appearance-font-glyph" aria-hidden="true">A</span>
+            <svg class="appearance-icon appearance-font-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <g class="appearance-font-serif">
+                    <path pathLength="1" d="M5 19.2 11.5 4.6h1L19 19.2"></path>
+                    <path pathLength="1" d="M8 13.4h8"></path>
+                    <path pathLength="1" d="M3.2 19.2h4.4M16.4 19.2h4.4"></path>
+                    <path pathLength="1" d="M10.5 4.6h3"></path>
+                </g>
+                <g class="appearance-font-sans">
+                    <path pathLength="1" d="M5 19 12 5l7 14"></path>
+                    <path pathLength="1" d="M8.2 13.5h7.6"></path>
+                </g>
+            </svg>
             <span class="appearance-sr" data-appearance-label>衬线字体</span>
         </button>
     </div>
@@ -994,8 +1051,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/resources/law">
-                            <img src="/icons/顶栏/资源/法律.svg?v=1" alt="学习法律图标">
+                        <a class="nav-law" href="/resources/law">
+                            <span class="sub-icon" aria-hidden="true"></span>
                             <span class="label">学习法律</span>
                         </a>
                     </li>
@@ -1091,7 +1148,18 @@
                     </li>
                     <li>
                         <button class="appearance-toggle" type="button" data-appearance-toggle="font" data-value="serif">
-                            <span class="appearance-font-glyph" aria-hidden="true">A</span>
+                            <svg class="appearance-icon appearance-font-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <g class="appearance-font-serif">
+                                    <path pathLength="1" d="M5 19.2 11.5 4.6h1L19 19.2"></path>
+                                    <path pathLength="1" d="M8 13.4h8"></path>
+                                    <path pathLength="1" d="M3.2 19.2h4.4M16.4 19.2h4.4"></path>
+                                    <path pathLength="1" d="M10.5 4.6h3"></path>
+                                </g>
+                                <g class="appearance-font-sans">
+                                    <path pathLength="1" d="M5 19 12 5l7 14"></path>
+                                    <path pathLength="1" d="M8.2 13.5h7.6"></path>
+                                </g>
+                            </svg>
                             <span class="appearance-label" data-appearance-label>衬线字体</span>
                             <span class="appearance-hint" aria-hidden="true">单击切换</span>
                         </button>

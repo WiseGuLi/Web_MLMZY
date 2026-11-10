@@ -6,22 +6,49 @@
     <meta name="application-name" content="马列毛主义学习站" />
     <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="学习法律：从宪法出发，梳理我国公民的言论、出版、集会、结社、监督与政治参与权利，以及权利行使的法律边界。" />
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
-    <meta name="theme-color" content="#9e1414" />
+    <meta name="theme-color" content="#123f73" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
-    <title>资源 | GuLi 马列毛主义学习站</title>
+    <title>学习法律 | GuLi 马列毛主义学习站</title>
     <style>
+        :root {
+            --blue-950: #081c31;
+            --blue-900: #0b2947;
+            --blue-800: #123f73;
+            --blue-700: #1a5fb4;
+            --blue-600: #2b74cf;
+            --blue-500: #4b91e2;
+            --blue-100: #e8f2fd;
+            --blue-50: #f4f9ff;
+            --paper: #f5f9fe;
+            --card: #ffffff;
+            --ink: #1d2b3a;
+            --muted: #5d6f82;
+            --line: #d6e4f3;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #faf9f5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            color: var(--ink);
+            background:
+                radial-gradient(1000px 500px at 8% -10%, rgba(75, 145, 226, 0.1), transparent 70%),
+                linear-gradient(180deg, #f7fbff 0%, var(--paper) 100%);
+            font-family: var(--sans);
         }
 
         #nav-placeholder,
@@ -29,9 +56,687 @@
             flex-shrink: 0;
         }
 
-        /* 内容尚未整理，先保留空白页面 */
-        .main-content {
-            flex: 1;
+        /* 本站其他页面为红色主题；法律页在页脚也统一为蓝色 */
+        #footer-placeholder .site-footer {
+            background: #0a1e34;
+            border-top-color: var(--blue-600);
+        }
+
+        #footer-placeholder .footer-star {
+            color: #74b5ff;
+        }
+
+        #footer-placeholder .footer-slogan {
+            color: #edf6ff;
+        }
+
+        #footer-placeholder .footer-copy {
+            color: #8ea9c4;
+        }
+
+        .law-page {
+            flex: 1 0 auto;
+        }
+
+        /* ===== 首屏 ===== */
+        .law-hero {
+            position: relative;
+            overflow: hidden;
+            color: #f5faff;
+            background:
+                radial-gradient(620px 340px at 82% 12%, rgba(102, 173, 255, 0.28), transparent 68%),
+                linear-gradient(118deg, #081c31 0%, #0d2f55 44%, #14477f 100%);
+        }
+
+        .law-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+            background-size: 46px 46px;
+            mask-image: linear-gradient(90deg, transparent 0%, #000 48%, #000 100%);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 48%, #000 100%);
+            pointer-events: none;
+        }
+
+        .law-hero::after {
+            content: '';
+            position: absolute;
+            right: -90px;
+            bottom: -190px;
+            width: 520px;
+            height: 520px;
+            border: 1px solid rgba(159, 205, 255, 0.24);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 40px rgba(159, 205, 255, 0.035),
+                0 0 0 92px rgba(159, 205, 255, 0.025);
+            pointer-events: none;
+        }
+
+        .law-hero-inner {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: clamp(3rem, 7vw, 5.4rem) 1.5rem clamp(3rem, 6vw, 4.6rem);
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 210px;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: #9ecbff;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 26px;
+            height: 1px;
+            background: #9ecbff;
+        }
+
+        .law-hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(2.7rem, 6vw, 4.35rem);
+            font-weight: 700;
+            line-height: 1.16;
+            letter-spacing: 0.1em;
+            color: #ffffff;
+        }
+
+        .hero-lead {
+            max-width: 760px;
+            margin-top: 22px;
+            color: #d8e9fb;
+            font-family: var(--serif);
+            font-size: 1.12rem;
+            line-height: 1.95;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 28px;
+        }
+
+        .hero-meta span {
+            padding: 5px 11px;
+            border: 1px solid rgba(170, 211, 255, 0.3);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #c7e0fa;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .hero-mark {
+            position: relative;
+            z-index: 1;
+            width: 190px;
+            height: 190px;
+            color: #b9dcff;
+            opacity: 0.72;
+            justify-self: end;
+        }
+
+        .hero-mark svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ===== 主体布局 ===== */
+        .law-shell {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 3.2rem 1.5rem 5rem;
+            display: grid;
+            grid-template-columns: 244px minmax(0, 1fr);
+            align-items: start;
+            gap: 2.6rem;
+        }
+
+        /* ----- 目录 ----- */
+        .law-toc {
+            position: sticky;
+            top: 88px;
+            padding: 20px 16px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 30px rgba(18, 63, 115, 0.06);
+        }
+
+        .toc-title {
+            padding: 0 8px 11px;
+            border-bottom: 1px solid var(--line);
+            color: var(--blue-800);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        .law-toc nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 10px;
+        }
+
+        .law-toc a {
+            display: block;
+            padding: 8px 9px;
+            border-radius: 5px;
+            color: #465c72;
+            font-size: 14px;
+            line-height: 1.5;
+            text-decoration: none;
+            transition: color 0.15s ease, background 0.15s ease;
+        }
+
+        .law-toc a:hover {
+            color: var(--blue-700);
+            background: var(--blue-50);
+        }
+
+        .law-toc a.is-active {
+            color: var(--blue-700);
+            background: var(--blue-100);
+            font-weight: 600;
+        }
+
+        .toc-note {
+            margin-top: 16px;
+            padding: 14px 8px 0;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+
+        .toc-note a {
+            color: var(--blue-700);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(26, 95, 180, 0.35);
+        }
+
+        .toc-note a:hover {
+            color: #0b4f9e;
+        }
+
+        /* ----- 内容 ----- */
+        .law-content {
+            min-width: 0;
+        }
+
+        .intro-note {
+            margin-bottom: 1.4rem;
+            padding: 14px 17px;
+            border: 1px solid #cfe3f8;
+            border-left: 4px solid var(--blue-600);
+            border-radius: 4px;
+            background: #eff7ff;
+            color: #36536f;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .intro-note strong {
+            color: var(--blue-800);
+        }
+
+        .law-section {
+            margin-bottom: 1.5rem;
+            padding: clamp(1.4rem, 3vw, 2.25rem);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--card);
+            box-shadow: 0 12px 34px rgba(18, 63, 115, 0.045);
+            scroll-margin-top: 88px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .section-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border: 1px solid #c7ddf4;
+            border-radius: 8px;
+            background: var(--blue-50);
+            color: var(--blue-700);
+            font-family: var(--serif);
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .section-kicker {
+            margin-bottom: 3px;
+            color: var(--blue-600);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+
+        .law-section h2 {
+            color: #16395f;
+            font-family: var(--serif);
+            font-size: clamp(1.45rem, 2.5vw, 1.8rem);
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .law-section h3 {
+            color: #1b416b;
+            font-family: var(--serif);
+            font-size: 1.12rem;
+            line-height: 1.55;
+        }
+
+        .law-section p {
+            color: #34495e;
+            font-family: var(--serif);
+            font-size: 1.04rem;
+            line-height: 1.95;
+        }
+
+        .law-section p + p {
+            margin-top: 12px;
+        }
+
+        .law-section p a,
+        .law-closing a {
+            color: var(--blue-700);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(26, 95, 180, 0.35);
+        }
+
+        .law-section p a:hover,
+        .law-closing a:hover {
+            color: #0b4f9e;
+        }
+
+        .law-section p strong {
+            color: #173a5f;
+        }
+
+        /* ----- 宪法条文卡片 ----- */
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .article-card {
+            padding: 17px 17px 16px;
+            border: 1px solid #d6e5f5;
+            border-left: 3px solid var(--blue-600);
+            border-radius: 5px;
+            background: linear-gradient(135deg, #fbfdff 0%, #f2f8ff 100%);
+        }
+
+        .article-card--wide {
+            grid-column: 1 / -1;
+        }
+
+        .article-no {
+            display: inline-block;
+            margin-bottom: 7px;
+            color: var(--blue-700);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .article-card p {
+            font-size: 16px;
+            line-height: 1.82;
+        }
+
+        /* ----- 法律法规条目 ----- */
+        .law-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .law-item {
+            padding: 17px 18px;
+            border: 1px solid #d9e7f6;
+            border-radius: 7px;
+            background: #fbfdff;
+        }
+
+        .law-item-head {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px 10px;
+            margin-bottom: 7px;
+        }
+
+        .law-tag {
+            flex-shrink: 0;
+            padding: 1px 7px;
+            border: 1px solid rgba(26, 95, 180, 0.3);
+            border-radius: 3px;
+            background: rgba(26, 95, 180, 0.06);
+            color: var(--blue-700);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .law-item p {
+            font-size: 16px;
+            line-height: 1.85;
+        }
+
+        .law-item p + p {
+            margin-top: 8px;
+        }
+
+        /* ----- 提示框 ----- */
+        .note-box {
+            margin-top: 18px;
+            padding: 15px 17px;
+            border: 1px solid #cfe3f8;
+            border-radius: 6px;
+            background: #eef7ff;
+        }
+
+        .note-box strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--blue-800);
+            font-family: var(--sans);
+            font-size: 14px;
+            letter-spacing: 0.04em;
+        }
+
+        .note-box p {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        /* ----- 边界卡片 ----- */
+        .boundary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .boundary-card {
+            padding: 17px;
+            border: 1px solid #c8ddf3;
+            border-radius: 7px;
+            background: #f7fbff;
+        }
+
+        .boundary-card h3 {
+            margin-bottom: 7px;
+            font-size: 1.04rem;
+        }
+
+        .boundary-card p {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        /* ----- 总表 ----- */
+        .table-wrap {
+            margin-top: 20px;
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            min-width: 640px;
+            border-collapse: collapse;
+            font-size: 16px;
+            line-height: 1.65;
+        }
+
+        th {
+            padding: 11px 14px;
+            background: #123f73;
+            color: #f1f8ff;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-top: 1px solid #e1ecf8;
+            color: #34495e;
+            font-family: var(--serif);
+            vertical-align: top;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fbff;
+        }
+
+        td:first-child {
+            color: #1d3c5d;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* ----- 结尾 ----- */
+        .law-closing {
+            position: relative;
+            overflow: hidden;
+            margin-top: 1.5rem;
+            padding: clamp(1.6rem, 3.4vw, 2.5rem);
+            border-radius: 12px;
+            background:
+                radial-gradient(420px 220px at 85% 0%, rgba(112, 180, 255, 0.24), transparent 70%),
+                linear-gradient(120deg, #0c2949 0%, #123f73 100%);
+            color: #dcecff;
+        }
+
+        .law-closing h2 {
+            margin-bottom: 12px;
+            color: #ffffff;
+            font-family: var(--serif);
+            font-size: 1.55rem;
+            line-height: 1.5;
+        }
+
+        .law-closing p {
+            color: #d2e6fb;
+            font-family: var(--serif);
+            font-size: 1.02rem;
+            line-height: 1.95;
+        }
+
+        .law-closing p + p {
+            margin-top: 10px;
+        }
+
+        .law-closing a {
+            color: #a9d3ff;
+            border-bottom-color: rgba(169, 211, 255, 0.45);
+        }
+
+        .law-closing a:hover {
+            color: #ffffff;
+        }
+
+        /* ----- 页脚统一蓝色 ----- */
+        #footer-placeholder {
+            margin-top: 0;
+        }
+
+        @media (max-width: 900px) {
+            .law-hero-inner {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 0;
+            }
+
+            .hero-mark {
+                position: absolute;
+                right: 1.5rem;
+                top: 2rem;
+                width: 120px;
+                height: 120px;
+                opacity: 0.22;
+            }
+
+            .law-shell {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 1.6rem;
+                padding-top: 2rem;
+            }
+
+            .law-toc {
+                position: static;
+                padding: 16px;
+            }
+
+            .law-toc nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .law-toc a {
+                padding: 7px 10px;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                font-size: 14px;
+            }
+
+            .toc-note {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .law-hero-inner {
+                padding: 2.6rem 1.25rem 2.8rem;
+            }
+
+            .law-hero h1 {
+                font-size: 2.45rem;
+                letter-spacing: 0.06em;
+            }
+
+            .hero-lead {
+                margin-top: 16px;
+                font-size: 1rem;
+                line-height: 1.9;
+            }
+
+            .hero-meta {
+                margin-top: 20px;
+                gap: 6px;
+            }
+
+            .hero-meta span {
+                padding: 4px 9px;
+                font-size: 14px;
+            }
+
+            .hero-mark {
+                display: none;
+            }
+
+            .law-shell {
+                padding: 1.5rem 1rem 3rem;
+            }
+
+            .law-section {
+                padding: 1.25rem 1rem;
+                border-radius: 9px;
+            }
+
+            .section-head {
+                gap: 10px;
+            }
+
+            .section-num {
+                width: 36px;
+                height: 36px;
+                font-size: 15px;
+            }
+
+            .law-section h2 {
+                font-size: 1.35rem;
+            }
+
+            .article-grid,
+            .boundary-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .article-card--wide {
+                grid-column: auto;
+            }
+
+            .law-section p,
+            .article-card p,
+            .law-item p,
+            .boundary-card p,
+            .note-box p,
+            .law-closing p {
+                font-size: 16px;
+                line-height: 1.85;
+            }
+
+            .law-toc nav {
+                gap: 4px;
+            }
+
+            .law-toc a {
+                padding: 6px 9px;
+                font-size: 14px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .law-toc a {
+                transition: none;
+            }
         }
     </style>
 </head>
@@ -39,36 +744,488 @@
 
     <div id="nav-placeholder"></div>
 
-    <main class="main-content"></main>
+    <main class="law-page">
+        <header class="law-hero">
+            <div class="law-hero-inner">
+                <div>
+                    <p class="eyebrow">资源 · 公民权利</p>
+                    <h1>学习法律</h1>
+                    <p class="hero-lead">从宪法出发，理解我国公民的发言、出版、集会、结社、监督与参与国家政权的制度依据，也看清权利行使的法律边界。</p>
+                    <div class="hero-meta">
+                        <span>宪法基础</span>
+                        <span>权利与边界</span>
+                        <span>现行法律索引</span>
+                    </div>
+                </div>
+
+                <div class="hero-mark" aria-hidden="true">
+                    <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="60" cy="60" r="51" opacity="0.35"></circle>
+                        <circle cx="60" cy="60" r="42" opacity="0.2"></circle>
+                        <path d="M60 25v63"></path>
+                        <path d="M37 34h46"></path>
+                        <path d="M37 34 25 61h24L37 34Z"></path>
+                        <path d="M83 34 71 61h24L83 34Z"></path>
+                        <path d="M45 91h30"></path>
+                        <path d="M51 98h18"></path>
+                        <path d="M60 25a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <div class="law-shell">
+            <aside class="law-toc" aria-label="本页目录">
+                <p class="toc-title">本页目录</p>
+                <nav>
+                    <a href="#foundation">01 宪法基础</a>
+                    <a href="#speech">02 言论与出版</a>
+                    <a href="#assembly">03 集会游行示威</a>
+                    <a href="#association">04 结社自由</a>
+                    <a href="#oversight">05 监督权</a>
+                    <a href="#participation">06 参与国家政权</a>
+                    <a href="#boundaries">07 边界与限制</a>
+                    <a href="#summary">权利—依据—边界</a>
+                </nav>
+                <p class="toc-note">查询现行有效文本，可前往<a href="https://flk.npc.gov.cn/" target="_blank" rel="noopener noreferrer">国家法律法规数据库</a>。</p>
+            </aside>
+
+            <article class="law-content">
+                <div class="intro-note">
+                    <strong>阅读提示：</strong>本页用于学习与索引，不构成法律意见。法律条文可能修订，具体适用也依赖事实与程序；请以国家法律法规数据库公布的现行有效文本为准，必要时咨询专业法律人士。
+                </div>
+
+                <section class="law-section" id="foundation">
+                    <div class="section-head">
+                        <span class="section-num">01</span>
+                        <div>
+                            <p class="section-kicker">一切权利的源头</p>
+                            <h2>宪法基础：一切权利的源头</h2>
+                        </div>
+                    </div>
+
+                    <p>《中华人民共和国宪法》是国家的根本法，也是公民权利最上位的依据。理解言论、出版、集会、结社、游行、示威，以及监督国家机关和参与国家政权的权利，首先要回到宪法。</p>
+
+                    <div class="article-grid">
+                        <article class="article-card">
+                            <span class="article-no">第三十五条</span>
+                            <p>公民有言论、出版、集会、结社、游行、示威的自由。</p>
+                        </article>
+                        <article class="article-card">
+                            <span class="article-no">第四十一条</span>
+                            <p>公民对任何国家机关和国家工作人员，有提出批评和建议的权利；对其违法失职行为，有提出申诉、控告或者检举的权利。</p>
+                        </article>
+                        <article class="article-card">
+                            <span class="article-no">第三十四条</span>
+                            <p>公民有选举权和被选举权，这是参与国家政权最基本的政治权利。</p>
+                        </article>
+                        <article class="article-card">
+                            <span class="article-no">第二条</span>
+                            <p>中华人民共和国的一切权力属于人民。人民行使国家权力的机关是全国人民代表大会和地方各级人民代表大会。</p>
+                        </article>
+                        <article class="article-card article-card--wide">
+                            <span class="article-no">第二十七条</span>
+                            <p>一切国家机关和国家工作人员必须依靠人民的支持，经常保持同人民的密切联系，倾听人民的意见和建议，接受人民的监督，努力为人民服务。</p>
+                        </article>
+                    </div>
+
+                    <div class="note-box">
+                        <strong>原则支撑</strong>
+                        <p>第二条、第二十七条等条款，从人民主权、国家机关必须依靠人民并接受人民监督的角度，为言论、集会、结社、监督等权利提供了原则支撑。权利不是孤立存在的，它同“一切权力属于人民”的国家制度安排联系在一起。</p>
+                    </div>
+                </section>
+
+                <section class="law-section" id="speech">
+                    <div class="section-head">
+                        <span class="section-num">02</span>
+                        <div>
+                            <p class="section-kicker">表达的法律边界</p>
+                            <h2>言论与出版自由</h2>
+                        </div>
+                    </div>
+
+                    <p>宪法第三十五条是总纲。言论、出版自由的具体化，主要分布在出版管理、网络治理和民事人格权保护等法律规范中。表达自由受宪法保障，同时也必须在法律划定的范围内行使。</p>
+
+                    <div class="law-list">
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《出版管理条例》</h3>
+                                <span class="law-tag">行政法规</span>
+                            </div>
+                            <p>规范出版活动，保障公民出版自由，同时划定出版物的内容边界，例如不得危害国家安全、破坏民族团结等。这是言论、出版自由在出版领域的主要行政法规。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《网络安全法》《个人信息保护法》《数据安全法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>网络表达不是法外之地。这几部法律把宪法上的言论自由延伸至数字空间，同时要求行使表达权时不得损害国家安全、公共利益和他人合法权益，并构建个人信息保护与言论自由之间的平衡框架。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《民法典》人格权编</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>言论表达可能涉及他人名誉、隐私、个人信息等。人格权编为言论自由划定了民事法律上的边界，是理解“表达自由与侵权责任”关系的基础。</p>
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <strong>理解要点</strong>
+                        <p>表达自由并不等于任意表达。公开传播、网络发布、出版发行等不同场景，可能同时受到行政法、民事法和刑事法的规范；判断具体行为是否越界，需要结合内容、方式、对象和后果。</p>
+                    </div>
+                </section>
+
+                <section class="law-section" id="assembly">
+                    <div class="section-head">
+                        <span class="section-num">03</span>
+                        <div>
+                            <p class="section-kicker">依法、和平、有序</p>
+                            <h2>集会、游行、示威自由</h2>
+                        </div>
+                    </div>
+
+                    <p>集会、游行、示威是公民表达公共意见的重要方式。宪法确认这项自由，专门法律则规定具体的行使程序、管理规则和法律责任。</p>
+
+                    <div class="law-list">
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国集会游行示威法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>这是集会、游行、示威领域最直接的专门法律。它规定了公民行使集会、游行、示威权利的程序（如申请许可）、主管机关、活动过程中应遵守的规则，以及权利滥用时的法律责任。权利的行使需要在法律框架内进行。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《信访工作条例》（2022年施行）</h3>
+                                <span class="law-tag">法规</span>
+                            </div>
+                            <p>其中也涉及集会秩序。例如，信访人在信访过程中不得在机关周围非法聚集、围堵冲击机关等；违反相关规定的，可能适用集会游行示威法律法规处理。</p>
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <strong>程序意识</strong>
+                        <p>集会、游行、示威自由受法律保护，但行使权利需要遵守法定程序和管理规则。时间、地点、路线、方式等安排，既关系公共安全，也关系权利能否顺利实现。</p>
+                    </div>
+                </section>
+
+                <section class="law-section" id="association">
+                    <div class="section-head">
+                        <span class="section-num">04</span>
+                        <div>
+                            <p class="section-kicker">组织起来的自由</p>
+                            <h2>结社自由</h2>
+                        </div>
+                    </div>
+
+                    <p>结社自由使公民可以通过社会组织，持续地表达意见、开展活动、参与公共生活。我国对不同类型的组织分别建立了登记管理制度。</p>
+
+                    <div class="law-list">
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《社会团体登记管理条例》</h3>
+                                <span class="law-tag">行政法规</span>
+                            </div>
+                            <p>开宗明义规定其立法目的之一是“保障公民的结社自由”。它建立了社会团体的登记管理制度，明确了成立条件、程序以及活动边界，例如不得反对宪法确定的基本原则、不得危害国家安全等。这是公民通过组织化方式实现结社自由的主要行政法规。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《民办非企业单位登记管理暂行条例》《基金会管理条例》</h3>
+                                <span class="law-tag">行政法规</span>
+                            </div>
+                            <p>这两部行政法规分别规范不同类型社会组织的登记与运作，共同构成结社自由的组织法框架。不同组织形式在设立条件、治理结构和活动范围上各有要求。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="law-section" id="oversight">
+                    <div class="section-head">
+                        <span class="section-num">05</span>
+                        <div>
+                            <p class="section-kicker">批评、建议、申诉、控告、检举</p>
+                            <h2>监督权</h2>
+                        </div>
+                    </div>
+
+                    <p>宪法第四十一条赋予公民对国家机关和国家工作人员提出批评、建议，以及对其违法失职行为提出申诉、控告、检举的权利。这类权利的实现渠道比较多元，既包括信访，也包括诉讼、复议和监察举报。</p>
+
+                    <div class="law-list">
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《信访工作条例》</h3>
+                                <span class="law-tag">法规</span>
+                            </div>
+                            <p>系统规定了公民、法人通过信息网络、书信、电话、走访等形式提出建议、意见或投诉请求的渠道和程序，是行使批评建议权最日常的途径之一。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国全国人民代表大会和地方各级人民代表大会代表法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>人大代表享有提出对各方面工作的建议、批评和意见的权利，有关机关、组织必须研究处理并负责答复。公民可以通过自己选举的代表，间接行使批评建议权。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国行政诉讼法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>其立法目的明确包括“监督行政机关依法行使职权”。公民认为行政行为侵犯合法权益，可以提起诉讼，这是对国家机关进行监督的司法途径。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国行政复议法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>为公民对行政行为不服提供行政系统内部的救济与监督渠道，同样是行使监督权的重要法律。行政复议与行政诉讼共同构成行政救济的主要路径。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国监察法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>明确监察机关接受检举、控告，公民对公职人员的违法失职行为可以依法向监察机关反映。这是监督权在反腐败领域的具体化。</p>
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <strong>依法监督</strong>
+                        <p>批评、建议、申诉、控告、检举应当实事求是，依照法定渠道提出。监督权受法律保护，但不得捏造事实诬告陷害他人；举报人、控告人的合法权益也受法律保护。</p>
+                    </div>
+                </section>
+
+                <section class="law-section" id="participation">
+                    <div class="section-head">
+                        <span class="section-num">06</span>
+                        <div>
+                            <p class="section-kicker">人民通过人民代表大会</p>
+                            <h2>参与国家政权</h2>
+                        </div>
+                    </div>
+
+                    <p>宪法第三十四条确认公民的选举权和被选举权。人民通过人民代表大会制度行使国家权力，并通过立法参与、代表联系群众等制度渠道，参与国家政治生活。国家行政机关、监察机关、审判机关、检察机关由人民代表大会产生，对它负责，受它监督；这是“政府对人民负责”的制度基础。</p>
+
+                    <div class="law-list">
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国全国人民代表大会和地方各级人民代表大会选举法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>规定公民选举权和被选举权的具体行使程序，是实现人民通过人民代表大会参与国家政权的基础性法律。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国立法法》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>强调立法应当体现人民意志，坚持全过程人民民主，保障人民通过多种途径参与立法活动。这是公民对国家立法表达意见、参与国家政权运作的重要制度保障。</p>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-item-head">
+                                <h3>《中华人民共和国全国人民代表大会议事规则》《中华人民共和国全国人民代表大会常务委员会议事规则》</h3>
+                                <span class="law-tag">法律</span>
+                            </div>
+                            <p>这些议事规则从程序上保障国家权力机关在民意基础上运行，使立法、监督、决定和任免等职权按照法定程序展开。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="law-section" id="boundaries">
+                    <div class="section-head">
+                        <span class="section-num">07</span>
+                        <div>
+                            <p class="section-kicker">权利不是绝对的</p>
+                            <h2>需要留意的边界与限制</h2>
+                        </div>
+                    </div>
+
+                    <p>上述权利并非绝对。宪法第五十一条规定：公民在行使自由和权利的时候，不得损害国家的、社会的、集体的利益和其他公民的合法的自由和权利。具体法律中普遍设置了边界条款。</p>
+
+                    <div class="boundary-grid">
+                        <article class="boundary-card">
+                            <h3>《网络安全法》</h3>
+                            <p>禁止利用网络从事危害国家安全、煽动颠覆国家政权、传播暴力等活动。网络空间中的表达同样需要遵守法律。</p>
+                        </article>
+                        <article class="boundary-card">
+                            <h3>《社会团体登记管理条例》</h3>
+                            <p>要求社会团体不得反对宪法确定的基本原则，不得危害国家统一、安全和民族团结等。</p>
+                        </article>
+                        <article class="boundary-card">
+                            <h3>《集会游行示威法》</h3>
+                            <p>对集会、游行、示威的时间、地点、路线和方式设有管理规则，并要求依法申请、服从管理。</p>
+                        </article>
+                        <article class="boundary-card">
+                            <h3>《民法典》人格权编</h3>
+                            <p>名誉权、隐私权、个人信息保护等规则，为表达行为划定了不得侵害他人合法权益的民事边界。</p>
+                        </article>
+                    </div>
+
+                    <div class="note-box">
+                        <strong>为什么限制同样重要</strong>
+                        <p>理解这些限制，与了解权利本身同样重要。权利的边界不是对权利的否定，而是为了使每个人都能在同一套法律规则下平等地行使自由。具体案件中，限制是否合法、必要、适度，仍要依据法律和程序判断。</p>
+                    </div>
+                </section>
+
+                <section class="law-section" id="summary">
+                    <div class="section-head">
+                        <span class="section-num">08</span>
+                        <div>
+                            <p class="section-kicker">一页速览</p>
+                            <h2>权利—依据—边界</h2>
+                        </div>
+                    </div>
+
+                    <p>把上面的内容压缩成一张表，可以帮助建立整体框架。它不能替代具体条文，但可以作为继续检索的起点。</p>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>权利 / 事项</th>
+                                    <th>主要法律依据</th>
+                                    <th>需要留意的边界</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>言论、出版</td>
+                                    <td>宪法第三十五条；《出版管理条例》；《网络安全法》《个人信息保护法》《数据安全法》；《民法典》人格权编</td>
+                                    <td>不得危害国家安全、公共利益，不得侵害他人名誉、隐私和个人信息</td>
+                                </tr>
+                                <tr>
+                                    <td>集会、游行、示威</td>
+                                    <td>宪法第三十五条；《集会游行示威法》；《信访工作条例》</td>
+                                    <td>依法申请许可，遵守时间、地点、路线和方式管理，不得非法聚集、围堵冲击机关</td>
+                                </tr>
+                                <tr>
+                                    <td>结社</td>
+                                    <td>宪法第三十五条；《社会团体登记管理条例》；《民办非企业单位登记管理暂行条例》；《基金会管理条例》</td>
+                                    <td>依法登记，不得反对宪法确定的基本原则，不得危害国家统一和安全</td>
+                                </tr>
+                                <tr>
+                                    <td>批评、建议、申诉、控告、检举</td>
+                                    <td>宪法第四十一条；《信访工作条例》；《代表法》；《行政诉讼法》；《行政复议法》；《监察法》</td>
+                                    <td>实事求是，依法定渠道提出，不得捏造事实诬告陷害</td>
+                                </tr>
+                                <tr>
+                                    <td>选举与政治参与</td>
+                                    <td>宪法第三十四条；《选举法》；《立法法》；全国人大及其常委会议事规则</td>
+                                    <td>依照法定程序行使，尊重人民代表大会制度的运行规则</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="law-closing">
+                    <h2>继续查证，继续学习</h2>
+                    <p>这份索引不追求穷尽。围绕人民发言权、集会游行示威、批评建议、国家政权、政府对人民负责和社会主义法治，还有大量法律、行政法规、地方性法规和司法解释值得继续阅读。</p>
+                    <p>建议从<a href="https://flk.npc.gov.cn/" target="_blank" rel="noopener noreferrer">国家法律法规数据库</a>检索现行文本，并结合具体情境咨询专业法律人士。本页会继续补充、修订。</p>
+                </section>
+            </article>
+        </div>
+    </main>
 
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=25')
-            .then(res => {
-                if (!res.ok) throw new Error('网络响应失败');
+        fetch('/components/nav.html?v=26')
+            .then(function (res) {
+                if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();
             })
-            .then(data => {
+            .then(function (data) {
                 document.getElementById('nav-placeholder').innerHTML = data;
             })
-            .catch(err => {
-                console.warn('顶栏加载失败:', err);
+            .catch(function (err) {
+                console.warn('导航栏加载失败:', err);
             });
 
         fetch('/components/footer.html?v=6')
-            .then(res => {
-                if (!res.ok) throw new Error('网络响应失败');
+            .then(function (res) {
+                if (!res.ok) throw new Error('页脚加载失败');
                 return res.text();
             })
-            .then(data => {
+            .then(function (data) {
                 document.getElementById('footer-placeholder').innerHTML = data;
             })
-            .catch(err => {
+            .catch(function (err) {
                 console.warn('页脚加载失败:', err);
             });
     </script>
 
-    <script src="/components/nav.js?v=16"></script>
+    <script>
+        (function () {
+            'use strict';
+
+            var tocLinks = Array.prototype.slice.call(
+                document.querySelectorAll('.law-toc a[href^="#"]')
+            );
+            if (!tocLinks.length) return;
+
+            var linkById = {};
+            tocLinks.forEach(function (link) {
+                linkById[link.getAttribute('href').slice(1)] = link;
+            });
+
+            var sections = Array.prototype.slice.call(
+                document.querySelectorAll('.law-content section[id]')
+            );
+            if (!sections.length) return;
+
+            function setActive(id) {
+                tocLinks.forEach(function (link) {
+                    link.classList.toggle('is-active', link === linkById[id]);
+                });
+            }
+
+            if (typeof window.IntersectionObserver === 'function') {
+                var visible = new Map();
+
+                var observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            visible.set(entry.target.id, entry.boundingClientRect.top);
+                        } else {
+                            visible.delete(entry.target.id);
+                        }
+                    });
+
+                    if (!visible.size) return;
+
+                    var currentId = '';
+                    var currentTop = Infinity;
+                    visible.forEach(function (top, id) {
+                        if (top < currentTop) {
+                            currentTop = top;
+                            currentId = id;
+                        }
+                    });
+                    if (currentId) setActive(currentId);
+                }, {
+                    rootMargin: '-18% 0px -64% 0px',
+                    threshold: 0
+                });
+
+                sections.forEach(function (section) {
+                    observer.observe(section);
+                });
+            }
+
+            setActive('foundation');
+        })();
+    </script>
+
+    <script src="/components/nav.js?v=17"></script>
 </body>
 </html>

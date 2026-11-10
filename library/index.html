@@ -214,7 +214,7 @@
 
         .segmented-control label {
             flex: 0 0 auto;
-            padding: 10px 26px;
+            padding: 10px 32px;
             text-align: center;
             font-size: 1.05rem;
             font-weight: 500;
@@ -351,6 +351,9 @@
         @media (min-width: 1100px) {
             .book-list.view-double {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 24px;
+                padding-left: 20px;
+                padding-right: 20px;
             }
         }
 
@@ -745,8 +748,14 @@
                 grid-template-columns: minmax(0, 1fr) auto;
                 align-items: start;
                 column-gap: 10px;
-                row-gap: 8px;
+                row-gap: 6px;
                 padding: 16px 2px;
+            }
+
+            .book-author,
+            .book-desc,
+            .book-quote {
+                margin-top: 0;
             }
 
             .book-info {
@@ -929,7 +938,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=25')
+        fetch('/components/nav.html?v=26')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -1793,6 +1802,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js?v=16"></script>
+    <script src="/components/nav.js?v=17"></script>
 </body>
 </html>
