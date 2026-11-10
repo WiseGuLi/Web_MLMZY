@@ -214,7 +214,7 @@
 
         .segmented-control label {
             flex: 0 0 auto;
-            padding: 10px 32px;
+            padding: 10px 34px;
             text-align: center;
             font-size: 1.05rem;
             font-weight: 500;
@@ -310,11 +310,55 @@
             gap: 1.5rem;
             padding: 20px 4px;
             border-bottom: 1px solid var(--line);
-            transition: background 0.15s ease;
+            transition: background 0.15s ease, transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            animation: book-fade-in 0.22s ease;
         }
 
         .book-item:hover {
             background: rgba(255, 255, 255, 0.55);
+        }
+
+        /* 列表入场、简介展开和布局切换的轻量动画 */
+        @keyframes book-fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes book-detail-in {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes book-view-swap {
+            from {
+                opacity: 0.55;
+                transform: translateY(3px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes book-menu-in {
+            from {
+                opacity: 0;
+                transform: translateY(-4px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         /* 双列：每本书独立高度，完整显示简介和引用 */
@@ -373,6 +417,12 @@
         .book-list.view-double .book-item:hover {
             background: #fffefb;
             border-color: #d8d0c3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(50, 43, 35, 0.08);
+        }
+
+        .book-list.is-view-switching {
+            animation: book-view-swap 0.24s ease;
         }
 
         .book-list.view-double .book-info {
@@ -490,17 +540,16 @@
             line-height: 1.75;
         }
 
-        .book-item.is-expanded .book-desc {
-            display: block;
-        }
-
+        .book-item.is-expanded .book-desc,
         .book-item.search-open .book-desc {
             display: block;
+            animation: book-detail-in 0.22s ease;
         }
 
         .book-item.is-expanded .book-quote,
         .book-item.search-open .book-quote {
             display: block;
+            animation: book-detail-in 0.22s ease;
         }
 
         .search-hit {
@@ -538,7 +587,13 @@
             line-height: 1.4;
             text-decoration: none;
             white-space: nowrap;
-            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .book-btn:hover {
+                transform: translateY(-1px);
+            }
         }
 
         .book-btn-primary {
@@ -602,6 +657,11 @@
             box-shadow: 0 10px 28px rgba(33, 27, 20, 0.16);
         }
 
+        /* 下载菜单展开动画：只影响菜单自身，不改变按钮尺寸 */
+        .book-download[open] .book-download-menu {
+            animation: book-menu-in 0.16s ease;
+        }
+
         .book-download-menu button {
             display: block;
             width: 100%;
@@ -617,6 +677,7 @@
             text-align: left;
             white-space: nowrap;
             cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
         }
 
         .book-download-menu button:hover,
@@ -848,6 +909,16 @@
             .back-to-top {
                 transition: none;
             }
+
+            .book-item,
+            .book-list.is-view-switching,
+            .book-download[open] .book-download-menu,
+            .book-item.is-expanded .book-desc,
+            .book-item.search-open .book-desc,
+            .book-item.is-expanded .book-quote,
+            .book-item.search-open .book-quote {
+                animation: none;
+            }
         }
     </style>
 </head>
@@ -938,7 +1009,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=26')
+        fetch('/components/nav.html?v=27')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -959,6 +1030,7 @@
             'use strict';
 
             var R2_BASE = 'https://files.mlmzy.org/';
+            /* 主文库和“全集”分开维护，页面加载时统一合并到 books 数组。 */
             var LIBRARY_CONFIG_URL = '/data/文库/文库.csv';
             var COLLECTION_CONFIG_URL = '/data/文库/文库_全集.csv';
             var MERGED_AUTHOR = '马克思 & 恩格斯';
@@ -995,6 +1067,7 @@
             var narrowMedia = window.matchMedia('(max-width: 700px)');
             var threeColMedia = window.matchMedia('(min-width: 1100px)');
             var desiredView = 'single';
+            var viewAnimationTimer = null;
             var bottomSpace = document.getElementById('libraryBottomSpace');
             var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 180;
             var activeBookItem = null;
@@ -1073,6 +1146,7 @@
                 return 2;
             }
 
+            /* 单列、双列、三列共用此函数；只切换 class，不重建书籍节点。 */
             function applyViewMode() {
                 var actualView = narrowMedia.matches ? 'single' : desiredView;
                 bookList.classList.toggle('view-double', actualView === 'double');
@@ -1086,6 +1160,15 @@
                 viewButtons.forEach(function (button) {
                     button.setAttribute('aria-pressed', String(button.getAttribute('data-view') === desiredView));
                 });
+
+                /* 切换布局时播放一次轻微淡入，避免卡片位置突然跳变。 */
+                bookList.classList.remove('is-view-switching');
+                void bookList.offsetWidth;
+                bookList.classList.add('is-view-switching');
+                window.clearTimeout(viewAnimationTimer);
+                viewAnimationTimer = window.setTimeout(function () {
+                    bookList.classList.remove('is-view-switching');
+                }, 260);
 
                 resetBottomSpace();
                 window.requestAnimationFrame(rememberBookHeights);
@@ -1114,6 +1197,7 @@
             function updateSlider() {
                 if (!control.offsetParent) return;
 
+                /* 白色胶囊只覆盖当前分类标签，宽度跟随文字实时变化。 */
                 var index = 0;
                 radios.forEach(function (radio, i) {
                     if (radio.checked) index = i;
@@ -1191,8 +1275,7 @@
             }
 
             /* 兼容“马克思，恩格斯”和“马克思&恩格斯”两种写法，统一为合并作者。 */
-            function isMergedAuthor(value) {
-                var text = String(value == null ? '' : value).trim();
+            function isMergedAuthor(value) {                var text = String(value == null ? '' : value).trim();
                 return text === MERGED_AUTHOR ||
                     /马克思\s*[&＆]\s*恩格斯/.test(text) ||
                     /恩格斯\s*[&＆]\s*马克思/.test(text);
@@ -1377,6 +1460,7 @@
             }
 
             function createDownloadDropdown(book, files) {
+                /* 多格式书籍使用 details 实现无依赖的下载菜单。 */
                 var details = document.createElement('details');
                 details.className = 'book-download';
 
@@ -1431,6 +1515,7 @@
                 var li = document.createElement('li');
                 li.className = 'book-item';
 
+                /* 搜索命中简介或引用时自动展开，并播放入场动画。 */
                 if (terms.length) {
                     var descMatched = includesAny(book.searchDescription, terms);
                     var quoteMatched = includesAny(book.searchQuote, terms);
@@ -1477,7 +1562,8 @@
 
                 var author = document.createElement('p');
                 author.className = 'book-author';
-                author.textContent = '作者：' + book.authorDisplay;
+                author.textContent = book.authorDisplay;
+                author.setAttribute('aria-label', '作者：' + book.authorDisplay);
 
                 var desc = document.createElement('p');
                 desc.className = 'book-desc';
@@ -1552,6 +1638,7 @@
                 return li;
             }
 
+            /* 按当前分类和搜索词过滤、排序，然后重建列表节点。 */
             function renderBooks() {
                 var category = getSelectedCategory();
                 var terms = getSearchTerms();
@@ -1629,6 +1716,7 @@
                 }
             }
 
+            /* 读取一个 CSV 并转换为统一的书籍对象；表头缺列时直接报错。 */
             async function fetchLibraryBooks(url, isCollection) {
                 var response = await fetch(url + '?t=' + Date.now(), {
                     cache: 'no-store'
@@ -1662,6 +1750,7 @@
             }
 
             async function loadBooks() {
+                /* 两个 CSV 并行加载；全集为空或缺失时不影响主文库。 */
                 statusBox.hidden = false;
                 statusBox.textContent = '正在加载文库…';
                 resetBottomSpace();

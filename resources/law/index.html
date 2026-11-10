@@ -10,7 +10,7 @@
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#123f73" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
-    <title>学习法律 | GuLi 马列毛主义学习站</title>
+    <title>法律 | GuLi 马列毛主义学习站</title>
     <style>
         :root {
             --blue-950: #081c31;
@@ -72,6 +72,21 @@
 
         #footer-placeholder .footer-copy {
             color: #8ea9c4;
+        }
+
+        /* 法律页的“回到顶部”沿用蓝色主题 */
+        #nav-placeholder .site-back-to-top {
+            color: var(--blue-700);
+            border-color: rgba(26, 95, 180, 0.28);
+            box-shadow: 0 8px 24px rgba(18, 63, 115, 0.18);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            #nav-placeholder .site-back-to-top:hover {
+                background: var(--blue-700);
+                color: #ffffff;
+                border-color: var(--blue-700);
+            }
         }
 
         .law-page {
@@ -1139,7 +1154,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=26')
+        fetch('/components/nav.html?v=27')
             .then(function (res) {
                 if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();
