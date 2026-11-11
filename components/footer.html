@@ -2,6 +2,7 @@
     /* ===== 全站页脚：所有页面底部统一显示 ===== */
     .site-footer {
         position: relative;
+        overflow: hidden;
         flex-shrink: 0;
         background: #211d1a;
         color: #d8cfc2;
@@ -16,10 +17,27 @@
     }
 
     .footer-inner {
+        position: relative;
+        z-index: 1;
         max-width: 1120px;
         margin: 0 auto;
         padding: 14px 2rem;
         text-align: center;
+    }
+
+    /* 页脚右侧的五位人物剪影，用遮罩统一成低调的暖金色 */
+    .footer-portrait {
+        position: absolute;
+        top: 50%;
+        right: 2rem;
+        width: clamp(180px, 24vw, 320px);
+        aspect-ratio: 2643 / 1483;
+        transform: translateY(-50%);
+        background-color: #c9b28b;
+        opacity: 0.2;
+        -webkit-mask: url('/pictures/%E9%A9%AC%E5%88%97%E6%81%A9%E6%96%AF%E6%AF%9B%E5%A4%B4%E5%83%8F.svg') center / contain no-repeat;
+        mask: url('/pictures/%E9%A9%AC%E5%88%97%E6%81%A9%E6%96%AF%E6%AF%9B%E5%A4%B4%E5%83%8F.svg') center / contain no-repeat;
+        pointer-events: none;
     }
 
     .footer-star {
@@ -62,6 +80,12 @@
         pointer-events: none;
     }
 
+    @media (max-width: 900px) {
+        .footer-portrait {
+            display: none;
+        }
+    }
+
     @media (max-width: 640px) {
         .footer-inner {
             padding: 12px 1.25rem;
@@ -89,6 +113,8 @@
         <p class="footer-slogan">全世界无产者，联合起来！</p>
         <p class="footer-copy">本站为公益学习网站，内容仅供学习研究使用</p>
     </div>
+
+    <div class="footer-portrait" aria-hidden="true"></div>
 
     <!-- LibreCounter 全站统计：隐藏计数，不进入其首页榜单。
          请勿添加 loading="lazy"，否则用户不滚动到页脚时不会被统计。 -->
