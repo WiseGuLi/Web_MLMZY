@@ -1159,7 +1159,7 @@
             })
             .catch(error => console.error('导航栏加载失败:', error));
 
-        fetch('/components/footer.html?v=9')
+        fetch('/components/footer.html?v=10')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('footer-placeholder').innerHTML = data;
@@ -1215,7 +1215,6 @@
             var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 180;
             var activeBookItem = null;
             var hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
-            var reducedMotionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
             var progressSection = document.getElementById('libraryProgress');
             var progressTrack = document.getElementById('downloadTrack');
             var progressFill = document.getElementById('downloadFill');
@@ -1751,14 +1750,14 @@
                 details.appendChild(summary);
                 details.appendChild(menu);
 
-                var menuAnimation = null;
+                var menuFadeFrame = 0;
 
                 details.addEventListener('toggle', function () {
                     if (!details.open) {
-                        if (menuAnimation) {
-                            menuAnimation.cancel();
-                            menuAnimation = null;
-                        }
+                        window.cancelAnimationFrame(menuFadeFrame);
+                        menuFadeFrame = 0;
+                        menu.style.transition = '';
+                        menu.style.opacity = '';
                         return;
                     }
 
@@ -1769,23 +1768,22 @@
                         }
                     );
 
-                    /* 每次展开只保留一个动画实例，避免连续点击时动画重叠。 */
-                    if (menuAnimation) {
-                        menuAnimation.cancel();
-                        menuAnimation = null;
+                    /* 每次只启动一个淡入 transition，连续开关也不会叠加。 */
+                    window.cancelAnimationFrame(menuFadeFrame);
+                    menu.style.transition = 'none';
+                    menu.style.opacity = '0';
+                    void menu.offsetWidth;
+
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                        menu.style.opacity = '1';
+                        return;
                     }
-                    if (!reducedMotionMedia.matches && typeof menu.animate === 'function') {
-                        menuAnimation = menu.animate([
-                            { opacity: 0, transform: 'translateY(-4px) scale(0.98)' },
-                            { opacity: 1, transform: 'translateY(0) scale(1)' }
-                        ], {
-                            duration: 160,
-                            easing: 'ease'
-                        });
-                        menuAnimation.onfinish = function () {
-                            menuAnimation = null;
-                        };
-                    }
+
+                    menuFadeFrame = window.requestAnimationFrame(function () {
+                        if (!details.open) return;
+                        menu.style.transition = 'opacity 0.16s ease';
+                        menu.style.opacity = '1';
+                    });
                 });
 
                 return details;
