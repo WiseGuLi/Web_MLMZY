@@ -25,19 +25,18 @@
         text-align: center;
     }
 
-    /* 页脚右侧的五位人物剪影，用遮罩统一成低调的暖金色 */
+    /* 页脚右侧的五位人物剪影：反相后做成低调的暖铜色线刻效果 */
     .footer-portrait {
         position: absolute;
         top: 50%;
         right: 2rem;
-        width: clamp(180px, 24vw, 320px);
-        aspect-ratio: 2643 / 1483;
+        width: clamp(160px, 18vw, 240px);
+        height: auto;
         transform: translateY(-50%);
-        background-color: #c9b28b;
         opacity: 0.2;
-        -webkit-mask: url('/pictures/%E9%A9%AC%E5%88%97%E6%81%A9%E6%96%AF%E6%AF%9B%E5%A4%B4%E5%83%8F.svg') center / contain no-repeat;
-        mask: url('/pictures/%E9%A9%AC%E5%88%97%E6%81%A9%E6%96%AF%E6%AF%9B%E5%A4%B4%E5%83%8F.svg') center / contain no-repeat;
+        filter: invert(1) sepia(0.9) saturate(1.8) hue-rotate(340deg) brightness(0.95);
         pointer-events: none;
+        user-select: none;
     }
 
     .footer-star {
@@ -114,7 +113,13 @@
         <p class="footer-copy">本站为公益学习网站，内容仅供学习研究使用</p>
     </div>
 
-    <div class="footer-portrait" aria-hidden="true"></div>
+    <img
+        class="footer-portrait"
+        src="/pictures/%E9%A9%AC%E5%88%97%E6%81%A9%E6%96%AF%E6%AF%9B%E5%A4%B4%E5%83%8F.svg"
+        alt=""
+        aria-hidden="true"
+        draggable="false"
+    />
 
     <!-- LibreCounter 全站统计：隐藏计数，不进入其首页榜单。
          请勿添加 loading="lazy"，否则用户不滚动到页脚时不会被统计。 -->

@@ -350,17 +350,6 @@
             }
         }
 
-        @keyframes book-menu-in {
-            from {
-                opacity: 0;
-                transform: translateY(-4px) scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
         /* 双列：每本书独立高度，完整显示简介和引用 */
         .book-list.view-double {
             display: grid;
@@ -765,11 +754,6 @@
             box-shadow: 0 10px 28px rgba(33, 27, 20, 0.16);
         }
 
-        /* 下载菜单展开动画：只影响菜单自身，不改变按钮尺寸 */
-        .book-download-menu.is-opening {
-            animation: book-menu-in 0.16s ease;
-        }
-
         .book-download-menu button {
             display: block;
             width: 100%;
@@ -1052,7 +1036,6 @@
 
             .book-item,
             .book-list.is-view-switching,
-            .book-download-menu.is-opening,
             .book-item.is-expanded .book-desc,
             .book-item.search-open .book-desc,
             .book-item.is-expanded .book-quote,
@@ -1176,7 +1159,7 @@
             })
             .catch(error => console.error('导航栏加载失败:', error));
 
-        fetch('/components/footer.html?v=8')
+        fetch('/components/footer.html?v=9')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('footer-placeholder').innerHTML = data;
@@ -1232,6 +1215,7 @@
             var bottomSpaceBase = bottomSpace ? Math.round(bottomSpace.getBoundingClientRect().height) : 180;
             var activeBookItem = null;
             var hoverMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
+            var reducedMotionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
             var progressSection = document.getElementById('libraryProgress');
             var progressTrack = document.getElementById('downloadTrack');
             var progressFill = document.getElementById('downloadFill');
@@ -1767,9 +1751,14 @@
                 details.appendChild(summary);
                 details.appendChild(menu);
 
+                var menuAnimation = null;
+
                 details.addEventListener('toggle', function () {
                     if (!details.open) {
-                        menu.classList.remove('is-opening');
+                        if (menuAnimation) {
+                            menuAnimation.cancel();
+                            menuAnimation = null;
+                        }
                         return;
                     }
 
@@ -1780,14 +1769,23 @@
                         }
                     );
 
-                    /* 重新触发一次动画，保证每次展开菜单都有过渡。 */
-                    menu.classList.remove('is-opening');
-                    void menu.offsetWidth;
-                    menu.classList.add('is-opening');
-                    window.clearTimeout(menu.menuAnimationTimer);
-                    menu.menuAnimationTimer = window.setTimeout(function () {
-                        menu.classList.remove('is-opening');
-                    }, 200);
+                    /* 每次展开只保留一个动画实例，避免连续点击时动画重叠。 */
+                    if (menuAnimation) {
+                        menuAnimation.cancel();
+                        menuAnimation = null;
+                    }
+                    if (!reducedMotionMedia.matches && typeof menu.animate === 'function') {
+                        menuAnimation = menu.animate([
+                            { opacity: 0, transform: 'translateY(-4px) scale(0.98)' },
+                            { opacity: 1, transform: 'translateY(0) scale(1)' }
+                        ], {
+                            duration: 160,
+                            easing: 'ease'
+                        });
+                        menuAnimation.onfinish = function () {
+                            menuAnimation = null;
+                        };
+                    }
                 });
 
                 return details;
