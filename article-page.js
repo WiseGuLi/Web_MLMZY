@@ -17,6 +17,8 @@
     var configLoaded = false;
     var markdownCache = Object.create(null);
     var articleRequestToken = 0;
+    var downloadStats = null;
+    var downloadStatsPromise = null;
 
     function setSidebarHidden(hidden) {
         articlePage.classList.toggle('sidebar-hidden', hidden);
@@ -218,7 +220,105 @@
                 '<p>这里按主题整理理论学习、历史与现实相关的文章，目前共收录 ' + total + ' 篇，分为 ' + CATEGORIES.length + ' 个分类。</p>' +
                 '<p>可以按左侧分类浏览，或从下方分类入口进入。</p>' +
             '</div>' +
-            '<nav class="mobile-category-list" aria-label="文章分类">' + mobileCategories + '</nav>';
+            '<nav class="mobile-category-list" aria-label="文章分类">' + mobileCategories + '</nav>' +
+            '<section class="article-download" id="articleDownload" aria-labelledby="articleDownloadTitle" hidden>' +
+                '<div class="article-download-head">' +
+                    '<div>' +
+                        '<p class="article-download-kicker">文库与文章下载量</p>' +
+                        '<h2 class="article-download-title" id="articleDownloadTitle">本月下载 <strong id="articleDownloadMonthly">—</strong> 次</h2>' +
+                    '</div>' +
+                    '<div class="article-download-meta">' +
+                        '<p class="article-download-limit">总量上限 <span id="articleDownloadLimit">—</span></p>' +
+                        '<p class="article-download-percent" id="articleDownloadPercent">—</p>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="article-download-track" id="articleDownloadTrack" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">' +
+                    '<span class="article-download-fill" id="articleDownloadFill"></span>' +
+                '</div>' +
+            '</section>';
+
+        loadDownloadStats();
+    }
+
+    function formatCount(value) {
+        return Number(value).toLocaleString('zh-CN');
+    }
+
+    function formatPercent(value) {
+        return Number(value).toFixed(2) + '%';
+    }
+
+    function renderDownloadStats() {
+        var section = document.getElementById('articleDownload');
+        if (!section || !downloadStats) return;
+
+        var monthly = document.getElementById('articleDownloadMonthly');
+        var limit = document.getElementById('articleDownloadLimit');
+        var percent = document.getElementById('articleDownloadPercent');
+        var track = document.getElementById('articleDownloadTrack');
+        var fill = document.getElementById('articleDownloadFill');
+        if (!monthly || !limit || !percent || !track || !fill) return;
+
+        monthly.textContent = formatCount(downloadStats.monthly);
+        limit.textContent = formatCount(downloadStats.limit);
+        percent.textContent = formatPercent(downloadStats.percent);
+        track.setAttribute('aria-valuemax', String(downloadStats.limit));
+        track.setAttribute('aria-valuenow', String(downloadStats.monthly));
+        track.setAttribute('aria-valuetext', '本月下载 ' + formatCount(downloadStats.monthly) + ' 次，总量上限 ' + formatCount(downloadStats.limit) + ' 次');
+
+        section.hidden = false;
+        fill.style.width = '0px';
+        window.requestAnimationFrame(function () {
+            var width = Math.max(4, Math.round(track.clientWidth * downloadStats.percent / 100));
+            fill.style.width = width + 'px';
+        });
+    }
+
+    function loadDownloadStats() {
+        if (!document.getElementById('articleDownload')) return;
+        if (downloadStats) {
+            renderDownloadStats();
+            return;
+        }
+        if (downloadStatsPromise) {
+            downloadStatsPromise.then(renderDownloadStats);
+            return;
+        }
+
+        downloadStatsPromise = fetch('/data/文库/文库_下载量.csv?t=' + Date.now(), { cache: 'no-store' })
+            .then(function (response) {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.text();
+            })
+            .then(function (text) {
+                var rows = parseCsv(text);
+                if (rows.length < 2) return null;
+
+                var headers = rows[0].map(function (cell) { return cell.trim(); });
+                var monthlyIndex = headers.indexOf('本月下载量');
+                var limitIndex = headers.indexOf('总下载量限制');
+                if (limitIndex === -1) limitIndex = headers.indexOf('总下载量');
+                if (monthlyIndex === -1 || limitIndex === -1) return null;
+
+                var monthly = Number(String(rows[1][monthlyIndex] || '').replace(/[^\d.]/g, ''));
+                var limit = Number(String(rows[1][limitIndex] || '').replace(/[^\d.]/g, ''));
+                if (!isFinite(monthly) || !isFinite(limit) || !limit) return null;
+
+                downloadStats = {
+                    monthly: monthly,
+                    limit: limit,
+                    percent: Math.min(100, monthly / limit * 100)
+                };
+                return downloadStats;
+            })
+            .then(function (stats) {
+                if (stats) renderDownloadStats();
+            })
+            .catch(function (error) {
+                console.warn('下载量加载失败:', error);
+            });
+
+        return downloadStatsPromise;
     }
 
     function renderCategory(category) {

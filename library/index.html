@@ -1133,7 +1133,7 @@
         <section class="library-progress" id="libraryProgress" aria-labelledby="libraryProgressTitle" hidden>
             <div class="library-progress-head">
                 <div>
-                    <p class="library-progress-kicker">文库下载量</p>
+                    <p class="library-progress-kicker">文库与文章下载量</p>
                     <h2 class="library-progress-title" id="libraryProgressTitle">本月下载 <strong id="downloadMonthly">—</strong> 次</h2>
                 </div>
                 <div class="library-progress-meta">
@@ -1153,7 +1153,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=27')
+        fetch('/components/nav.html?v=28')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -2181,6 +2181,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js?v=17"></script>
+    <script src="/components/nav.js?v=18"></script>
 </body>
 </html>

@@ -277,6 +277,51 @@
         color: #cc0000;
     }
 
+    /* ===== 尚未开放的功能：灰色、不可点击 ===== */
+    .nav-links a.nav-disabled-link,
+    .nav-links a.nav-disabled-link:hover {
+        color: #a29b91;
+        background: transparent;
+        cursor: not-allowed;
+    }
+
+    .nav-links a.nav-disabled-link img,
+    .nav-more.nav-disabled > details > summary img {
+        filter: grayscale(1);
+        opacity: 0.45;
+    }
+
+    .nav-more.nav-disabled > details > summary,
+    .nav-more.nav-disabled > details > summary:hover {
+        color: #a29b91 !important;
+        background: transparent !important;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
+    .nav-more.nav-disabled > details > summary .caret {
+        display: none;
+    }
+
+    .nav-sub .nav-sub-link.nav-disabled {
+        color: #a29b91;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
+    .nav-sub .nav-sub-link.nav-disabled img {
+        filter: grayscale(1);
+        opacity: 0.45;
+    }
+
+    .nav-quick-btn:disabled,
+    .nav-quick-btn:disabled:hover {
+        color: #a29b91 !important;
+        background: transparent !important;
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
     /* ===== “外观”下拉：两个状态切换键（目前只记录选择，不改变页面外观） ===== */
     .nav-sub .appearance-toggle {
         display: flex;
@@ -985,7 +1030,7 @@
     </a>
 
     <div class="nav-quick-appearance" role="group" aria-label="外观快捷切换">
-        <button class="nav-quick-btn" type="button" data-appearance-toggle="theme" data-value="light" aria-label="亮色模式，单击切换" title="亮色模式，单击切换">
+        <button class="nav-quick-btn" type="button" data-appearance-toggle="theme" data-value="light" aria-label="外观功能暂未开放" title="外观功能暂未开放" disabled>
             <svg class="appearance-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <g class="appearance-theme-sun">
                     <circle cx="12" cy="12" r="5.2"></circle>
@@ -997,7 +1042,7 @@
             </svg>
             <span class="appearance-sr" data-appearance-label>亮色模式</span>
         </button>
-        <button class="nav-quick-btn" type="button" data-appearance-toggle="font" data-value="serif" aria-label="衬线字体，单击切换" title="衬线字体，单击切换">
+        <button class="nav-quick-btn" type="button" data-appearance-toggle="font" data-value="serif" aria-label="外观功能暂未开放" title="外观功能暂未开放" disabled>
             <svg class="appearance-icon appearance-font-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <g class="appearance-font-serif">
                     <path pathLength="1" d="M5 19.2 11.5 4.6"></path>
@@ -1050,10 +1095,10 @@
                 </summary>
                 <ul class="nav-sub">
                     <li>
-                        <a href="/resources/revolutionary-art">
+                        <span class="nav-sub-link nav-disabled" aria-disabled="true" title="功能暂未开放">
                             <img src="/icons/顶栏/资源/文艺.svg?v=1" alt="革命文艺图标">
                             <span class="label">革命文艺</span>
-                        </a>
+                        </span>
                     </li>
                     <li>
                         <a class="nav-law" href="/resources/law">
@@ -1065,14 +1110,14 @@
             </details>
         </li>
         <li class="nav-international">
-            <a href="/international">
+            <a class="nav-disabled-link" aria-disabled="true" title="功能暂未开放">
                 <img src="/icons/顶栏/国际.svg?v=1" alt="国际共运图标">
                 <span class="label">国际共运</span>
             </a>
         </li>
-        <li class="nav-more nav-more--icon">
+        <li class="nav-more nav-more--icon nav-disabled">
             <details>
-                <summary>
+                <summary aria-disabled="true" tabindex="-1" title="功能暂未开放">
                     <img src="/icons/顶栏/教程/教程.svg?v=2" alt="教程图标">
                     <span class="label">教程</span>
                     <span class="caret" aria-hidden="true"></span>
@@ -1114,7 +1159,7 @@
                         </a>
                     </li>
                     <li>
-                        <span class="nav-sub-link" aria-disabled="true" title="功能暂未开放">
+                        <span class="nav-sub-link nav-disabled" aria-disabled="true" title="功能暂未开放">
                             <img src="/icons/顶栏/下载/手机.svg?v=2" alt="手机图标">
                             <span class="label">下载安卓版</span>
                         </span>
@@ -1128,9 +1173,9 @@
                 <span class="label">关于</span>
             </a>
         </li>
-        <li class="nav-more nav-more--icon nav-appearance">
+        <li class="nav-more nav-more--icon nav-appearance nav-disabled">
             <details>
-                <summary>
+                <summary aria-disabled="true" tabindex="-1" title="功能暂未开放">
                     <img src="/icons/顶栏/外观.svg?v=1" alt="外观图标">
                     <span class="label">外观</span>
                     <span class="caret" aria-hidden="true"></span>

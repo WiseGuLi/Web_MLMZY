@@ -72,6 +72,16 @@
         }
     });
 
+    /* 禁用尚未开放的功能：阻止下拉展开和链接跳转 */
+    document.addEventListener('click', function (event) {
+        var disabled = event.target.closest
+            ? event.target.closest('.nav-disabled, .nav-disabled-link')
+            : null;
+        if (!disabled) return;
+        event.preventDefault();
+        event.stopPropagation();
+    }, true);
+
     /* 收起手机菜单时，同时收起所有下拉列表 */
     document.addEventListener('change', function (event) {
         if (event.target && event.target.id === 'nav-toggle' && !event.target.checked) {
@@ -232,6 +242,8 @@
     }
 
     function syncButton(button) {
+        if (button.disabled) return;
+
         var type = button.getAttribute('data-appearance-toggle');
         if (type !== 'theme' && type !== 'font') return;
 

@@ -585,6 +585,88 @@
             border-color: rgba(158, 20, 20, 0.4);
         }
 
+        /* ----- 文章首页的文库与文章下载量 ----- */
+        .article-download {
+            max-width: 700px;
+            margin-top: 32px;
+            padding: 20px 22px 18px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--card);
+            box-shadow: 0 8px 24px rgba(50, 43, 35, 0.045);
+        }
+
+        .article-download[hidden] {
+            display: none;
+        }
+
+        .article-download-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .article-download-kicker {
+            margin-bottom: 4px;
+            color: #8a7f72;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+
+        .article-download-title {
+            color: var(--ink);
+            font-family: var(--serif);
+            font-size: 1.22rem;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .article-download-title strong {
+            color: var(--red);
+            font-size: 1.38rem;
+        }
+
+        .article-download-meta {
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .article-download-limit {
+            color: #746b61;
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .article-download-percent {
+            margin-top: 3px;
+            color: var(--red);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .article-download-track {
+            height: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #eee8de;
+        }
+
+        .article-download-fill {
+            display: block;
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #b21c1c 0%, var(--red) 60%, #c33d3d 100%);
+            transition: width 0.9s cubic-bezier(0.22, 0.7, 0.3, 1);
+        }
+
         @media (max-width: 960px) {
             .article-page {
                 display: block;
@@ -681,6 +763,27 @@
                 line-height: 1.95;
             }
         }
+
+        @media (max-width: 640px) {
+            .article-download {
+                margin-top: 24px;
+                padding: 17px 16px 16px;
+            }
+
+            .article-download-head {
+                align-items: flex-end;
+                gap: 8px;
+            }
+
+            .article-download-title {
+                font-size: 1rem;
+                line-height: 1.45;
+            }
+
+            .article-download-title strong {
+                font-size: 1.12rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -720,11 +823,11 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=2"></script>
+    <script src="/article-page.js?v=3"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=27')
+        fetch('/components/nav.html?v=28')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -749,6 +852,6 @@
             });
     </script>
 
-    <script src="/components/nav.js?v=17"></script>
+    <script src="/components/nav.js?v=18"></script>
 </body>
 </html>
