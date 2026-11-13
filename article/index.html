@@ -372,6 +372,207 @@
             margin-top: 14px;
         }
 
+        /* ----- 文章标签 ----- */
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 13px;
+        }
+
+        .article-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border: 1px solid rgba(158, 20, 20, 0.28);
+            border-radius: 999px;
+            background: rgba(158, 20, 20, 0.05);
+            color: var(--red);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.7;
+        }
+
+        /* ----- Markdown 正文 ----- */
+        .article-body h1,
+        .article-body h2,
+        .article-body h3,
+        .article-body h4,
+        .article-body h5,
+        .article-body h6 {
+            margin: 1.65em 0 0.65em;
+            color: var(--ink);
+            font-family: var(--serif);
+            font-weight: 700;
+            line-height: 1.55;
+        }
+
+        .article-body h1 {
+            font-size: 1.65rem;
+        }
+
+        .article-body h2 {
+            font-size: 1.42rem;
+        }
+
+        .article-body h3 {
+            font-size: 1.22rem;
+        }
+
+        .article-body h4,
+        .article-body h5,
+        .article-body h6 {
+            font-size: 1.06rem;
+        }
+
+        .article-body > :first-child {
+            margin-top: 0;
+        }
+
+        .article-body ul,
+        .article-body ol {
+            margin: 14px 0 0;
+            padding-left: 1.55em;
+            color: #3d3934;
+            font-family: var(--serif);
+            font-size: 17px;
+            line-height: 1.95;
+        }
+
+        .article-body li + li {
+            margin-top: 5px;
+        }
+
+        .article-body blockquote {
+            margin: 18px 0 0;
+            padding: 12px 18px;
+            border-left: 3px solid rgba(158, 20, 20, 0.45);
+            background: rgba(158, 20, 20, 0.035);
+            color: #5b544c;
+        }
+
+        .article-body blockquote p {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.95;
+        }
+
+        .article-body hr {
+            height: 1px;
+            margin: 28px 0;
+            border: 0;
+            background: var(--line);
+        }
+
+        .article-body a {
+            color: var(--red);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(158, 20, 20, 0.3);
+        }
+
+        .article-body a:hover {
+            color: var(--red-dark);
+            border-bottom-color: var(--red-dark);
+        }
+
+        .article-body code {
+            padding: 1px 5px;
+            border-radius: 3px;
+            background: #f2eee7;
+            color: #6d2828;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.88em;
+        }
+
+        .article-body pre {
+            margin: 18px 0 0;
+            padding: 14px 16px;
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: #faf7f1;
+        }
+
+        .article-body pre code {
+            padding: 0;
+            background: transparent;
+            color: #3d3934;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .article-body img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto 0;
+            border-radius: 3px;
+        }
+
+        .markdown-table-wrap {
+            width: 100%;
+            margin-top: 18px;
+            overflow-x: auto;
+        }
+
+        .article-body table {
+            width: 100%;
+            min-width: 460px;
+            border-collapse: collapse;
+            font-family: var(--serif);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .article-body th,
+        .article-body td {
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .article-body th {
+            background: #f5f1e9;
+            font-weight: 700;
+        }
+
+        .markdown-div-right {
+            text-align: right;
+        }
+
+        .markdown-div-center {
+            text-align: center;
+        }
+
+        .article-state {
+            padding: 28px 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .article-state--error {
+            color: #8a3a31;
+        }
+
+        .article-retry {
+            margin-left: 8px;
+            padding: 2px 9px;
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            background: var(--card);
+            color: var(--red);
+            font-family: var(--sans);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .article-retry:hover {
+            border-color: rgba(158, 20, 20, 0.4);
+        }
+
         @media (max-width: 960px) {
             .article-page {
                 display: block;
@@ -506,296 +707,7 @@
     <!-- 页脚占位 -->
     <div id="footer-placeholder"></div>
 
-    <script>
-        (function () {
-            'use strict';
-
-            var CATEGORIES = [
-                {
-                    slug: '分类1',
-                    name: '标签1',
-                    intro: '这是标签1的临时介绍。之后会在这里说明该分类收录的文章范围与阅读顺序。',
-                    articles: [
-                        {
-                            slug: '《文章1》',
-                            title: '文章1',
-                            content: [
-                                '这是文章1的临时内容。文章页面还在搭建中，先放几句占位文字。',
-                                '之后这里会显示完整的文章正文，并接入文章配置文件。现在可以先通过左侧分类和右侧列表熟悉页面结构。'
-                            ]
-                        },
-                        {
-                            slug: '《文章2》',
-                            title: '文章2',
-                            content: [
-                                '这是文章2的临时内容。正文区域会保留舒适的阅读宽度和行距。',
-                                '这篇文章目前只是占位，用来测试从分类列表进入文章页的路径与返回按钮。'
-                            ]
-                        },
-                        {
-                            slug: '《文章3》',
-                            title: '文章3',
-                            content: [
-                                '这是文章3的临时内容。文章页会显示标题、分类和正文。',
-                                '后续可以在不改动页面结构的情况下替换这些占位文字。'
-                            ]
-                        }
-                    ]
-                },
-                {
-                    slug: '分类2',
-                    name: '标签2',
-                    intro: '这是标签2的临时介绍。这里以后可以放专题说明、文章目录或阅读提示。',
-                    articles: [
-                        {
-                            slug: '《文章1》',
-                            title: '文章1',
-                            content: [
-                                '这是标签2下文章1的临时内容。',
-                                '文章页的返回按钮会回到当前分类，而不是直接回到文章首页。'
-                            ]
-                        },
-                        {
-                            slug: '《文章2》',
-                            title: '文章2',
-                            content: [
-                                '这是标签2下文章2的临时内容。',
-                                '目前所有分类和文章都在同一个页面中根据地址渲染，不需要为每个分类建立单独文件夹。'
-                            ]
-                        }
-                    ]
-                },
-                {
-                    slug: '分类3',
-                    name: '标签3',
-                    intro: '这是标签3的临时介绍。分类名称和文章内容之后都会从配置中读取。',
-                    articles: [
-                        {
-                            slug: '《文章1》',
-                            title: '文章1',
-                            content: [
-                                '这是标签3下文章1的临时内容。',
-                                '现在先确认桌面端和手机端的阅读路径都可以正常使用。'
-                            ]
-                        },
-                        {
-                            slug: '《文章2》',
-                            title: '文章2',
-                            content: [
-                                '这是标签3下文章2的临时内容。',
-                                '后续接入配置文件后，分类、文章标题和正文都可以直接替换。'
-                            ]
-                        },
-                        {
-                            slug: '《文章3》',
-                            title: '文章3',
-                            content: [
-                                '这是标签3下文章3的临时内容。',
-                                '页面结构暂时保持简单，方便之后继续调整。'
-                            ]
-                        }
-                    ]
-                }
-            ];
-
-            var tabs = document.getElementById('categoryTabs');
-            var view = document.getElementById('articleView');
-            var backLink = document.getElementById('backLink');
-            var articlePage = document.querySelector('.article-page');
-            var sidebarToggle = document.getElementById('sidebarToggle');
-            var sidebarToggleLabel = sidebarToggle.querySelector('.sidebar-toggle-label');
-
-            function setSidebarHidden(hidden) {
-                articlePage.classList.toggle('sidebar-hidden', hidden);
-                sidebarToggle.setAttribute('aria-expanded', String(!hidden));
-                sidebarToggleLabel.textContent = hidden ? '显示侧栏' : '隐藏侧栏';
-                sidebarToggle.title = hidden ? '显示文章分类侧栏' : '隐藏文章分类侧栏';
-            }
-
-            setSidebarHidden(false);
-
-            function escapeHtml(value) {
-                return String(value).replace(/[&<>"']/g, function (char) {
-                    return {
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        '"': '&quot;',
-                        "'": '&#39;'
-                    }[char];
-                });
-            }
-
-            function categoryHref(category) {
-                return '/article/' + encodeURIComponent(category.slug);
-            }
-
-            function articleHref(category, article) {
-                return categoryHref(category) + '/' + encodeURIComponent(article.slug);
-            }
-
-            function findCategory(slug) {
-                return CATEGORIES.find(function (category) {
-                    return category.slug === slug;
-                });
-            }
-
-            function findArticle(category, slug) {
-                return category.articles.find(function (article) {
-                    return article.slug === slug;
-                });
-            }
-
-            function getRouteSegments() {
-                var path = window.location.pathname.replace(/\/+$/, '');
-                var parts = path.split('/').filter(Boolean);
-                if (!parts.length || parts[0] !== 'article') return [];
-
-                return parts.slice(1).map(function (part) {
-                    try {
-                        return decodeURIComponent(part);
-                    } catch (error) {
-                        return part;
-                    }
-                }).filter(function (part) {
-                    return part !== 'index.html';
-                });
-            }
-
-            function renderTabs(activeSlug) {
-                tabs.innerHTML = CATEGORIES.map(function (category) {
-                    var href = categoryHref(category);
-                    var active = category.slug === activeSlug;
-                    return '<a href="' + href + '" data-route="' + href + '"' +
-                        (active ? ' class="is-active" aria-current="page"' : '') +
-                        '>' + escapeHtml(category.name) + '</a>';
-                }).join('');
-            }
-
-            function setBackTarget(target) {
-                if (!target) {
-                    backLink.hidden = true;
-                    backLink.removeAttribute('data-target');
-                    return;
-                }
-
-                backLink.hidden = false;
-                backLink.setAttribute('data-target', target);
-            }
-
-            function renderHome() {
-                renderTabs(null);
-                setBackTarget(null);
-
-                var mobileCategories = CATEGORIES.map(function (category) {
-                    var href = categoryHref(category);
-                    return '<a href="' + href + '" data-route="' + href + '">' +
-                        escapeHtml(category.name) + '</a>';
-                }).join('');
-
-                view.innerHTML =
-                    '<h1 class="mobile-page-title">文章</h1>' +
-                    '<div class="home-intro">' +
-                        '<p class="eyebrow">文章页面</p>' +
-                        '<h2>在阅读中把理论变成方法</h2>' +
-                        '<p>这里会陆续整理一些理论学习、历史与现实相关的文章。目前页面还在搭建中，先保留分类和文章的基本结构。</p>' +
-                        '<p>可以按左侧的分类浏览文章，也可以从下面的标签进入。之后分类与正文会改为读取配置文件。</p>' +
-                    '</div>' +
-                    '<nav class="mobile-category-list" aria-label="文章分类">' + mobileCategories + '</nav>';
-            }
-
-            function renderCategory(category) {
-                renderTabs(category.slug);
-                setBackTarget('/article');
-
-                var articles = category.articles.length
-                    ? '<ul class="article-list">' + category.articles.map(function (article) {
-                        var href = articleHref(category, article);
-                        return '<li class="article-row">' +
-                            '<h2 class="article-row-title">' + escapeHtml(article.title) + '</h2>' +
-                            '<a class="read-btn" href="' + href + '" data-route="' + href + '">阅读</a>' +
-                        '</li>';
-                    }).join('') + '</ul>'
-                    : '<p class="empty-note">这个分类暂时还没有文章。</p>';
-
-                view.innerHTML =
-                    '<h1 class="category-title">' + escapeHtml(category.name) + '</h1>' +
-                    '<p class="category-intro">' + escapeHtml(category.intro) + '</p>' +
-                    articles;
-            }
-
-            function renderArticle(category, article) {
-                renderTabs(category.slug);
-                setBackTarget(categoryHref(category));
-
-                view.innerHTML =
-                    '<p class="article-kicker">' + escapeHtml(category.name) + '</p>' +
-                    '<h1 class="article-page-title">' + escapeHtml(article.title) + '</h1>' +
-                    '<div class="article-body">' +
-                        article.content.map(function (paragraph) {
-                            return '<p>' + escapeHtml(paragraph) + '</p>';
-                        }).join('') +
-                    '</div>';
-            }
-
-            function render() {
-                var segments = getRouteSegments();
-                var category = findCategory(segments[0]);
-
-                if (!category) {
-                    if (segments.length) {
-                        window.history.replaceState({}, '', '/article');
-                    }
-                    renderHome();
-                    return;
-                }
-
-                var article = findArticle(category, segments[1]);
-
-                if (segments[1] && !article) {
-                    window.history.replaceState({}, '', categoryHref(category));
-                    renderCategory(category);
-                    return;
-                }
-
-                if (article) {
-                    renderArticle(category, article);
-                } else {
-                    renderCategory(category);
-                }
-            }
-
-            function navigate(path) {
-                if (window.location.pathname !== path) {
-                    window.history.pushState({}, '', path);
-                }
-                render();
-                window.scrollTo({ top: 0, behavior: 'auto' });
-            }
-
-            document.addEventListener('click', function (event) {
-                var link = event.target.closest('a[data-route]');
-                if (!link) return;
-                if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-
-                event.preventDefault();
-                navigate(link.getAttribute('data-route'));
-            });
-
-            backLink.addEventListener('click', function () {
-                var target = backLink.getAttribute('data-target');
-                if (target) navigate(target);
-            });
-
-            sidebarToggle.addEventListener('click', function () {
-                setSidebarHidden(!articlePage.classList.contains('sidebar-hidden'));
-            });
-
-            window.addEventListener('popstate', render);
-
-            render();
-        })();
-    </script>
+    <script src="/article/article.js?v=1"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
