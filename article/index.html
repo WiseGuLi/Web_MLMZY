@@ -546,6 +546,18 @@
             text-align: center;
         }
 
+        .article-body [align="right"] {
+            text-align: right;
+        }
+
+        .article-body [align="center"] {
+            text-align: center;
+        }
+
+        .article-body [align="left"] {
+            text-align: left;
+        }
+
         .article-state {
             padding: 28px 0;
             color: var(--muted);
@@ -707,7 +719,8 @@
     <!-- 页脚占位 -->
     <div id="footer-placeholder"></div>
 
-    <script src="/article-page.js?v=1"></script>
+    <script src="/components/marked.min.js?v=1"></script>
+    <script src="/article-page.js?v=2"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>

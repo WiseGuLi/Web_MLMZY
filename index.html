@@ -298,13 +298,15 @@
             color: #f8f1e5;
             cursor: pointer;
             transform-style: preserve-3d;
-            box-shadow: 0 18px 42px rgba(80, 12, 12, 0.2);
+            box-shadow: 0 22px 50px rgba(80, 12, 12, 0.3);
             transition: box-shadow 0.2s ease, background 0.2s ease;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .hero-quote:hover {
             background: #851111;
-            box-shadow: 0 22px 50px rgba(80, 12, 12, 0.28);
+            box-shadow: 0 26px 58px rgba(80, 12, 12, 0.4);
         }
 
         .hero-quote:focus-visible {
@@ -759,6 +761,11 @@
             .container {
                 padding-left: 1.25rem;
                 padding-right: 1.25rem;
+            }
+
+            .hero-quote {
+                height: 300px;
+                box-shadow: 0 26px 58px rgba(80, 12, 12, 0.4);
             }
 
             .site-banner-inner {
@@ -1226,7 +1233,6 @@
             var sourcePrimary = document.getElementById('quoteSourcePrimary');
             if (!card || !quotePrimary || !sourcePrimary) return;
 
-            var STORAGE_KEY = 'mlmzy-quote-last-v2';
             var quotes = [];
             var currentQuote = null;
             var flipping = false;
@@ -1289,22 +1295,6 @@
                 return Math.floor(Math.random() * length);
             }
 
-            function readLastQuote() {
-                try {
-                    return String(window.localStorage.getItem(STORAGE_KEY) || '');
-                } catch (error) {
-                    return '';
-                }
-            }
-
-            function saveLastQuote(quote) {
-                try {
-                    window.localStorage.setItem(STORAGE_KEY, quote.text);
-                } catch (error) {
-                    /* 隐私模式下无法保存时，至少保证当前页面内不重复 */
-                }
-            }
-
             function pickQuote(excludedText) {
                 if (!quotes.length) return null;
 
@@ -1352,7 +1342,6 @@
                 if (reducedMotion.matches) {
                     currentQuote = nextQuote;
                     renderQuote(currentQuote);
-                    saveLastQuote(currentQuote);
                     flipping = false;
                     return;
                 }
@@ -1364,7 +1353,6 @@
                 flipTimer = window.setTimeout(function () {
                     currentQuote = nextQuote;
                     renderQuote(currentQuote);
-                    saveLastQuote(currentQuote);
                 }, 300);
 
                 doneTimer = window.setTimeout(finishFlip, 650);
@@ -1404,12 +1392,11 @@
                         return quote.text;
                     });
 
-                    var firstQuote = pickQuote(readLastQuote());
+                    var firstQuote = pickQuote('');
                     if (!firstQuote) return;
 
                     currentQuote = firstQuote;
                     renderQuote(currentQuote);
-                    saveLastQuote(currentQuote);
                 })
                 .catch(function (error) {
                     console.warn('箴言加载失败:', error);
