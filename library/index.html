@@ -9,7 +9,7 @@
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
-    <title>文库 | GuLi 马列毛主义学习站</title>
+    <title>文库 | 马列毛主义学习站</title>
     <style>
         :root {
             --paper: #faf9f5;
@@ -1153,7 +1153,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=28')
+        fetch('/components/nav.html?v=29')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -1567,7 +1567,8 @@
                 if (author === '马克思' || author === '恩格斯' || author === MERGED_AUTHOR) {
                     return CATEGORY_PATHS[MERGED_AUTHOR];
                 }
-                return CATEGORY_PATHS[author] || author;
+                /* 已知作者使用作者目录，其余作者统一归档到“其他”。 */
+                return CATEGORY_PATHS[author] || '其他';
             }
 
             function stripBookMarks(value) {
@@ -1649,18 +1650,15 @@
                 return name.slice(dot + 1).toLowerCase();
             }
 
-            function buildFileUrl(author, fileName, format) {
-                return R2_BASE + ['文库', author, fileName + format]
+            function buildFileUrl(directory, fileName, format) {
+                return R2_BASE + ['文库', directory, fileName + format]
                     .map(encodeURIComponent)
                     .join('/');
             }
 
-            function getDownloadAuthor(book, category) {
+            function getDownloadDirectory(book, category) {
                 if (category === '其他') {
-                    var unknown = book.authors.find(function (author) {
-                        return getCategoryForAuthor(author) === '其他';
-                    });
-                    if (unknown) return getDownloadPath(unknown);
+                    return '其他';
                 }
 
                 if (category !== '全部' && category !== '全集' && KNOWN_AUTHORS.indexOf(category) !== -1) {
@@ -1874,11 +1872,11 @@
                 var actions = document.createElement('div');
                 actions.className = 'book-actions';
 
-                var downloadAuthor = getDownloadAuthor(book, category);
+                var downloadDirectory = getDownloadDirectory(book, category);
                 var files = book.formats.map(function (format) {
                     return {
                         format: format,
-                        url: buildFileUrl(downloadAuthor, book.fileName, format)
+                        url: buildFileUrl(downloadDirectory, book.fileName, format)
                     };
                 });
 

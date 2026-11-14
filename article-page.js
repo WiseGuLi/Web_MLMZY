@@ -173,7 +173,7 @@
     }
 
     function setPageTitle(title) {
-        document.title = title + ' | GuLi 马列毛主义学习站';
+        document.title = title + ' | 马列毛主义学习站';
     }
 
     function renderTabs(activeSlug) {
