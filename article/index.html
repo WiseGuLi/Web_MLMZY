@@ -52,27 +52,43 @@
             flex: 1;
             display: grid;
             grid-template-columns: 200px minmax(0, 1fr);
-            gap: clamp(2rem, 5vw, 4.5rem);
+            gap: clamp(2rem, 4vw, 4rem);
             align-items: start;
             width: 100%;
-            max-width: 1140px;
+            max-width: 1320px;
             margin: 0 auto;
             padding: clamp(44px, 6vw, 68px) 1.5rem clamp(56px, 8vw, 84px);
+            transition: grid-template-columns 0.28s ease, gap 0.28s ease;
         }
 
         .article-page.sidebar-hidden {
-            grid-template-columns: minmax(0, 1fr);
+            grid-template-columns: 0px minmax(0, 1fr);
             gap: 0;
-        }
-
-        .article-page.sidebar-hidden .article-sidebar {
-            display: none;
         }
 
         /* ----- 左侧分类栏 ----- */
         .article-sidebar {
             position: sticky;
             top: 96px;
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+            transition: opacity 0.2s ease, transform 0.28s ease, visibility 0s linear 0s;
+        }
+
+        .article-page.sidebar-hidden .article-sidebar {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateX(-18px);
+            transition: opacity 0.16s ease, transform 0.26s ease, visibility 0s linear 0.26s;
+        }
+
+        .sidebar-head {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
         }
 
         .sidebar-title {
@@ -81,6 +97,7 @@
             font-weight: 700;
             letter-spacing: 0.08em;
             line-height: 1.2;
+            white-space: nowrap;
         }
 
         .sidebar-title a {
@@ -148,32 +165,38 @@
         }
 
         .article-toolbar {
-            display: flex;
-            justify-content: flex-end;
+            display: none;
+            justify-content: flex-start;
             margin-bottom: 10px;
+        }
+
+        .article-page.sidebar-hidden .article-toolbar {
+            display: flex;
         }
 
         .sidebar-toggle {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            min-height: 32px;
-            padding: 3px 9px;
+            gap: 5px;
+            min-height: 30px;
+            padding: 2px 8px;
             border: 1px solid var(--line);
             border-radius: 2px;
             background: var(--card);
             color: var(--muted);
             font-family: var(--sans);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             line-height: 1.4;
+            white-space: nowrap;
             cursor: pointer;
-            transition: color 0.15s ease, border-color 0.15s ease;
+            transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
         }
 
         .sidebar-toggle:hover {
             color: var(--red);
             border-color: rgba(158, 20, 20, 0.4);
+            background: #fffdf8;
         }
 
         .sidebar-toggle:focus-visible {
@@ -182,9 +205,13 @@
         }
 
         .sidebar-toggle svg {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             flex-shrink: 0;
+        }
+
+        .sidebar-reveal[hidden] {
+            display: none;
         }
 
         .article-page.sidebar-hidden .article-body {
@@ -352,6 +379,27 @@
             font-weight: 700;
             letter-spacing: 0.03em;
             line-height: 1.4;
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 18px;
+            margin-top: 9px;
+            color: var(--muted);
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .article-meta-item {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+
+        .article-meta-label {
+            color: #8a8177;
         }
 
         .article-body {
@@ -677,7 +725,8 @@
                 display: none;
             }
 
-            .article-toolbar {
+            .article-toolbar,
+            .article-page.sidebar-hidden .article-toolbar {
                 display: none;
             }
 
@@ -784,6 +833,14 @@
                 font-size: 1.12rem;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .article-page,
+            .article-sidebar,
+            .sidebar-toggle {
+                transition: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -793,20 +850,29 @@
 
     <main class="article-page">
         <aside class="article-sidebar" id="articleSidebar" aria-label="文章分类">
-            <h1 class="sidebar-title">
-                <a href="/article" data-route="/article">文章</a>
-            </h1>
+            <div class="sidebar-head">
+                <h1 class="sidebar-title">
+                    <a href="/article" data-route="/article">文章</a>
+                </h1>
+                <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="true" aria-controls="articleSidebar" aria-label="隐藏侧栏" title="隐藏侧栏">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="4" width="18" height="16" rx="1"></rect>
+                        <path d="M9 4v16"></path>
+                    </svg>
+                    <span class="sidebar-toggle-label">隐藏</span>
+                </button>
+            </div>
             <nav class="category-tabs" id="categoryTabs" aria-label="文章分类"></nav>
         </aside>
 
         <section class="article-main" aria-label="文章内容">
             <div class="article-toolbar">
-                <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="true" aria-controls="articleSidebar">
+                <button class="sidebar-toggle sidebar-reveal" id="sidebarReveal" type="button" aria-expanded="false" aria-controls="articleSidebar" aria-label="显示侧栏" title="显示侧栏" hidden>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <rect x="3" y="4" width="18" height="16" rx="1"></rect>
                         <path d="M9 4v16"></path>
                     </svg>
-                    <span class="sidebar-toggle-label">隐藏侧栏</span>
+                    <span class="sidebar-toggle-label">显示侧栏</span>
                 </button>
             </div>
             <button class="back-link" id="backLink" type="button" hidden>
@@ -823,7 +889,7 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=3"></script>
+    <script src="/article-page.js?v=4"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>

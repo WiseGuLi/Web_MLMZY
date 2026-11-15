@@ -10,8 +10,9 @@
     var view = document.getElementById('articleView');
     var backLink = document.getElementById('backLink');
     var articlePage = document.querySelector('.article-page');
+    var articleSidebar = document.getElementById('articleSidebar');
     var sidebarToggle = document.getElementById('sidebarToggle');
-    var sidebarToggleLabel = sidebarToggle.querySelector('.sidebar-toggle-label');
+    var sidebarReveal = document.getElementById('sidebarReveal');
 
     var CATEGORIES = [];
     var configLoaded = false;
@@ -23,8 +24,13 @@
     function setSidebarHidden(hidden) {
         articlePage.classList.toggle('sidebar-hidden', hidden);
         sidebarToggle.setAttribute('aria-expanded', String(!hidden));
-        sidebarToggleLabel.textContent = hidden ? '显示侧栏' : '隐藏侧栏';
-        sidebarToggle.title = hidden ? '显示文章分类侧栏' : '隐藏文章分类侧栏';
+        sidebarReveal.setAttribute('aria-expanded', String(!hidden));
+        sidebarReveal.hidden = !hidden;
+
+        if (articleSidebar) {
+            if ('inert' in articleSidebar) articleSidebar.inert = hidden;
+            articleSidebar.setAttribute('aria-hidden', String(hidden));
+        }
     }
 
     setSidebarHidden(false);
@@ -100,6 +106,9 @@
         var titleIndex = headers.indexOf('文章名');
         var categoryIndex = headers.indexOf('分类');
         var tagsIndex = headers.indexOf('标签');
+        var authorIndex = headers.indexOf('作者');
+        var writtenIndex = headers.indexOf('写作日期');
+        var publishedIndex = headers.indexOf('刊登日期');
         if (titleIndex === -1 || categoryIndex === -1) return [];
 
         var categories = [];
@@ -125,7 +134,10 @@
             category.articles.push({
                 slug: title,
                 title: title,
-                tags: tagsIndex === -1 ? [] : splitTags(cells[tagsIndex])
+                tags: tagsIndex === -1 ? [] : splitTags(cells[tagsIndex]),
+                author: authorIndex === -1 ? '' : String(cells[authorIndex] || '').trim(),
+                writtenDate: writtenIndex === -1 ? '' : String(cells[writtenIndex] || '').trim(),
+                publishedDate: publishedIndex === -1 ? '' : String(cells[publishedIndex] || '').trim()
             });
         });
 
@@ -285,7 +297,7 @@
             return;
         }
 
-        downloadStatsPromise = fetch('/data/文库/文库_下载量.csv?t=' + Date.now(), { cache: 'no-store' })
+        downloadStatsPromise = fetch('/data/下载量.csv?t=' + Date.now(), { cache: 'no-store' })
             .then(function (response) {
                 if (!response.ok) throw new Error('HTTP ' + response.status);
                 return response.text();
@@ -349,8 +361,23 @@
             }).join('') + '</div>'
             : '';
 
+        var metaItems = [];
+        if (article.author) {
+            metaItems.push('<span class="article-meta-item"><span class="article-meta-label">作者</span>' + escapeHtml(article.author) + '</span>');
+        }
+        if (article.writtenDate) {
+            metaItems.push('<span class="article-meta-item"><span class="article-meta-label">写作日期</span>' + escapeHtml(article.writtenDate) + '</span>');
+        }
+        if (article.publishedDate) {
+            metaItems.push('<span class="article-meta-item"><span class="article-meta-label">刊登日期</span>' + escapeHtml(article.publishedDate) + '</span>');
+        }
+        var meta = metaItems.length
+            ? '<p class="article-meta">' + metaItems.join('') + '</p>'
+            : '';
+
         return '<p class="article-kicker">' + escapeHtml(category.name) + '</p>' +
             '<h1 class="article-page-title">' + escapeHtml(article.title) + '</h1>' +
+            meta +
             tags +
             '<div class="article-body markdown-body" id="articleBody"></div>';
     }
@@ -506,7 +533,13 @@
     });
 
     sidebarToggle.addEventListener('click', function () {
-        setSidebarHidden(!articlePage.classList.contains('sidebar-hidden'));
+        setSidebarHidden(true);
+        sidebarReveal.focus({ preventScroll: true });
+    });
+
+    sidebarReveal.addEventListener('click', function () {
+        setSidebarHidden(false);
+        sidebarToggle.focus({ preventScroll: true });
     });
 
     window.addEventListener('popstate', render);

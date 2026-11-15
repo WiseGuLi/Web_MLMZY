@@ -72,6 +72,20 @@
             letter-spacing: 0.12em;
         }
 
+        .library-book-count {
+            display: inline-block;
+            margin-left: 10px;
+            padding-left: 10px;
+            border-left: 1px solid var(--line);
+            color: #8a8278;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+        }
+
+        .library-book-count[hidden] {
+            display: none;
+        }
+
         /* ----- 搜索与列表布局 ----- */
         .library-tools {
             display: flex;
@@ -798,6 +812,131 @@
             text-align: center;
         }
 
+        /* ===== 全集：按全集名折叠，展开后显示文件 ===== */
+        .book-list.is-collection-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 0;
+        }
+
+        .collection-item {
+            list-style: none;
+            animation: book-fade-in 0.22s ease;
+        }
+
+        .collection-details {
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            background: var(--card);
+        }
+
+        .collection-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 17px 20px;
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s ease;
+        }
+
+        .collection-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .collection-summary::marker {
+            content: '';
+        }
+
+        .collection-summary:hover {
+            background: #faf7f1;
+        }
+
+        .collection-title {
+            flex: 1 1 auto;
+            min-width: 0;
+            color: var(--red);
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .collection-count {
+            flex: 0 0 auto;
+            color: #8a8278;
+            font-size: 13px;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .collection-caret {
+            flex: 0 0 auto;
+            width: 17px;
+            height: 17px;
+            color: #8a8278;
+            transition: transform 0.22s ease;
+        }
+
+        .collection-details[open] .collection-caret {
+            transform: rotate(180deg);
+        }
+
+        .collection-files {
+            padding: 4px 20px 10px;
+            border-top: 1px solid var(--line);
+            background: #fdfbf7;
+            animation: book-detail-in 0.2s ease;
+        }
+
+        .collection-file {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 2px;
+            border-bottom: 1px dashed #ece5d9;
+            color: #3d3934;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .collection-file:last-child {
+            border-bottom: 0;
+        }
+
+        .collection-file:hover,
+        .collection-file:focus-visible {
+            color: var(--red);
+            outline: none;
+        }
+
+        .collection-file-name {
+            flex: 1 1 auto;
+            min-width: 0;
+            font-size: 15px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .collection-file-format {
+            flex: 0 0 auto;
+            color: #8a8278;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .collection-file-action {
+            flex: 0 0 auto;
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
         /* 回到顶部 */
         .back-to-top {
             position: fixed;
@@ -950,6 +1089,36 @@
                 font-size: 1.2rem;
             }
 
+            .collection-summary {
+                gap: 8px;
+                padding: 14px 14px;
+            }
+
+            .collection-title {
+                font-size: 1.16rem;
+            }
+
+            .collection-count {
+                font-size: 12px;
+            }
+
+            .collection-files {
+                padding: 3px 14px 8px;
+            }
+
+            .collection-file {
+                gap: 8px;
+                padding: 10px 0;
+            }
+
+            .collection-file-name {
+                font-size: 14px;
+            }
+
+            .collection-file-action {
+                font-size: 13px;
+            }
+
             .book-actions {
                 grid-column: 2;
                 grid-row: 1;
@@ -1040,8 +1209,14 @@
             .book-item.is-expanded .book-desc,
             .book-item.search-open .book-desc,
             .book-item.is-expanded .book-quote,
-            .book-item.search-open .book-quote {
+            .book-item.search-open .book-quote,
+            .collection-item,
+            .collection-files {
                 animation: none;
+            }
+
+            .collection-caret {
+                transition: none;
             }
 
             .library-progress.is-visible .library-progress-fill {
@@ -1059,7 +1234,7 @@
     <main class="library-container">
         <header class="library-head">
             <h1 class="library-title">文库</h1>
-            <p class="library-subtitle">经典著作 · 免费阅读</p>
+            <p class="library-subtitle">经典著作 · 免费阅读<span class="library-book-count" id="libraryBookCount" hidden></span></p>
         </header>
 
         <div class="library-tools">
@@ -1174,7 +1349,7 @@
             'use strict';
 
             var R2_BASE = 'https://files.mlmzy.org/';
-            /* 主文库和“全集”分开维护，页面加载时统一合并到 books 数组。 */
+            /* 主文库和“全集”分开维护，全集不并入普通书籍列表。 */
             var LIBRARY_CONFIG_URL = '/data/文库/文库.csv';
             var COLLECTION_CONFIG_URL = '/data/文库/文库_全集.csv';
             var MERGED_AUTHOR = '马克思 & 恩格斯';
@@ -1327,7 +1502,7 @@
                 if (!progressSection) return;
 
                 try {
-                    var response = await fetch('/data/文库/文库_下载量.csv?t=' + Date.now(), {
+                    var response = await fetch('/data/下载量.csv?t=' + Date.now(), {
                         cache: 'no-store'
                     });
                     if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -1429,6 +1604,7 @@
             }
 
             var books = [];
+            var collections = [];
             var initialSelectionDone = false;
 
             CATEGORIES.forEach(function (category) {
@@ -1593,7 +1769,7 @@
                 return format.charAt(0) === '.' ? format : '.' + format;
             }
 
-            function normalizeBookRow(cells, columns, order, isCollection) {
+            function normalizeBookRow(cells, columns, order) {
                 var fileName = String(cells[columns.fileName] || '').trim();
                 if (!fileName) return null;
 
@@ -1637,7 +1813,6 @@
                     searchTitle: ('《' + title + '》').toLowerCase(),
                     searchDescription: description.toLowerCase(),
                     searchQuote: quote.toLowerCase(),
-                    collection: !!isCollection,
                     order: order
                 };
             }
@@ -1666,6 +1841,25 @@
                 }
 
                 return getDownloadPath(book.authors[0]);
+            }
+
+            function buildCollectionFileUrl(collectionName, fileName, format) {
+                return R2_BASE + ['文库', '全集', collectionName, fileName + format]
+                    .map(encodeURIComponent)
+                    .join('/');
+            }
+
+            function matchesCollection(collection, terms) {
+                if (!terms.length) return true;
+
+                var haystack = [collection.name]
+                    .concat(collection.files.map(function (file) { return file.fileName; }))
+                    .join(' ')
+                    .toLowerCase();
+
+                return terms.every(function (term) {
+                    return haystack.indexOf(term) !== -1;
+                });
             }
 
             function escapeRegExp(value) {
@@ -1915,19 +2109,111 @@
                 return li;
             }
 
+            function createCollectionItem(collection, terms) {
+                var li = document.createElement('li');
+                li.className = 'collection-item';
+
+                var details = document.createElement('details');
+                details.className = 'collection-details';
+
+                var summary = document.createElement('summary');
+                summary.className = 'collection-summary';
+
+                var title = document.createElement('span');
+                title.className = 'collection-title';
+                appendHighlightedText(title, collection.name, terms);
+
+                var count = document.createElement('span');
+                count.className = 'collection-count';
+                count.textContent = collection.files.length + ' 个文件';
+
+                var caret = document.createElement('span');
+                caret.className = 'collection-caret';
+                caret.setAttribute('aria-hidden', 'true');
+                caret.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;width:100%;height:100%"><path d="m6 9 6 6 6-6"></path></svg>';
+
+                summary.appendChild(title);
+                summary.appendChild(count);
+                summary.appendChild(caret);
+
+                var files = document.createElement('div');
+                files.className = 'collection-files';
+
+                collection.files.forEach(function (file) {
+                    var link = document.createElement('a');
+                    link.className = 'collection-file';
+                    link.href = buildCollectionFileUrl(collection.name, file.fileName, file.format);
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.setAttribute('aria-label', '下载' + collection.name + '的' + file.fileName + file.format);
+
+                    var name = document.createElement('span');
+                    name.className = 'collection-file-name';
+                    appendHighlightedText(name, file.fileName, terms);
+
+                    var format = document.createElement('span');
+                    format.className = 'collection-file-format';
+                    format.textContent = file.format;
+
+                    var action = document.createElement('span');
+                    action.className = 'collection-file-action';
+                    action.textContent = '下载';
+
+                    link.appendChild(name);
+                    link.appendChild(format);
+                    link.appendChild(action);
+                    files.appendChild(link);
+                });
+
+                details.appendChild(summary);
+                details.appendChild(files);
+                li.appendChild(details);
+
+                return li;
+            }
+
+            function renderCollections(terms) {
+                var filtered = collections.filter(function (collection) {
+                    return matchesCollection(collection, terms);
+                });
+
+                if (!filtered.length) {
+                    statusBox.hidden = false;
+                    statusBox.textContent = terms.length
+                        ? '没有找到匹配的全集，换个关键词试试。'
+                        : '全集正在整理中，敬请期待。';
+                    return;
+                }
+
+                statusBox.hidden = true;
+                statusBox.textContent = '';
+                filtered.forEach(function (collection) {
+                    bookList.appendChild(createCollectionItem(collection, terms));
+                });
+            }
+
             /* 按当前分类和搜索词过滤、排序，然后重建列表节点。 */
             function renderBooks() {
                 var category = getSelectedCategory();
                 var terms = getSearchTerms();
                 setProgressVisible(terms.length === 0);
+
+                resetBottomSpace();
+                bookList.innerHTML = '';
+                bookList.classList.toggle('is-collection-list', category === '全集');
+
+                if (category === '全集') {
+                    renderCollections(terms);
+                    window.requestAnimationFrame(updateSlider);
+                    return;
+                }
+
                 var filtered = books.filter(function (book) {
                     var inCategory;
-                    if (category === '全集') {
-                        inCategory = book.collection;
-                    } else if (category === '全部') {
-                        inCategory = !book.collection;
+                    if (category === '全部') {
+                        inCategory = true;
                     } else {
-                        inCategory = !book.collection && book.categories.indexOf(category) !== -1;
+                        inCategory = book.categories.indexOf(category) !== -1;
                     }
                     return inCategory && matchesSearch(book, terms);
                 });
@@ -1943,15 +2229,10 @@
                     return a.order - b.order;
                 });
 
-                resetBottomSpace();
-                bookList.innerHTML = '';
-
                 if (!filtered.length) {
                     statusBox.hidden = false;
                     if (terms.length) {
                         statusBox.textContent = '没有找到匹配的书籍，换个关键词试试。';
-                    } else if (category === '全集') {
-                        statusBox.textContent = '全集正在整理中，敬请期待。';
                     } else {
                         statusBox.textContent = books.length ? '该分类暂无书籍，敬请期待。' : '文库正在整理中，敬请期待。';
                     }
@@ -1994,15 +2275,15 @@
                 }
             }
 
-            /* 读取一个 CSV 并转换为统一的书籍对象；表头缺列时直接报错。 */
-            async function fetchLibraryBooks(url, isCollection) {
+            /* 读取主文库 CSV；rowCount 用于页面顶部的收录总数。 */
+            async function fetchLibraryBooks(url) {
                 var response = await fetch(url + '?t=' + Date.now(), {
                     cache: 'no-store'
                 });
                 if (!response.ok) throw new Error('HTTP ' + response.status);
 
                 var rows = parseCsv(await response.text());
-                if (rows.length < 2) return [];
+                if (rows.length < 2) return { books: [], rowCount: 0 };
 
                 var headers = rows[0].map(function (cell) {
                     return cell.trim();
@@ -2022,9 +2303,83 @@
                     if (columns[key] === -1) throw new Error('文库 CSV 缺少列：' + key);
                 });
 
-                return rows.slice(1).map(function (cells, order) {
-                    return normalizeBookRow(cells, columns, order, isCollection);
+                var books = rows.slice(1).map(function (cells, order) {
+                    return normalizeBookRow(cells, columns, order);
                 }).filter(Boolean);
+
+                return { books: books, rowCount: rows.length - 1 };
+            }
+
+            /* 读取全集 CSV，按“全集名”分组；每行代表全集中的一个文件。 */
+            async function fetchCollections(url) {
+                var response = await fetch(url + '?t=' + Date.now(), {
+                    cache: 'no-store'
+                });
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+
+                var rows = parseCsv(await response.text());
+                if (rows.length < 2) return { collections: [], rowCount: 0 };
+
+                var headers = rows[0].map(function (cell) {
+                    return cell.trim();
+                });
+                var nameIndex = findColumn(headers, ['全集名']);
+                var fileNameIndex = findColumn(headers, ['文件名']);
+                var formatIndex = findColumn(headers, ['后缀', '格式']);
+                if (nameIndex === -1 || fileNameIndex === -1 || formatIndex === -1) {
+                    throw new Error('全集 CSV 缺少列：全集名、文件名或后缀');
+                }
+
+                var collections = [];
+                var byName = Object.create(null);
+
+                rows.slice(1).forEach(function (cells) {
+                    var collectionName = String(cells[nameIndex] || '').trim();
+                    var fileName = String(cells[fileNameIndex] || '').trim();
+                    var format = normalizeFormat(cells[formatIndex]);
+                    if (!collectionName || !fileName) return;
+
+                    var extension = getFileExtension(fileName);
+                    if (extension) {
+                        fileName = fileName.slice(0, -(extension.length + 1));
+                        if (!format) format = normalizeFormat(extension);
+                    }
+                    if (!format) return;
+
+                    var collection = byName[collectionName];
+                    if (!collection) {
+                        collection = {
+                            name: collectionName,
+                            files: [],
+                            order: collections.length
+                        };
+                        byName[collectionName] = collection;
+                        collections.push(collection);
+                    }
+
+                    var duplicate = collection.files.some(function (file) {
+                        return file.fileName === fileName && file.format === format;
+                    });
+                    if (!duplicate) {
+                        collection.files.push({ fileName: fileName, format: format });
+                    }
+                });
+
+                return { collections: collections, rowCount: rows.length - 1 };
+            }
+
+            function updateBookCount(count) {
+                var label = document.getElementById('libraryBookCount');
+                if (!label) return;
+
+                if (!count) {
+                    label.hidden = true;
+                    label.textContent = '';
+                    return;
+                }
+
+                label.hidden = false;
+                label.textContent = '共收录 ' + formatCount(count) + ' 本';
             }
 
             async function loadBooks() {
@@ -2036,14 +2391,16 @@
 
                 try {
                     var results = await Promise.all([
-                        fetchLibraryBooks(LIBRARY_CONFIG_URL, false),
-                        fetchLibraryBooks(COLLECTION_CONFIG_URL, true).catch(function (error) {
+                        fetchLibraryBooks(LIBRARY_CONFIG_URL),
+                        fetchCollections(COLLECTION_CONFIG_URL).catch(function (error) {
                             console.warn('全集配置加载失败:', error);
-                            return [];
+                            return { collections: [], rowCount: 0 };
                         })
                     ]);
 
-                    books = results[0].concat(results[1]);
+                    books = results[0].books;
+                    collections = results[1].collections;
+                    updateBookCount(results[0].rowCount + results[1].rowCount);
 
                     if (!initialSelectionDone) {
                         selectFirstAvailableCategory();
