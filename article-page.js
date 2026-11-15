@@ -12,7 +12,7 @@
     var articlePage = document.querySelector('.article-page');
     var articleSidebar = document.getElementById('articleSidebar');
     var sidebarToggle = document.getElementById('sidebarToggle');
-    var sidebarReveal = document.getElementById('sidebarReveal');
+    var sidebarToggleLabel = sidebarToggle.querySelector('.sidebar-toggle-label');
 
     var CATEGORIES = [];
     var configLoaded = false;
@@ -24,8 +24,9 @@
     function setSidebarHidden(hidden) {
         articlePage.classList.toggle('sidebar-hidden', hidden);
         sidebarToggle.setAttribute('aria-expanded', String(!hidden));
-        sidebarReveal.setAttribute('aria-expanded', String(!hidden));
-        sidebarReveal.hidden = !hidden;
+        sidebarToggleLabel.textContent = hidden ? '显示侧栏' : '隐藏侧栏';
+        sidebarToggle.setAttribute('aria-label', hidden ? '显示侧栏' : '隐藏侧栏');
+        sidebarToggle.title = hidden ? '显示侧栏' : '隐藏侧栏';
 
         if (articleSidebar) {
             if ('inert' in articleSidebar) articleSidebar.inert = hidden;
@@ -232,24 +233,7 @@
                 '<p>这里按主题整理理论学习、历史与现实相关的文章，目前共收录 ' + total + ' 篇，分为 ' + CATEGORIES.length + ' 个分类。</p>' +
                 '<p>可以按左侧分类浏览，或从下方分类入口进入。</p>' +
             '</div>' +
-            '<nav class="mobile-category-list" aria-label="文章分类">' + mobileCategories + '</nav>' +
-            '<section class="article-download" id="articleDownload" aria-labelledby="articleDownloadTitle" hidden>' +
-                '<div class="article-download-head">' +
-                    '<div>' +
-                        '<p class="article-download-kicker">文库与文章下载量</p>' +
-                        '<h2 class="article-download-title" id="articleDownloadTitle">本月下载 <strong id="articleDownloadMonthly">—</strong> 次</h2>' +
-                    '</div>' +
-                    '<div class="article-download-meta">' +
-                        '<p class="article-download-limit">总量上限 <span id="articleDownloadLimit">—</span></p>' +
-                        '<p class="article-download-percent" id="articleDownloadPercent">—</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="article-download-track" id="articleDownloadTrack" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">' +
-                    '<span class="article-download-fill" id="articleDownloadFill"></span>' +
-                '</div>' +
-            '</section>';
-
-        loadDownloadStats();
+            '<nav class="mobile-category-list" aria-label="文章分类">' + mobileCategories + '</nav>';
     }
 
     function formatCount(value) {
@@ -533,18 +517,13 @@
     });
 
     sidebarToggle.addEventListener('click', function () {
-        setSidebarHidden(true);
-        sidebarReveal.focus({ preventScroll: true });
-    });
-
-    sidebarReveal.addEventListener('click', function () {
-        setSidebarHidden(false);
-        sidebarToggle.focus({ preventScroll: true });
+        setSidebarHidden(!articlePage.classList.contains('sidebar-hidden'));
     });
 
     window.addEventListener('popstate', render);
 
     view.innerHTML = '<p class="article-state">正在加载文章目录…</p>';
+    loadDownloadStats();
 
     fetch(CONFIG_URL + '?t=' + Date.now(), { cache: 'no-store' })
         .then(function (response) {

@@ -50,18 +50,32 @@
 
         .article-page {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: clamp(44px, 6vw, 68px) 1.5rem clamp(56px, 8vw, 84px);
+        }
+
+        .article-page-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .article-layout {
             display: grid;
             grid-template-columns: 200px minmax(0, 1fr);
             gap: clamp(2rem, 4vw, 4rem);
             align-items: start;
             width: 100%;
-            max-width: 1320px;
-            margin: 0 auto;
-            padding: clamp(44px, 6vw, 68px) 1.5rem clamp(56px, 8vw, 84px);
+            margin-bottom: 48px;
             transition: grid-template-columns 0.28s ease, gap 0.28s ease;
         }
 
-        .article-page.sidebar-hidden {
+        .article-page.sidebar-hidden .article-layout {
             grid-template-columns: 0px minmax(0, 1fr);
             gap: 0;
         }
@@ -82,13 +96,6 @@
             pointer-events: none;
             transform: translateX(-18px);
             transition: opacity 0.16s ease, transform 0.26s ease, visibility 0s linear 0.26s;
-        }
-
-        .sidebar-head {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
         }
 
         .sidebar-title {
@@ -152,11 +159,7 @@
         .article-main {
             width: 100%;
             min-width: 0;
-            max-width: var(--article-main-max, 760px);
-        }
-
-        .article-page.sidebar-hidden {
-            --article-main-max: 900px;
+            max-width: 860px;
         }
 
         .article-page.sidebar-hidden .article-main {
@@ -164,28 +167,18 @@
             margin-right: auto;
         }
 
-        .article-toolbar {
-            display: none;
-            justify-content: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .article-page.sidebar-hidden .article-toolbar {
-            display: flex;
-        }
-
         .sidebar-toggle {
             display: inline-flex;
             align-items: center;
             gap: 5px;
             min-height: 30px;
-            padding: 2px 8px;
+            padding: 2px 9px;
             border: 1px solid var(--line);
             border-radius: 2px;
             background: var(--card);
             color: var(--muted);
             font-family: var(--sans);
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             line-height: 1.4;
             white-space: nowrap;
@@ -208,14 +201,6 @@
             width: 14px;
             height: 14px;
             flex-shrink: 0;
-        }
-
-        .sidebar-reveal[hidden] {
-            display: none;
-        }
-
-        .article-page.sidebar-hidden .article-body {
-            max-width: 760px;
         }
 
         .back-link {
@@ -403,7 +388,7 @@
         }
 
         .article-body {
-            max-width: 700px;
+            max-width: 860px;
             margin-top: 26px;
             padding-top: 22px;
             border-top: 1px solid var(--line);
@@ -530,7 +515,7 @@
             background: #f2eee7;
             color: #6d2828;
             font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-            font-size: 0.88em;
+            font-size: 14px;
         }
 
         .article-body pre {
@@ -633,10 +618,11 @@
             border-color: rgba(158, 20, 20, 0.4);
         }
 
-        /* ----- 文章首页的文库与文章下载量 ----- */
+        /* ----- 文库与文章下载量：固定在页面底部居中 ----- */
         .article-download {
-            max-width: 700px;
-            margin-top: 32px;
+            width: 100%;
+            max-width: 960px;
+            margin: auto auto 0;
             padding: 20px 22px 18px;
             border: 1px solid var(--line);
             border-radius: 8px;
@@ -717,16 +703,21 @@
 
         @media (max-width: 960px) {
             .article-page {
-                display: block;
+                display: flex;
+                flex-direction: column;
                 padding: 36px 1.25rem 56px;
             }
 
-            .article-sidebar {
+            .article-page-head {
                 display: none;
             }
 
-            .article-toolbar,
-            .article-page.sidebar-hidden .article-toolbar {
+            .article-layout {
+                display: block;
+                margin-bottom: 28px;
+            }
+
+            .article-sidebar {
                 display: none;
             }
 
@@ -815,7 +806,7 @@
 
         @media (max-width: 640px) {
             .article-download {
-                margin-top: 24px;
+                margin-top: auto;
                 padding: 17px 16px 16px;
             }
 
@@ -849,39 +840,49 @@
     <div id="nav-placeholder"></div>
 
     <main class="article-page">
-        <aside class="article-sidebar" id="articleSidebar" aria-label="文章分类">
-            <div class="sidebar-head">
-                <h1 class="sidebar-title">
-                    <a href="/article" data-route="/article">文章</a>
-                </h1>
-                <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="true" aria-controls="articleSidebar" aria-label="隐藏侧栏" title="隐藏侧栏">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <rect x="3" y="4" width="18" height="16" rx="1"></rect>
-                        <path d="M9 4v16"></path>
-                    </svg>
-                    <span class="sidebar-toggle-label">隐藏</span>
-                </button>
-            </div>
-            <nav class="category-tabs" id="categoryTabs" aria-label="文章分类"></nav>
-        </aside>
-
-        <section class="article-main" aria-label="文章内容">
-            <div class="article-toolbar">
-                <button class="sidebar-toggle sidebar-reveal" id="sidebarReveal" type="button" aria-expanded="false" aria-controls="articleSidebar" aria-label="显示侧栏" title="显示侧栏" hidden>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <rect x="3" y="4" width="18" height="16" rx="1"></rect>
-                        <path d="M9 4v16"></path>
-                    </svg>
-                    <span class="sidebar-toggle-label">显示侧栏</span>
-                </button>
-            </div>
-            <button class="back-link" id="backLink" type="button" hidden>
+        <div class="article-page-head">
+            <h1 class="sidebar-title">
+                <a href="/article" data-route="/article">文章</a>
+            </h1>
+            <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-expanded="true" aria-controls="articleSidebar" aria-label="隐藏侧栏" title="隐藏侧栏">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="m15 18-6-6 6-6"></path>
+                    <rect x="3" y="4" width="18" height="16" rx="1"></rect>
+                    <path d="M9 4v16"></path>
                 </svg>
-                <span>返回</span>
+                <span class="sidebar-toggle-label">隐藏侧栏</span>
             </button>
-            <div id="articleView"></div>
+        </div>
+
+        <div class="article-layout">
+            <aside class="article-sidebar" id="articleSidebar" aria-label="文章分类">
+                <nav class="category-tabs" id="categoryTabs" aria-label="文章分类"></nav>
+            </aside>
+
+            <section class="article-main" aria-label="文章内容">
+                <button class="back-link" id="backLink" type="button" hidden>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                    <span>返回</span>
+                </button>
+                <div id="articleView"></div>
+            </section>
+        </div>
+
+        <section class="article-download" id="articleDownload" aria-labelledby="articleDownloadTitle" hidden>
+            <div class="article-download-head">
+                <div>
+                    <p class="article-download-kicker">文库与文章下载量</p>
+                    <h2 class="article-download-title" id="articleDownloadTitle">本月下载 <strong id="articleDownloadMonthly">—</strong> 次</h2>
+                </div>
+                <div class="article-download-meta">
+                    <p class="article-download-limit">总量上限 <span id="articleDownloadLimit">—</span></p>
+                    <p class="article-download-percent" id="articleDownloadPercent">—</p>
+                </div>
+            </div>
+            <div class="article-download-track" id="articleDownloadTrack" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+                <span class="article-download-fill" id="articleDownloadFill"></span>
+            </div>
         </section>
     </main>
 
@@ -889,7 +890,7 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=4"></script>
+    <script src="/article-page.js?v=5"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>

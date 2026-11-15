@@ -78,7 +78,7 @@
             padding-left: 10px;
             border-left: 1px solid var(--line);
             color: #8a8278;
-            font-size: 13px;
+            font-size: 14px;
             letter-spacing: 0.04em;
         }
 
@@ -177,6 +177,10 @@
             border: 1px solid var(--line);
             border-radius: 4px;
             background: var(--card);
+        }
+
+        .view-switch[hidden] {
+            display: none;
         }
 
         .view-btn {
@@ -869,7 +873,7 @@
         .collection-count {
             flex: 0 0 auto;
             color: #8a8278;
-            font-size: 13px;
+            font-size: 14px;
             letter-spacing: 0.03em;
             white-space: nowrap;
         }
@@ -888,9 +892,9 @@
 
         .collection-files {
             padding: 4px 20px 10px;
+            overflow: hidden;
             border-top: 1px solid var(--line);
             background: #fdfbf7;
-            animation: book-detail-in 0.2s ease;
         }
 
         .collection-file {
@@ -900,18 +904,10 @@
             padding: 11px 2px;
             border-bottom: 1px dashed #ece5d9;
             color: #3d3934;
-            text-decoration: none;
-            transition: color 0.15s ease;
         }
 
         .collection-file:last-child {
             border-bottom: 0;
-        }
-
-        .collection-file:hover,
-        .collection-file:focus-visible {
-            color: var(--red);
-            outline: none;
         }
 
         .collection-file-name {
@@ -926,15 +922,8 @@
             flex: 0 0 auto;
             color: #8a8278;
             font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-
-        .collection-file-action {
-            flex: 0 0 auto;
-            color: var(--red);
             font-size: 14px;
-            font-weight: 600;
+            text-transform: uppercase;
         }
 
         /* 回到顶部 */
@@ -1099,7 +1088,7 @@
             }
 
             .collection-count {
-                font-size: 12px;
+                font-size: 14px;
             }
 
             .collection-files {
@@ -1113,10 +1102,6 @@
 
             .collection-file-name {
                 font-size: 14px;
-            }
-
-            .collection-file-action {
-                font-size: 13px;
             }
 
             .book-actions {
@@ -1210,8 +1195,7 @@
             .book-item.search-open .book-desc,
             .book-item.is-expanded .book-quote,
             .book-item.search-open .book-quote,
-            .collection-item,
-            .collection-files {
+            .collection-item {
                 animation: none;
             }
 
@@ -1574,9 +1558,10 @@
                 return 2;
             }
 
-            /* 单列、双列、三列共用此函数；只切换 class，不重建书籍节点。 */
-            function applyViewMode() {
-                var actualView = narrowMedia.matches ? 'single' : desiredView;
+            /* 全集始终单列；普通书籍按当前单双列设置显示。 */
+            function syncViewClasses() {
+                var isCollection = getSelectedCategory() === '全集';
+                var actualView = (isCollection || narrowMedia.matches) ? 'single' : desiredView;
                 bookList.classList.toggle('view-double', actualView === 'double');
                 if (libraryContainer) {
                     libraryContainer.classList.toggle(
@@ -1584,6 +1569,11 @@
                         actualView === 'double' && threeColMedia.matches
                     );
                 }
+            }
+
+            /* 单列、双列、三列共用此函数；只切换 class，不重建书籍节点。 */
+            function applyViewMode() {
+                syncViewClasses();
 
                 viewButtons.forEach(function (button) {
                     button.setAttribute('aria-pressed', String(button.getAttribute('data-view') === desiredView));
@@ -1852,13 +1842,9 @@
             function matchesCollection(collection, terms) {
                 if (!terms.length) return true;
 
-                var haystack = [collection.name]
-                    .concat(collection.files.map(function (file) { return file.fileName; }))
-                    .join(' ')
-                    .toLowerCase();
-
+                var name = collection.name.toLowerCase();
                 return terms.every(function (term) {
-                    return haystack.indexOf(term) !== -1;
+                    return name.indexOf(term) !== -1;
                 });
             }
 
@@ -2140,12 +2126,8 @@
                 files.className = 'collection-files';
 
                 collection.files.forEach(function (file) {
-                    var link = document.createElement('a');
-                    link.className = 'collection-file';
-                    link.href = buildCollectionFileUrl(collection.name, file.fileName, file.format);
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.setAttribute('aria-label', '下载' + collection.name + '的' + file.fileName + file.format);
+                    var row = document.createElement('div');
+                    row.className = 'collection-file';
 
                     var name = document.createElement('span');
                     name.className = 'collection-file-name';
@@ -2155,18 +2137,34 @@
                     format.className = 'collection-file-format';
                     format.textContent = file.format;
 
-                    var action = document.createElement('span');
-                    action.className = 'collection-file-action';
-                    action.textContent = '下载';
+                    var download = document.createElement('a');
+                    download.className = 'book-btn book-btn-primary';
+                    download.href = buildCollectionFileUrl(collection.name, file.fileName, file.format);
+                    download.target = '_blank';
+                    download.rel = 'noopener noreferrer';
+                    download.textContent = '下载';
+                    download.setAttribute('aria-label', '下载' + collection.name + '的' + file.fileName + file.format);
 
-                    link.appendChild(name);
-                    link.appendChild(format);
-                    link.appendChild(action);
-                    files.appendChild(link);
+                    row.appendChild(name);
+                    row.appendChild(format);
+                    row.appendChild(download);
+                    files.appendChild(row);
                 });
 
                 details.appendChild(summary);
                 details.appendChild(files);
+                details.addEventListener('toggle', function () {
+                    if (!details.open || !files.animate) return;
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+                    files.animate([
+                        { height: '0px', opacity: 0 },
+                        { height: files.scrollHeight + 'px', opacity: 1 }
+                    ], {
+                        duration: 220,
+                        easing: 'cubic-bezier(0.22, 0.7, 0.3, 1)'
+                    });
+                });
                 li.appendChild(details);
 
                 return li;
@@ -2201,6 +2199,14 @@
                 resetBottomSpace();
                 bookList.innerHTML = '';
                 bookList.classList.toggle('is-collection-list', category === '全集');
+                viewSwitch.hidden = category === '全集';
+                searchInput.placeholder = category === '全集'
+                    ? '搜索全集名'
+                    : '搜索书名、简介或引用 (可用空格分割关键词)';
+                searchInput.setAttribute('aria-label', category === '全集'
+                    ? '搜索全集名，可用空格分割关键词'
+                    : '搜索当前分类中的书名、简介或引用，可用空格分割关键词');
+                syncViewClasses();
 
                 if (category === '全集') {
                     renderCollections(terms);
