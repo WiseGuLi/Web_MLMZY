@@ -840,23 +840,25 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            width: 100%;
             padding: 17px 20px;
-            list-style: none;
+            border: 0;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            text-align: left;
             cursor: pointer;
             user-select: none;
             transition: background 0.15s ease;
         }
 
-        .collection-summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .collection-summary::marker {
-            content: '';
-        }
-
         .collection-summary:hover {
             background: #faf7f1;
+        }
+
+        .collection-summary:focus-visible {
+            outline: 2px solid rgba(158, 20, 20, 0.3);
+            outline-offset: -2px;
         }
 
         .collection-title {
@@ -886,13 +888,22 @@
             transition: transform 0.22s ease;
         }
 
-        .collection-details[open] .collection-caret {
+        .collection-details.is-open .collection-caret {
             transform: rotate(180deg);
+        }
+
+        .collection-panel {
+            overflow: hidden;
+        }
+
+        .collection-panel-inner {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.22s ease;
         }
 
         .collection-files {
             padding: 4px 20px 10px;
-            overflow: hidden;
             border-top: 1px solid var(--line);
             background: #fdfbf7;
         }
@@ -1203,6 +1214,10 @@
                 transition: none;
             }
 
+            .collection-panel-inner {
+                transition: none;
+            }
+
             .library-progress.is-visible .library-progress-fill {
                 transition: none;
             }
@@ -1312,7 +1327,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=29')
+        fetch('/components/nav.html?v=30')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -1595,6 +1610,7 @@
 
             var books = [];
             var collections = [];
+            var collectionPanelSeq = 0;
             var initialSelectionDone = false;
 
             CATEGORIES.forEach(function (category) {
@@ -2099,11 +2115,13 @@
                 var li = document.createElement('li');
                 li.className = 'collection-item';
 
-                var details = document.createElement('details');
+                var details = document.createElement('div');
                 details.className = 'collection-details';
 
-                var summary = document.createElement('summary');
+                var summary = document.createElement('button');
+                summary.type = 'button';
                 summary.className = 'collection-summary';
+                summary.setAttribute('aria-expanded', 'false');
 
                 var title = document.createElement('span');
                 title.className = 'collection-title';
@@ -2121,6 +2139,16 @@
                 summary.appendChild(title);
                 summary.appendChild(count);
                 summary.appendChild(caret);
+
+                var panel = document.createElement('div');
+                panel.className = 'collection-panel';
+                panel.id = 'collection-panel-' + (++collectionPanelSeq);
+                panel.setAttribute('aria-hidden', 'true');
+                if ('inert' in panel) panel.inert = true;
+                summary.setAttribute('aria-controls', panel.id);
+
+                var panelInner = document.createElement('div');
+                panelInner.className = 'collection-panel-inner';
 
                 var files = document.createElement('div');
                 files.className = 'collection-files';
@@ -2152,18 +2180,30 @@
                 });
 
                 details.appendChild(summary);
-                details.appendChild(files);
-                details.addEventListener('toggle', function () {
-                    if (!details.open || !files.animate) return;
-                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                panelInner.appendChild(files);
+                panel.appendChild(panelInner);
+                details.appendChild(panel);
+                summary.addEventListener('click', function () {
+                    var open = !details.classList.contains('is-open');
+                    details.classList.toggle('is-open', open);
+                    summary.setAttribute('aria-expanded', String(open));
+                    panel.setAttribute('aria-hidden', String(!open));
+                    if ('inert' in panel) panel.inert = !open;
 
-                    files.animate([
-                        { height: '0px', opacity: 0 },
-                        { height: files.scrollHeight + 'px', opacity: 1 }
-                    ], {
-                        duration: 220,
-                        easing: 'cubic-bezier(0.22, 0.7, 0.3, 1)'
-                    });
+                    if (open) {
+                        panelInner.style.maxHeight = files.offsetHeight + 'px';
+                    } else {
+                        if (panelInner.style.maxHeight === 'none') {
+                            panelInner.style.maxHeight = files.offsetHeight + 'px';
+                            void panelInner.offsetHeight;
+                        }
+                        panelInner.style.maxHeight = '0px';
+                    }
+                });
+                panelInner.addEventListener('transitionend', function () {
+                    if (details.classList.contains('is-open') && panelInner.style.maxHeight !== 'none') {
+                        panelInner.style.maxHeight = 'none';
+                    }
                 });
                 li.appendChild(details);
 
@@ -2419,7 +2459,7 @@
                     resetBottomSpace();
                     bookList.innerHTML = '';
                     statusBox.hidden = false;
-                    statusBox.textContent = '文库配置加载失败，请稍后刷新重试。';
+                    statusBox.textContent = '文库配置加载失败，请尝试刷新网页。';
                 }
             }
 

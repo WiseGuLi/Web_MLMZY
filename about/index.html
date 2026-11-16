@@ -189,6 +189,7 @@
 
         .info-grid dd {
             color: #2d2925;
+            word-break: break-all;
         }
 
         .info-note {
@@ -531,13 +532,14 @@
                     <dt>创建时间</dt>
                     <dd>2026年9月9日 <span class="info-note">（毛主席逝世50周年）</span></dd>
                     <dt>开源情况</dt>
-                    <dd>暂不考虑开源</dd>
+                    <dd><a href="https://github.com/WiseGuLi/Web_MLMZY" target="_blank" rel="noopener noreferrer">https://github.com/WiseGuLi/Web_MLMZY</a></dd>
                 </dl>
             </section>
 
             <section class="about-section" aria-labelledby="resources">
                 <h2 id="resources">资源来源</h2>
                 <p>网站上的电子书、视频、图片等资源均来自网络及各大马恩列斯毛文库，仅供学习研究使用，不用于商业用途。</p>
+                <p>本站很多资源来自<a href="https://marxism.forum/" target="_blank" rel="noopener noreferrer">马列毛经典文库（marxism.forum）</a>，在此特别感谢（已获得授权）。</p>
                 <p>如相关资源涉及版权或其他问题，请联系本站处理。</p>
             </section>
 
@@ -570,10 +572,10 @@
                         <p class="contact-label">Bilibili</p>
                         <a
                             class="contact-link"
-                            href="https://www.bilibili.com/video/BV1GJ411x7h7"
+                            href="https://space.bilibili.com/1728312507"
                             target="_blank"
                             rel="noopener noreferrer"
-                        >https://www.bilibili.com/video/BV1GJ411x7h7</a>
+                        >https://space.bilibili.com/1728312507</a>
                     </div>
                 </div>
             </section>
@@ -591,7 +593,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=29')
+        fetch('/components/nav.html?v=30')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();

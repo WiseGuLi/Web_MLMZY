@@ -450,7 +450,7 @@
         } catch (error) {
             if (token !== articleRequestToken) return;
             console.warn('文章正文加载失败:', error);
-            renderArticleError(category, article, '正文暂时无法加载，请稍后重试。');
+            renderArticleError(category, article, '正文暂时无法加载，请稍后重试，或尝试刷新网页。');
         }
     }
 
@@ -537,6 +537,6 @@
         })
         .catch(function (error) {
             console.warn('文章目录加载失败:', error);
-            view.innerHTML = '<p class="article-state article-state--error">文章目录加载失败，请稍后刷新重试。</p>';
+            view.innerHTML = '<p class="article-state article-state--error">文章目录加载失败，请尝试刷新网页。</p>';
         });
 })();
