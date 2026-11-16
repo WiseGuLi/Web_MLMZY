@@ -24,7 +24,7 @@
 
 ### 1. 代码部分 (Software Code)
 
-本项目的源代码采用 [PolyForm Noncommercial License 1.0.0](LICENSE) 进行授权。
+本项目的源代码采用 [PolyForm Noncommercial License 1.0.0](LICENSE.md) 进行授权。
 
 * ✅ **允许**：个人学习、研究、非营利/教育机构使用，以及在此基础上修改。
 * ❌ **禁止**：任何商业项目或商业盈利行为。
