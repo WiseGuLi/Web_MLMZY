@@ -127,19 +127,22 @@
         }
 
         .art-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 18px;
+            column-count: 4;
+            column-gap: 16px;
         }
 
         .art-card {
             display: block;
             width: 100%;
+            margin: 0 0 16px;
             padding: 0;
             overflow: hidden;
+            break-inside: avoid;
+            -webkit-column-break-inside: avoid;
+            page-break-inside: avoid;
             border: 1px solid var(--line);
             border-radius: 4px;
-            background: var(--card);
+            background: #f0ebe2;
             color: inherit;
             font: inherit;
             text-align: left;
@@ -161,9 +164,17 @@
         .art-thumb {
             display: block;
             width: 100%;
-            aspect-ratio: 3 / 4;
-            object-fit: contain;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
             background: #f0ebe2;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .art-thumb.is-loaded {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* ----- 大图查看 ----- */
@@ -227,14 +238,26 @@
             overflow: hidden;
         }
 
+        @media (max-width: 1100px) {
+            .art-grid {
+                column-count: 3;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .art-grid {
+                column-count: 2;
+                column-gap: 14px;
+            }
+
+            .art-card {
+                margin-bottom: 14px;
+            }
+        }
+
         @media (max-width: 600px) {
             .art-page {
                 padding: 30px 1.25rem 60px;
-            }
-
-            .art-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
             }
 
             .art-sections {
@@ -242,12 +265,22 @@
             }
 
             .lightbox-image {
-                max-height: calc(100vh - 150px);
+                max-height: calc(100vh - 48px);
+            }
+        }
+
+        @media (max-width: 360px) {
+            .art-grid {
+                column-count: 1;
             }
         }
 
         @media (prefers-reduced-motion: reduce) {
             .art-card {
+                transition: none;
+            }
+
+            .art-thumb {
                 transition: none;
             }
         }
@@ -278,7 +311,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=31')
+        fetch('/components/nav.html?v=33')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -309,7 +342,6 @@
 
             var ART_BASE = 'https://b2.mlmzy.org/';
             var CATEGORY_ORDER = ['雕塑', '绘画', '年画', '宣传画'];
-            var MANIFEST_URL = '/data/革命文艺/美术图片.json';
             var API_URL = '/api/art-images';
 
             var status = document.getElementById('artStatus');
@@ -318,15 +350,57 @@
             var lightboxImage = document.getElementById('lightboxImage');
             var lightboxClose = document.getElementById('lightboxClose');
             var lastFocus = null;
+            var pendingImages = [];
+            var loadFrame = 0;
+            var lastScrollCheck = 0;
+
+            function loadImage(img) {
+                if (!img.dataset.src) return;
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+
+            function loadVisibleImages() {
+                loadFrame = 0;
+                var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+                pendingImages = pendingImages.filter(function (img) {
+                    if (!img.isConnected) return false;
+                    var rect = img.getBoundingClientRect();
+                    if (rect.top <= viewportHeight + 300 && rect.bottom >= -300) {
+                        loadImage(img);
+                        return false;
+                    }
+                    return true;
+                });
+            }
+
+            function queueLoadImages() {
+                if (loadFrame) return;
+                loadFrame = window.requestAnimationFrame(loadVisibleImages);
+            }
+
+            function handleScroll() {
+                var now = Date.now();
+                if (now - lastScrollCheck < 80) return;
+                lastScrollCheck = now;
+                loadVisibleImages();
+            }
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            window.addEventListener('resize', queueLoadImages);
 
             function buildImageUrl(key) {
                 return ART_BASE + String(key || '').split('/').map(encodeURIComponent).join('/');
             }
 
+            function imageUrl(image) {
+                return image && (image.url || buildImageUrl(image.key));
+            }
+
             function normalizeImages(payload) {
                 var images = payload && Array.isArray(payload.images) ? payload.images : [];
                 return images.filter(function (image) {
-                    return image && image.category && image.key;
+                    return image && image.category && (image.url || image.key);
                 });
             }
 
@@ -357,7 +431,7 @@
 
             function openLightbox(image) {
                 lastFocus = document.activeElement;
-                lightboxImage.src = buildImageUrl(image.key);
+                lightboxImage.src = imageUrl(image);
                 lightboxImage.alt = image.category + '美术作品';
                 lightbox.hidden = false;
                 document.body.classList.add('lightbox-open');
@@ -381,13 +455,19 @@
 
                 var img = document.createElement('img');
                 img.className = 'art-thumb';
-                img.src = buildImageUrl(image.key);
+                img.dataset.src = imageUrl(image);
                 img.alt = image.category + '美术作品';
-                img.loading = 'lazy';
                 img.decoding = 'async';
 
                 card.appendChild(img);
+                pendingImages.push(img);
 
+                img.addEventListener('load', function () {
+                    if (img.naturalWidth && img.naturalHeight) {
+                        img.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
+                    }
+                    img.classList.add('is-loaded');
+                });
                 img.addEventListener('error', function () {
                     card.remove();
                 });
@@ -439,30 +519,23 @@
 
                 status.hidden = true;
                 status.textContent = '';
+                queueLoadImages();
             }
 
             async function loadImages() {
                 try {
                     var response = await fetch(API_URL, { cache: 'no-store' });
-                    if (response.ok) {
-                        var payload = await response.json();
-                        var images = normalizeImages(payload);
-                        if (images.length) {
-                            render(images);
-                            return;
-                        }
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    var payload = await response.json();
+                    var images = normalizeImages(payload);
+                    if (!images.length) {
+                        status.hidden = false;
+                        status.textContent = '美术图片正在整理中，敬请期待。';
+                        return;
                     }
+                    render(images);
                 } catch (error) {
-                    console.warn('R2 图片目录读取失败，使用静态清单:', error);
-                }
-
-                try {
-                    var fallback = await fetch(MANIFEST_URL + '?t=' + Date.now(), { cache: 'no-store' });
-                    if (!fallback.ok) throw new Error('HTTP ' + fallback.status);
-                    var data = await fallback.json();
-                    render(normalizeImages(data));
-                } catch (error) {
-                    console.warn('美术图片清单加载失败:', error);
+                    console.warn('美术图片目录加载失败:', error);
                     status.hidden = false;
                     status.className = 'art-status art-status--error';
                     status.textContent = '美术图片加载失败，请尝试刷新网页。';

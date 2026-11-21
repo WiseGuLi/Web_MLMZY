@@ -51,9 +51,9 @@
         .article-page {
             --page-pad-top: clamp(44px, 6vw, 68px);
             --page-pad-x: 1.5rem;
-            --page-left: max(var(--page-pad-x), calc((100vw - 1440px) / 2 + var(--page-pad-x)));
-            --content-narrow: min(900px, calc(100% - 320px));
-            --content-wide: min(1060px, calc(100% - 160px));
+            --page-left: 8px;
+            --content-narrow: min(960px, calc(100% - 320px));
+            --content-wide: min(1140px, calc(100% - 160px));
             --right-space: calc((100% - var(--content-wide)) / 2);
             position: relative;
             flex: 1;
@@ -67,7 +67,7 @@
 
         .article-corner-toggle {
             position: fixed;
-            top: calc(64px + var(--page-pad-top));
+            top: 72px;
             left: var(--page-left);
             z-index: 5;
             padding: 6px;
@@ -89,7 +89,7 @@
         /* ----- 左侧分类栏 ----- */
         .article-sidebar {
             position: fixed;
-            top: calc(64px + var(--page-pad-top) + 48px);
+            top: 122px;
             left: var(--page-left);
             width: 200px;
             min-width: 0;
@@ -711,21 +711,6 @@
             transition: width 0.9s cubic-bezier(0.22, 0.7, 0.3, 1);
         }
 
-        @media (min-width: 961px) {
-            .back-link {
-                position: fixed;
-                top: calc(64px + var(--page-pad-top) + 48px);
-                left: calc(var(--page-left) + 96px);
-                z-index: 4;
-                margin-bottom: 0;
-                padding: 2px 4px;
-            }
-
-            .article-page.sidebar-hidden .back-link {
-                display: none;
-            }
-        }
-
         @media (max-width: 960px) {
             .article-page {
                 display: flex;
@@ -918,11 +903,11 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=7"></script>
+    <script src="/article-page.js?v=8"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=31')
+        fetch('/components/nav.html?v=33')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
