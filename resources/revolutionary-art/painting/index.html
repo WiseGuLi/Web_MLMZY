@@ -224,9 +224,9 @@
         }
 
         .art-card:hover {
-            border-color: #d4cbbc;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(50, 43, 35, 0.08);
+            border-color: rgba(158, 20, 20, 0.75);
+            transform: translateY(-1px);
+            box-shadow: inset 0 0 0 1px rgba(158, 20, 20, 0.55), 0 8px 22px rgba(50, 43, 35, 0.08);
         }
 
         .art-card:focus-visible {
@@ -241,11 +241,13 @@
             object-fit: cover;
             background: #f0ebe2;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: translateY(4px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .art-thumb.is-loaded {
             opacity: 1;
+            transform: translateY(0);
         }
 
         /* ----- 大图查看 ----- */
@@ -390,7 +392,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=35')
+        fetch('/components/nav.html?v=36')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -433,9 +435,6 @@
             var lightboxImage = document.getElementById('lightboxImage');
             var lightboxClose = document.getElementById('lightboxClose');
             var lastFocus = null;
-            var pendingImages = [];
-            var loadFrame = 0;
-            var lastScrollCheck = 0;
             var categoryCache = Object.create(null);
             var currentCategory = DEFAULT_CATEGORY;
             var currentImages = [];
@@ -443,42 +442,41 @@
             var resizeTimer = 0;
             var requestToken = 0;
             var LIST_CACHE_PREFIX = 'art-list:';
+            var DIM_CACHE_PREFIX = 'art-dims:';
             var LIST_CACHE_TTL = 10 * 60 * 1000;
+            var LOAD_CONCURRENCY = 6;
 
-            function loadImage(img) {
-                if (!img.dataset.src) return;
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
+            function readDimCache(category) {
+                try {
+                    var raw = window.sessionStorage.getItem(DIM_CACHE_PREFIX + category);
+                    return raw ? JSON.parse(raw) : Object.create(null);
+                } catch (error) {
+                    return Object.create(null);
+                }
             }
 
-            function loadVisibleImages() {
-                loadFrame = 0;
-                var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-                pendingImages = pendingImages.filter(function (img) {
-                    if (!img.isConnected) return false;
-                    var rect = img.getBoundingClientRect();
-                    if (rect.top <= viewportHeight + 800 && rect.bottom >= -800) {
-                        loadImage(img);
-                        return false;
-                    }
-                    return true;
+            function writeDimCache(category, dims) {
+                try {
+                    window.sessionStorage.setItem(DIM_CACHE_PREFIX + category, JSON.stringify(dims));
+                } catch (error) {
+                    // Dimension cache is optional.
+                }
+            }
+
+            function measureImage(url) {
+                return new Promise(function (resolve, reject) {
+                    var probe = new Image();
+                    probe.onload = function () {
+                        if (probe.naturalWidth && probe.naturalHeight) {
+                            resolve({ w: probe.naturalWidth, h: probe.naturalHeight });
+                        } else {
+                            reject(new Error('empty image'));
+                        }
+                    };
+                    probe.onerror = reject;
+                    probe.src = url;
                 });
             }
-
-            function queueLoadImages() {
-                if (loadFrame) return;
-                loadFrame = window.requestAnimationFrame(loadVisibleImages);
-            }
-
-            function handleScroll() {
-                var now = Date.now();
-                if (now - lastScrollCheck < 80) return;
-                lastScrollCheck = now;
-                loadVisibleImages();
-            }
-
-            window.addEventListener('scroll', handleScroll, { passive: true });
-            window.addEventListener('resize', queueLoadImages);
 
             function buildImageUrl(key) {
                 return ART_BASE + String(key || '').split('/').map(encodeURIComponent).join('/');
@@ -548,7 +546,7 @@
                 }
             }
 
-            function createCard(image) {
+            function createCard(image, dims) {
                 var card = document.createElement('button');
                 card.type = 'button';
                 card.className = 'art-card';
@@ -556,19 +554,23 @@
 
                 var img = document.createElement('img');
                 img.className = 'art-thumb';
-                img.dataset.src = imageUrl(image);
+                img.src = imageUrl(image);
                 img.alt = image.category + '美术作品';
+                img.style.aspectRatio = dims.w + ' / ' + dims.h;
                 img.decoding = 'async';
 
                 card.appendChild(img);
-                pendingImages.push(img);
 
-                img.addEventListener('load', function () {
-                    if (img.naturalWidth && img.naturalHeight) {
-                        img.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
-                    }
+                var reveal = function () {
                     img.classList.add('is-loaded');
-                });
+                };
+
+                if (img.complete && img.naturalWidth) {
+                    window.requestAnimationFrame(reveal);
+                } else {
+                    img.addEventListener('load', reveal);
+                }
+
                 img.addEventListener('error', function () {
                     card.remove();
                 });
@@ -579,11 +581,24 @@
                 return card;
             }
 
+            function shortestColumn(columns) {
+                var target = columns[0];
+                var targetHeight = target.getBoundingClientRect().height;
+                for (var i = 1; i < columns.length; i++) {
+                    var height = columns[i].getBoundingClientRect().height;
+                    if (height < targetHeight) {
+                        target = columns[i];
+                        targetHeight = height;
+                    }
+                }
+                return target;
+            }
+
             function render(category, images) {
+                var token = ++requestToken;
                 currentCategory = category;
                 currentImages = images;
                 sections.innerHTML = '';
-                pendingImages = [];
 
                 if (!images.length) {
                     activeColumnCount = 0;
@@ -622,19 +637,51 @@
                     grid.appendChild(column);
                 }
 
-                /* 按文件列表顺序横向分配：1→第1列，2→第2列……加载顺序与视觉横向顺序一致。 */
-                images.forEach(function (image, index) {
-                    columns[index % activeColumnCount].appendChild(createCard(image));
-                });
-
                 section.appendChild(head);
                 section.appendChild(grid);
                 sections.appendChild(section);
 
-                status.hidden = true;
+                status.hidden = false;
                 status.className = 'art-status';
-                status.textContent = '';
-                queueLoadImages();
+                status.textContent = '正在加载' + category + '…';
+
+                var dimsCache = readDimCache(category);
+                var index = 0;
+
+                async function worker() {
+                    while (index < images.length) {
+                        if (token !== requestToken || category !== currentCategory) return;
+                        var image = images[index++];
+                        var url = imageUrl(image);
+                        var dims = dimsCache[url];
+
+                        if (!dims) {
+                            try {
+                                dims = await measureImage(url);
+                                dimsCache[url] = dims;
+                            } catch (error) {
+                                continue;
+                            }
+                        }
+
+                        if (token !== requestToken || category !== currentCategory) return;
+                        var column = shortestColumn(columns);
+                        column.appendChild(createCard(image, dims));
+                    }
+                }
+
+                var workers = [];
+                var workerCount = Math.min(LOAD_CONCURRENCY, images.length);
+                for (var w = 0; w < workerCount; w++) {
+                    workers.push(worker());
+                }
+
+                Promise.all(workers).then(function () {
+                    if (token !== requestToken || category !== currentCategory) return;
+                    writeDimCache(category, dimsCache);
+                    status.hidden = true;
+                    status.textContent = '';
+                });
             }
 
             function updateSlider() {
