@@ -76,36 +76,55 @@
         }
 
         .art-filter {
+            position: relative;
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            width: min(100%, 680px);
             margin: 24px 0 30px;
+            padding: 4px;
+            border-radius: 40px;
+            background: #eae5db;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+            user-select: none;
         }
 
-        .art-filter button {
-            min-height: 38px;
-            padding: 6px 18px;
-            border: 1px solid var(--line);
-            border-radius: 999px;
-            background: var(--card);
-            color: #4b463f;
-            font-family: var(--sans);
+        .art-filter input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .art-filter label {
+            position: relative;
+            z-index: 2;
+            flex: 1 1 0;
+            padding: 10px 0;
+            color: #666;
             font-size: 15px;
             font-weight: 500;
             line-height: 1.4;
+            text-align: center;
+            white-space: nowrap;
             cursor: pointer;
-            transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+            transition: color 0.2s ease;
         }
 
-        .art-filter button:hover {
+        .art-filter input:checked + label {
             color: var(--red);
-            border-color: rgba(158, 20, 20, 0.35);
+            font-weight: 600;
         }
 
-        .art-filter button.is-active {
-            background: var(--red);
-            border-color: var(--red);
-            color: #fffaf2;
+        .art-filter-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc((100% - 8px) / 4);
+            height: calc(100% - 8px);
+            z-index: 1;
+            border-radius: 30px;
+            background: var(--card);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            transition: left 0.25s ease, width 0.25s ease;
         }
 
         .art-kicker {
@@ -175,19 +194,25 @@
         }
 
         .art-grid {
-            column-count: 4;
-            column-gap: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .art-column {
+            display: flex;
+            flex: 1 1 0;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
         }
 
         .art-card {
             display: block;
             width: 100%;
-            margin: 0 0 16px;
+            margin: 0;
             padding: 0;
             overflow: hidden;
-            break-inside: avoid;
-            -webkit-column-break-inside: avoid;
-            page-break-inside: avoid;
             border: 1px solid var(--line);
             border-radius: 4px;
             background: #f0ebe2;
@@ -216,13 +241,11 @@
             object-fit: cover;
             background: #f0ebe2;
             opacity: 0;
-            transform: translateY(6px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
+            transition: opacity 0.3s ease;
         }
 
         .art-thumb.is-loaded {
             opacity: 1;
-            transform: translateY(0);
         }
 
         /* ----- 大图查看 ----- */
@@ -286,20 +309,13 @@
             overflow: hidden;
         }
 
-        @media (max-width: 1100px) {
-            .art-grid {
-                column-count: 3;
-            }
-        }
-
         @media (max-width: 800px) {
             .art-grid {
-                column-count: 2;
-                column-gap: 14px;
+                gap: 14px;
             }
 
-            .art-card {
-                margin-bottom: 14px;
+            .art-column {
+                gap: 14px;
             }
         }
 
@@ -308,18 +324,21 @@
                 padding: 30px 1.25rem 60px;
             }
 
+            .art-filter {
+                margin: 20px 0 24px;
+            }
+
+            .art-filter label {
+                padding: 8px 0;
+                font-size: 14px;
+            }
+
             .art-sections {
                 gap: 34px;
             }
 
             .lightbox-image {
                 max-height: calc(100vh - 48px);
-            }
-        }
-
-        @media (max-width: 360px) {
-            .art-grid {
-                column-count: 1;
             }
         }
 
@@ -345,10 +364,15 @@
             <h1 class="art-title">美术图片</h1>
             <p class="art-intro">包括宣传画、绘画、年画与雕塑。点击图片可查看大图。</p>
             <nav class="art-filter" id="artFilter" aria-label="美术图片分类">
-                <button type="button" data-category="宣传画" class="is-active">宣传画</button>
-                <button type="button" data-category="绘画">绘画</button>
-                <button type="button" data-category="年画">年画</button>
-                <button type="button" data-category="雕塑">雕塑</button>
+                <span class="art-filter-slider" id="artFilterSlider" aria-hidden="true"></span>
+                <input type="radio" name="art-category" id="art-poster" value="宣传画" checked>
+                <label for="art-poster">宣传画</label>
+                <input type="radio" name="art-category" id="art-painting" value="绘画">
+                <label for="art-painting">绘画</label>
+                <input type="radio" name="art-category" id="art-newyear" value="年画">
+                <label for="art-newyear">年画</label>
+                <input type="radio" name="art-category" id="art-sculpture" value="雕塑">
+                <label for="art-sculpture">雕塑</label>
             </nav>
         </header>
 
@@ -366,7 +390,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=34')
+        fetch('/components/nav.html?v=35')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -403,7 +427,8 @@
             var status = document.getElementById('artStatus');
             var sections = document.getElementById('artSections');
             var filter = document.getElementById('artFilter');
-            var filterButtons = Array.prototype.slice.call(filter.querySelectorAll('button'));
+            var filterInputs = Array.prototype.slice.call(filter.querySelectorAll('input[name="art-category"]'));
+            var filterSlider = document.getElementById('artFilterSlider');
             var lightbox = document.getElementById('lightbox');
             var lightboxImage = document.getElementById('lightboxImage');
             var lightboxClose = document.getElementById('lightboxClose');
@@ -413,7 +438,12 @@
             var lastScrollCheck = 0;
             var categoryCache = Object.create(null);
             var currentCategory = DEFAULT_CATEGORY;
+            var currentImages = [];
+            var activeColumnCount = 0;
+            var resizeTimer = 0;
             var requestToken = 0;
+            var LIST_CACHE_PREFIX = 'art-list:';
+            var LIST_CACHE_TTL = 10 * 60 * 1000;
 
             function loadImage(img) {
                 if (!img.dataset.src) return;
@@ -427,7 +457,7 @@
                 pendingImages = pendingImages.filter(function (img) {
                     if (!img.isConnected) return false;
                     var rect = img.getBoundingClientRect();
-                    if (rect.top <= viewportHeight + 300 && rect.bottom >= -300) {
+                    if (rect.top <= viewportHeight + 800 && rect.bottom >= -800) {
                         loadImage(img);
                         return false;
                     }
@@ -458,10 +488,45 @@
                 return image && (image.url || buildImageUrl(image.key));
             }
 
+            function getColumnCount() {
+                if (window.innerWidth > 1100) return 4;
+                if (window.innerWidth > 800) return 3;
+                if (window.innerWidth > 360) return 2;
+                return 1;
+            }
+
+            function readCachedList(category) {
+                try {
+                    var raw = window.sessionStorage.getItem(LIST_CACHE_PREFIX + category);
+                    if (!raw) return null;
+                    var cached = JSON.parse(raw);
+                    if (!cached || Date.now() - cached.time > LIST_CACHE_TTL) {
+                        window.sessionStorage.removeItem(LIST_CACHE_PREFIX + category);
+                        return null;
+                    }
+                    return Array.isArray(cached.images) ? cached.images : null;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            function writeCachedList(category, images) {
+                try {
+                    window.sessionStorage.setItem(LIST_CACHE_PREFIX + category, JSON.stringify({
+                        time: Date.now(),
+                        images: images
+                    }));
+                } catch (error) {
+                    // sessionStorage is optional; the in-memory cache still works.
+                }
+            }
+
             function normalizeImages(payload) {
                 var images = payload && Array.isArray(payload.images) ? payload.images : [];
                 return images.filter(function (image) {
                     return image && image.category && (image.url || image.key);
+                }).sort(function (a, b) {
+                    return a.name.localeCompare(b.name, 'zh-CN', { numeric: true });
                 });
             }
 
@@ -515,10 +580,13 @@
             }
 
             function render(category, images) {
+                currentCategory = category;
+                currentImages = images;
                 sections.innerHTML = '';
                 pendingImages = [];
 
                 if (!images.length) {
+                    activeColumnCount = 0;
                     status.hidden = false;
                     status.className = 'art-status';
                     status.textContent = '该分类暂无图片，敬请期待。';
@@ -542,10 +610,21 @@
                 head.appendChild(title);
                 head.appendChild(count);
 
+                activeColumnCount = getColumnCount();
                 var grid = document.createElement('div');
                 grid.className = 'art-grid';
-                images.forEach(function (image) {
-                    grid.appendChild(createCard(image));
+
+                var columns = [];
+                for (var i = 0; i < activeColumnCount; i++) {
+                    var column = document.createElement('div');
+                    column.className = 'art-column';
+                    columns.push(column);
+                    grid.appendChild(column);
+                }
+
+                /* 按文件列表顺序横向分配：1→第1列，2→第2列……加载顺序与视觉横向顺序一致。 */
+                images.forEach(function (image, index) {
+                    columns[index % activeColumnCount].appendChild(createCard(image));
                 });
 
                 section.appendChild(head);
@@ -558,12 +637,23 @@
                 queueLoadImages();
             }
 
+            function updateSlider() {
+                if (!filter.offsetParent) return;
+                var checked = filter.querySelector('input[name="art-category"]:checked');
+                if (!checked) return;
+                var label = filter.querySelector('label[for="' + checked.id + '"]');
+                if (!label) return;
+                var filterRect = filter.getBoundingClientRect();
+                var labelRect = label.getBoundingClientRect();
+                filterSlider.style.left = (labelRect.left - filterRect.left) + 'px';
+                filterSlider.style.width = labelRect.width + 'px';
+            }
+
             function syncFilter(category) {
-                filterButtons.forEach(function (button) {
-                    var active = button.getAttribute('data-category') === category;
-                    button.classList.toggle('is-active', active);
-                    button.setAttribute('aria-pressed', String(active));
+                filterInputs.forEach(function (input) {
+                    input.checked = input.value === category;
                 });
+                updateSlider();
             }
 
             async function loadCategory(category) {
@@ -571,8 +661,10 @@
                 syncFilter(category);
                 var token = ++requestToken;
 
-                if (categoryCache[category]) {
-                    render(category, categoryCache[category]);
+                var cached = categoryCache[category] || readCachedList(category);
+                if (cached) {
+                    categoryCache[category] = cached;
+                    render(category, cached);
                     return;
                 }
 
@@ -590,6 +682,7 @@
                     var images = normalizeImages(payload);
                     if (token !== requestToken || category !== currentCategory) return;
                     categoryCache[category] = images;
+                    writeCachedList(category, images);
                     render(category, images);
                 } catch (error) {
                     if (token !== requestToken) return;
@@ -600,12 +693,23 @@
                 }
             }
 
-            filter.addEventListener('click', function (event) {
-                var button = event.target.closest('button[data-category]');
-                if (!button) return;
-                var category = button.getAttribute('data-category');
+            filter.addEventListener('change', function (event) {
+                if (!event.target.matches('input[name="art-category"]')) return;
+                var category = event.target.value;
                 if (CATEGORIES.indexOf(category) === -1 || category === currentCategory) return;
                 loadCategory(category);
+            });
+
+            window.addEventListener('resize', function () {
+                updateSlider();
+                window.clearTimeout(resizeTimer);
+                resizeTimer = window.setTimeout(function () {
+                    if (currentImages.length && getColumnCount() !== activeColumnCount) {
+                        render(currentCategory, currentImages);
+                    } else {
+                        updateSlider();
+                    }
+                }, 160);
             });
 
             lightboxClose.addEventListener('click', closeLightbox);
