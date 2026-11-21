@@ -254,6 +254,34 @@
         outline: none;
     }
 
+    /* 革命文艺与“学习法律”保持同一套资源菜单样式 */
+    .nav-sub a.nav-art {
+        color: #1a5fb4;
+    }
+
+    .nav-sub a.nav-art .nav-art-icon {
+        width: 18px;
+        height: 18px;
+        display: block;
+        flex-shrink: 0;
+        background-color: currentColor;
+        -webkit-mask: url('/icons/顶栏/资源/文艺.svg?v=1') no-repeat center / contain;
+        mask: url('/icons/顶栏/资源/文艺.svg?v=1') no-repeat center / contain;
+        transition: background-color 0.15s ease;
+    }
+
+    .nav-sub a.nav-art:hover,
+    .nav-sub a.nav-art:focus-visible {
+        background: rgba(26, 95, 180, 0.1);
+        color: #0b4f9e;
+        outline: none;
+    }
+
+    .nav-sub a.nav-art:hover .nav-art-icon,
+    .nav-sub a.nav-art:focus-visible .nav-art-icon {
+        background-color: #0b4f9e;
+    }
+
     .nav-sub .nav-sub-link img {
         width: 18px;
         height: 18px;
@@ -997,14 +1025,17 @@
         }
 
         .nav-sub a.nav-xi,
-        .nav-sub a.nav-law {
+        .nav-sub a.nav-law,
+        .nav-sub a.nav-art {
             color: #1a5fb4;
         }
 
         .nav-sub a.nav-xi:hover,
         .nav-sub a.nav-xi:active,
         .nav-sub a.nav-law:hover,
-        .nav-sub a.nav-law:active {
+        .nav-sub a.nav-law:active,
+        .nav-sub a.nav-art:hover,
+        .nav-sub a.nav-art:active {
             background: rgba(26, 95, 180, 0.1);
             color: #0b4f9e;
         }
@@ -1098,8 +1129,8 @@
                 </summary>
                 <ul class="nav-sub">
                     <li>
-                        <a class="nav-sub-link" href="/resources/revolutionary-art/">
-                            <img src="/icons/顶栏/资源/文艺.svg?v=1" alt="革命文艺图标">
+                        <a class="nav-sub-link nav-art" href="/resources/revolutionary-art/">
+                            <span class="sub-icon nav-art-icon" aria-hidden="true"></span>
                             <span class="label">革命文艺</span>
                         </a>
                     </li>

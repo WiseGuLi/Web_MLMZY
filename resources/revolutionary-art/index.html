@@ -16,7 +16,6 @@
             --ink: #1d1b19;
             --muted: #68625b;
             --red: #9e1414;
-            --red-dark: #7c0d0d;
             --line: #e2ddd2;
             --card: #fffefb;
             --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
@@ -47,17 +46,12 @@
             flex-shrink: 0;
         }
 
-        .art-page {
+        .art-home {
             flex: 1;
             width: 100%;
-            max-width: 1240px;
+            max-width: 1120px;
             margin: 0 auto;
             padding: clamp(38px, 5vw, 64px) 1.5rem 80px;
-        }
-
-        .art-head {
-            max-width: 760px;
-            margin-bottom: 34px;
         }
 
         .art-kicker {
@@ -78,209 +72,111 @@
         }
 
         .art-intro {
+            max-width: 760px;
             margin-top: 12px;
             color: var(--muted);
             font-size: 16px;
             line-height: 1.9;
         }
 
-        .art-status {
-            padding: 30px 0;
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.8;
+        .entry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            margin-top: 34px;
         }
 
-        .art-status[hidden] {
-            display: none;
-        }
-
-        .art-status--error {
-            color: #8a3a31;
-        }
-
-        .art-sections {
+        .entry-card {
             display: flex;
             flex-direction: column;
-            gap: 42px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--card);
+            color: inherit;
+            text-decoration: none;
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
-        .art-section-head {
+        a.entry-card:hover {
+            transform: translateY(-2px);
+            border-color: #d4cbbc;
+            box-shadow: 0 8px 24px rgba(50, 43, 35, 0.08);
+        }
+
+        .entry-thumb {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #f0ebe2;
+        }
+
+        .entry-thumb img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .entry-body {
             display: flex;
-            align-items: baseline;
-            gap: 12px;
-            margin-bottom: 14px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--line);
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 13px 15px;
+            border-top: 1px solid var(--line);
         }
 
-        .art-section-title {
+        .entry-name {
             font-family: var(--serif);
-            font-size: 1.45rem;
+            font-size: 1.15rem;
             font-weight: 700;
             line-height: 1.4;
         }
 
-        .art-section-count {
+        .entry-note {
+            flex: 0 0 auto;
             color: #8a8278;
             font-size: 14px;
         }
 
-        .art-grid {
-            column-count: 4;
-            column-gap: 16px;
+        .entry-card.is-disabled {
+            color: #68625b;
         }
 
-        .art-card {
-            display: block;
-            width: 100%;
-            margin: 0 0 16px;
-            padding: 0;
-            overflow: hidden;
-            break-inside: avoid;
-            -webkit-column-break-inside: avoid;
-            page-break-inside: avoid;
-            border: 1px solid var(--line);
-            border-radius: 4px;
-            background: #f0ebe2;
-            color: inherit;
-            font: inherit;
-            text-align: left;
-            cursor: zoom-in;
-            transition: border-color 0.15s ease, transform 0.18s ease, box-shadow 0.18s ease;
+        .entry-card.is-disabled .entry-thumb {
+            background: #f4f0e8;
         }
 
-        .art-card:hover {
-            border-color: #d4cbbc;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(50, 43, 35, 0.08);
+        .entry-card.is-disabled .entry-name {
+            color: #68625b;
         }
 
-        .art-card:focus-visible {
-            outline: 2px solid rgba(158, 20, 20, 0.4);
-            outline-offset: 2px;
-        }
-
-        .art-thumb {
-            display: block;
-            width: 100%;
-            aspect-ratio: 4 / 5;
-            object-fit: cover;
-            background: #f0ebe2;
-            opacity: 0;
-            transform: translateY(6px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
-        }
-
-        .art-thumb.is-loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ----- 大图查看 ----- */
-        .lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: clamp(16px, 4vw, 48px);
-            background: rgba(20, 16, 14, 0.92);
-        }
-
-        .lightbox[hidden] {
-            display: none;
-        }
-
-        .lightbox-figure {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        .lightbox-image {
-            display: block;
-            max-width: 100%;
-            max-height: calc(100vh - 48px);
-            object-fit: contain;
-            background: #111;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: max(14px, env(safe-area-inset-top));
-            right: max(14px, env(safe-area-inset-right));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            border: 1px solid rgba(255, 250, 242, 0.38);
-            border-radius: 50%;
-            background: rgba(20, 16, 14, 0.55);
-            color: #fffaf2;
-            font-family: var(--sans);
-            font-size: 28px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .lightbox-close:hover {
-            background: var(--red);
-            border-color: var(--red);
-        }
-
-        body.lightbox-open {
-            overflow: hidden;
-        }
-
-        @media (max-width: 1100px) {
-            .art-grid {
-                column-count: 3;
-            }
-        }
-
-        @media (max-width: 800px) {
-            .art-grid {
-                column-count: 2;
-                column-gap: 14px;
-            }
-
-            .art-card {
-                margin-bottom: 14px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .art-page {
+        @media (max-width: 560px) {
+            .art-home {
                 padding: 30px 1.25rem 60px;
             }
 
-            .art-sections {
-                gap: 34px;
+            .entry-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
             }
 
-            .lightbox-image {
-                max-height: calc(100vh - 48px);
+            .entry-body {
+                padding: 11px 12px;
             }
-        }
 
-        @media (max-width: 360px) {
-            .art-grid {
-                column-count: 1;
+            .entry-name {
+                font-size: 1rem;
+            }
+
+            .entry-note {
+                font-size: 14px;
             }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .art-card {
-                transition: none;
-            }
-
-            .art-thumb {
+            .entry-card {
                 transition: none;
             }
         }
@@ -290,28 +186,58 @@
 
     <div id="nav-placeholder"></div>
 
-    <main class="art-page">
-        <header class="art-head">
-            <p class="art-kicker">革命文艺</p>
-            <h1 class="art-title">美术图片</h1>
-            <p class="art-intro">收录革命美术作品，包括雕塑、绘画、年画与宣传画。点击图片可查看大图。</p>
-        </header>
+    <main class="art-home">
+        <p class="art-kicker">革命文艺</p>
+        <h1 class="art-title">革命文艺</h1>
+        <p class="art-intro">革命文艺是革命事业的一部分。这里按门类整理美术、电影、舞蹈、戏剧与音乐等学习资源。</p>
 
-        <p class="art-status" id="artStatus" role="status">正在加载美术图片…</p>
-        <div class="art-sections" id="artSections"></div>
+        <div class="entry-grid">
+            <a class="entry-card" href="/resources/revolutionary-art/painting/">
+                <span class="entry-thumb"><img src="/resources/revolutionary-art/icons/painting.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+                <span class="entry-body">
+                    <span class="entry-name">美术图片</span>
+                    <span class="entry-note">进入 →</span>
+                </span>
+            </a>
+
+            <div class="entry-card is-disabled" aria-disabled="true">
+                <span class="entry-thumb"><img src="/resources/revolutionary-art/icons/movie.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+                <span class="entry-body">
+                    <span class="entry-name">电影</span>
+                    <span class="entry-note">即将开放</span>
+                </span>
+            </div>
+
+            <div class="entry-card is-disabled" aria-disabled="true">
+                <span class="entry-thumb"><img src="/resources/revolutionary-art/icons/dance.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+                <span class="entry-body">
+                    <span class="entry-name">舞蹈</span>
+                    <span class="entry-note">即将开放</span>
+                </span>
+            </div>
+
+            <div class="entry-card is-disabled" aria-disabled="true">
+                <span class="entry-thumb"><img src="/resources/revolutionary-art/icons/drama.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+                <span class="entry-body">
+                    <span class="entry-name">戏剧</span>
+                    <span class="entry-note">即将开放</span>
+                </span>
+            </div>
+
+            <div class="entry-card is-disabled" aria-disabled="true">
+                <span class="entry-thumb"><img src="/resources/revolutionary-art/icons/music.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+                <span class="entry-body">
+                    <span class="entry-name">音乐</span>
+                    <span class="entry-note">即将开放</span>
+                </span>
+            </div>
+        </div>
     </main>
-
-    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="查看大图" hidden>
-        <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭大图">×</button>
-        <figure class="lightbox-figure">
-            <img class="lightbox-image" id="lightboxImage" alt="" />
-        </figure>
-    </div>
 
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=33')
+        fetch('/components/nav.html?v=34')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -334,224 +260,12 @@
             .catch(function (err) {
                 console.warn('页脚加载失败:', err);
             });
-    </script>
 
-    <script>
-        (function () {
-            'use strict';
-
-            var ART_BASE = 'https://b2.mlmzy.org/';
-            var CATEGORY_ORDER = ['雕塑', '绘画', '年画', '宣传画'];
-            var API_URL = '/api/art-images';
-
-            var status = document.getElementById('artStatus');
-            var sections = document.getElementById('artSections');
-            var lightbox = document.getElementById('lightbox');
-            var lightboxImage = document.getElementById('lightboxImage');
-            var lightboxClose = document.getElementById('lightboxClose');
-            var lastFocus = null;
-            var pendingImages = [];
-            var loadFrame = 0;
-            var lastScrollCheck = 0;
-
-            function loadImage(img) {
-                if (!img.dataset.src) return;
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-            }
-
-            function loadVisibleImages() {
-                loadFrame = 0;
-                var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-                pendingImages = pendingImages.filter(function (img) {
-                    if (!img.isConnected) return false;
-                    var rect = img.getBoundingClientRect();
-                    if (rect.top <= viewportHeight + 300 && rect.bottom >= -300) {
-                        loadImage(img);
-                        return false;
-                    }
-                    return true;
-                });
-            }
-
-            function queueLoadImages() {
-                if (loadFrame) return;
-                loadFrame = window.requestAnimationFrame(loadVisibleImages);
-            }
-
-            function handleScroll() {
-                var now = Date.now();
-                if (now - lastScrollCheck < 80) return;
-                lastScrollCheck = now;
-                loadVisibleImages();
-            }
-
-            window.addEventListener('scroll', handleScroll, { passive: true });
-            window.addEventListener('resize', queueLoadImages);
-
-            function buildImageUrl(key) {
-                return ART_BASE + String(key || '').split('/').map(encodeURIComponent).join('/');
-            }
-
-            function imageUrl(image) {
-                return image && (image.url || buildImageUrl(image.key));
-            }
-
-            function normalizeImages(payload) {
-                var images = payload && Array.isArray(payload.images) ? payload.images : [];
-                return images.filter(function (image) {
-                    return image && image.category && (image.url || image.key);
-                });
-            }
-
-            function groupImages(images) {
-                var groups = [];
-                var byName = Object.create(null);
-
-                images.forEach(function (image) {
-                    var group = byName[image.category];
-                    if (!group) {
-                        group = { name: image.category, images: [] };
-                        byName[image.category] = group;
-                        groups.push(group);
-                    }
-                    group.images.push(image);
-                });
-
-                groups.sort(function (a, b) {
-                    var ai = CATEGORY_ORDER.indexOf(a.name);
-                    var bi = CATEGORY_ORDER.indexOf(b.name);
-                    if (ai === -1) ai = CATEGORY_ORDER.length;
-                    if (bi === -1) bi = CATEGORY_ORDER.length;
-                    return ai - bi || a.name.localeCompare(b.name, 'zh-CN');
-                });
-
-                return groups;
-            }
-
-            function openLightbox(image) {
-                lastFocus = document.activeElement;
-                lightboxImage.src = imageUrl(image);
-                lightboxImage.alt = image.category + '美术作品';
-                lightbox.hidden = false;
-                document.body.classList.add('lightbox-open');
-                lightboxClose.focus();
-            }
-
-            function closeLightbox() {
-                lightbox.hidden = true;
-                lightboxImage.removeAttribute('src');
-                document.body.classList.remove('lightbox-open');
-                if (lastFocus && typeof lastFocus.focus === 'function') {
-                    lastFocus.focus();
-                }
-            }
-
-            function createCard(image) {
-                var card = document.createElement('button');
-                card.type = 'button';
-                card.className = 'art-card';
-                card.setAttribute('aria-label', '查看' + image.category + '美术作品大图');
-
-                var img = document.createElement('img');
-                img.className = 'art-thumb';
-                img.dataset.src = imageUrl(image);
-                img.alt = image.category + '美术作品';
-                img.decoding = 'async';
-
-                card.appendChild(img);
-                pendingImages.push(img);
-
-                img.addEventListener('load', function () {
-                    if (img.naturalWidth && img.naturalHeight) {
-                        img.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
-                    }
-                    img.classList.add('is-loaded');
-                });
-                img.addEventListener('error', function () {
-                    card.remove();
-                });
-                card.addEventListener('click', function () {
-                    openLightbox(image);
-                });
-
-                return card;
-            }
-
-            function render(images) {
-                var groups = groupImages(images);
-                sections.innerHTML = '';
-
-                if (!groups.length) {
-                    status.hidden = false;
-                    status.textContent = '美术图片正在整理中，敬请期待。';
-                    return;
-                }
-
-                groups.forEach(function (group) {
-                    var section = document.createElement('section');
-                    section.className = 'art-section';
-
-                    var head = document.createElement('div');
-                    head.className = 'art-section-head';
-
-                    var title = document.createElement('h2');
-                    title.className = 'art-section-title';
-                    title.textContent = group.name;
-
-                    var count = document.createElement('span');
-                    count.className = 'art-section-count';
-                    count.textContent = group.images.length + ' 幅';
-
-                    head.appendChild(title);
-                    head.appendChild(count);
-
-                    var grid = document.createElement('div');
-                    grid.className = 'art-grid';
-                    group.images.forEach(function (image) {
-                        grid.appendChild(createCard(image));
-                    });
-
-                    section.appendChild(head);
-                    section.appendChild(grid);
-                    sections.appendChild(section);
-                });
-
-                status.hidden = true;
-                status.textContent = '';
-                queueLoadImages();
-            }
-
-            async function loadImages() {
-                try {
-                    var response = await fetch(API_URL, { cache: 'no-store' });
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
-                    var payload = await response.json();
-                    var images = normalizeImages(payload);
-                    if (!images.length) {
-                        status.hidden = false;
-                        status.textContent = '美术图片正在整理中，敬请期待。';
-                        return;
-                    }
-                    render(images);
-                } catch (error) {
-                    console.warn('美术图片目录加载失败:', error);
-                    status.hidden = false;
-                    status.className = 'art-status art-status--error';
-                    status.textContent = '美术图片加载失败，请尝试刷新网页。';
-                }
-            }
-
-            lightboxClose.addEventListener('click', closeLightbox);
-            lightbox.addEventListener('click', function (event) {
-                if (event.target === lightbox) closeLightbox();
+        Array.prototype.forEach.call(document.querySelectorAll('.entry-thumb img'), function (img) {
+            img.addEventListener('error', function () {
+                img.remove();
             });
-            document.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape' && !lightbox.hidden) closeLightbox();
-            });
-
-            loadImages();
-        })();
+        });
     </script>
 
     <script src="/components/nav.js?v=18"></script>

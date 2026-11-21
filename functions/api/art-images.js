@@ -17,10 +17,17 @@ function jsonResponse(data, status = 200, cache = 'no-store') {
     });
 }
 
-export async function onRequestGet() {
+export async function onRequestGet(context) {
+    const url = new URL(context.request.url);
+    const category = (url.searchParams.get('category') || '宣传画').trim();
+    if (CATEGORIES.indexOf(category) === -1) {
+        return jsonResponse({ error: 'Unknown category', images: [] }, 400);
+    }
+
+    const prefix = PREFIX + category + '/';
     let payload;
     try {
-        const response = await fetch(LIST_URL + '?prefix=' + encodeURIComponent(PREFIX), {
+        const response = await fetch(LIST_URL + '?prefix=' + encodeURIComponent(prefix), {
             headers: { Accept: 'application/json' }
         });
         if (!response.ok) {
@@ -38,10 +45,10 @@ export async function onRequestGet() {
     const images = [];
     for (const item of list) {
         const name = String((item && item.name) || '');
-        const rest = name.slice(PREFIX.length);
+        if (!name.startsWith(prefix)) continue;
+        const rest = name.slice(prefix.length);
         const parts = rest.split('/');
-        const category = parts[0];
-        if (parts.length < 2 || CATEGORIES.indexOf(category) === -1) continue;
+        if (parts.length < 1 || !parts[parts.length - 1]) continue;
         if (!/\.(webp|wepb)$/i.test(name)) continue;
         images.push({
             category,
@@ -51,10 +58,9 @@ export async function onRequestGet() {
         });
     }
 
-    images.sort((a, b) => {
-        const categoryDiff = CATEGORIES.indexOf(a.category) - CATEGORIES.indexOf(b.category);
-        return categoryDiff || a.name.localeCompare(b.name, 'zh-CN', { numeric: true });
+    images.sort(function (a, b) {
+        return a.name.localeCompare(b.name, 'zh-CN', { numeric: true });
     });
 
-    return jsonResponse({ images, count: images.length }, 200, 'public, max-age=300');
+    return jsonResponse({ images, count: images.length, category }, 200, 'public, max-age=300');
 }

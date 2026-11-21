@@ -51,9 +51,10 @@
         .article-page {
             --page-pad-top: clamp(44px, 6vw, 68px);
             --page-pad-x: 1.5rem;
-            --page-left: 8px;
-            --content-narrow: min(960px, calc(100% - 320px));
-            --content-wide: min(1140px, calc(100% - 160px));
+            --button-left: 8px;
+            --sidebar-left: 24px;
+            --content-narrow: min(1000px, calc(100% - 320px));
+            --content-wide: min(1200px, calc(100% - 160px));
             --right-space: calc((100% - var(--content-wide)) / 2);
             position: relative;
             flex: 1;
@@ -68,9 +69,12 @@
         .article-corner-toggle {
             position: fixed;
             top: 72px;
-            left: var(--page-left);
+            left: var(--button-left);
             z-index: 5;
-            padding: 6px;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            justify-content: center;
         }
 
         .article-corner-toggle .sidebar-toggle-label {
@@ -90,7 +94,7 @@
         .article-sidebar {
             position: fixed;
             top: 122px;
-            left: var(--page-left);
+            left: var(--sidebar-left);
             width: 200px;
             min-width: 0;
             overflow: hidden;
@@ -107,6 +111,7 @@
 
         .sidebar-title {
             display: inline-block;
+            padding-left: 13px;
             font-family: var(--serif);
             font-size: 2.5rem;
             font-weight: 700;
@@ -907,7 +912,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=33')
+        fetch('/components/nav.html?v=34')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
