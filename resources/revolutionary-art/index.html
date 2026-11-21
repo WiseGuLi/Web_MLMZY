@@ -6,7 +6,7 @@
     <meta name="application-name" content="马列毛主义学习站" />
     <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>革命文艺 · 美术图片 | 马列毛主义学习站</title>
+    <title>革命文艺 | 马列毛主义学习站</title>
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
@@ -161,34 +161,9 @@
         .art-thumb {
             display: block;
             width: 100%;
-            aspect-ratio: 4 / 3;
+            aspect-ratio: 3 / 4;
             object-fit: contain;
             background: #f0ebe2;
-        }
-
-        .art-caption {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 9px 12px;
-            border-top: 1px solid var(--line);
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .art-name {
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .art-zoom {
-            flex: 0 0 auto;
-            color: var(--red);
-            font-weight: 600;
         }
 
         /* ----- 大图查看 ----- */
@@ -209,9 +184,8 @@
 
         .lightbox-figure {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
             max-width: 100%;
             max-height: 100%;
         }
@@ -219,17 +193,10 @@
         .lightbox-image {
             display: block;
             max-width: 100%;
-            max-height: calc(100vh - 130px);
+            max-height: calc(100vh - 48px);
             object-fit: contain;
             background: #111;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-        }
-
-        .lightbox-caption {
-            color: #f5efe4;
-            font-size: 14px;
-            line-height: 1.6;
-            text-align: center;
         }
 
         .lightbox-close {
@@ -305,14 +272,13 @@
         <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭大图">×</button>
         <figure class="lightbox-figure">
             <img class="lightbox-image" id="lightboxImage" alt="" />
-            <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
         </figure>
     </div>
 
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=30')
+        fetch('/components/nav.html?v=31')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -341,7 +307,7 @@
         (function () {
             'use strict';
 
-            var R2_BASE = 'https://files.mlmzy.org/';
+            var ART_BASE = 'https://b2.mlmzy.org/';
             var CATEGORY_ORDER = ['雕塑', '绘画', '年画', '宣传画'];
             var MANIFEST_URL = '/data/革命文艺/美术图片.json';
             var API_URL = '/api/art-images';
@@ -350,16 +316,11 @@
             var sections = document.getElementById('artSections');
             var lightbox = document.getElementById('lightbox');
             var lightboxImage = document.getElementById('lightboxImage');
-            var lightboxCaption = document.getElementById('lightboxCaption');
             var lightboxClose = document.getElementById('lightboxClose');
             var lastFocus = null;
 
             function buildImageUrl(key) {
-                return R2_BASE + String(key || '').split('/').map(encodeURIComponent).join('/');
-            }
-
-            function displayName(name) {
-                return String(name || '').replace(/\.(webp|wepb)$/i, '');
+                return ART_BASE + String(key || '').split('/').map(encodeURIComponent).join('/');
             }
 
             function normalizeImages(payload) {
@@ -397,8 +358,7 @@
             function openLightbox(image) {
                 lastFocus = document.activeElement;
                 lightboxImage.src = buildImageUrl(image.key);
-                lightboxImage.alt = image.category + '美术作品：' + displayName(image.name);
-                lightboxCaption.textContent = image.category + ' · ' + displayName(image.name);
+                lightboxImage.alt = image.category + '美术作品';
                 lightbox.hidden = false;
                 document.body.classList.add('lightbox-open');
                 lightboxClose.focus();
@@ -417,30 +377,16 @@
                 var card = document.createElement('button');
                 card.type = 'button';
                 card.className = 'art-card';
-                card.setAttribute('aria-label', '查看' + image.category + '图片' + displayName(image.name) + '的大图');
+                card.setAttribute('aria-label', '查看' + image.category + '美术作品大图');
 
                 var img = document.createElement('img');
                 img.className = 'art-thumb';
                 img.src = buildImageUrl(image.key);
-                img.alt = image.category + '美术作品：' + displayName(image.name);
+                img.alt = image.category + '美术作品';
                 img.loading = 'lazy';
                 img.decoding = 'async';
 
-                var caption = document.createElement('span');
-                caption.className = 'art-caption';
-
-                var name = document.createElement('span');
-                name.className = 'art-name';
-                name.textContent = displayName(image.name);
-
-                var zoom = document.createElement('span');
-                zoom.className = 'art-zoom';
-                zoom.textContent = '查看大图';
-
-                caption.appendChild(name);
-                caption.appendChild(zoom);
                 card.appendChild(img);
-                card.appendChild(caption);
 
                 img.addEventListener('error', function () {
                     card.remove();

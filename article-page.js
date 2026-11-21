@@ -12,7 +12,6 @@
     var articlePage = document.querySelector('.article-page');
     var articleSidebar = document.getElementById('articleSidebar');
     var sidebarToggle = document.getElementById('sidebarToggle');
-    var sidebarToggleLabel = sidebarToggle.querySelector('.sidebar-toggle-label');
 
     var CATEGORIES = [];
     var configLoaded = false;
@@ -24,7 +23,6 @@
     function setSidebarHidden(hidden) {
         articlePage.classList.toggle('sidebar-hidden', hidden);
         sidebarToggle.setAttribute('aria-expanded', String(!hidden));
-        sidebarToggleLabel.textContent = hidden ? '显示侧栏' : '隐藏侧栏';
         sidebarToggle.setAttribute('aria-label', hidden ? '显示侧栏' : '隐藏侧栏');
         sidebarToggle.title = hidden ? '显示侧栏' : '隐藏侧栏';
 

@@ -51,8 +51,9 @@
         .article-page {
             --page-pad-top: clamp(44px, 6vw, 68px);
             --page-pad-x: 1.5rem;
-            --content-narrow: min(860px, calc(100% - 320px));
-            --content-wide: min(940px, calc(100% - 160px));
+            --page-left: max(var(--page-pad-x), calc((100vw - 1440px) / 2 + var(--page-pad-x)));
+            --content-narrow: min(900px, calc(100% - 320px));
+            --content-wide: min(1060px, calc(100% - 160px));
             --right-space: calc((100% - var(--content-wide)) / 2);
             position: relative;
             flex: 1;
@@ -61,14 +62,19 @@
             width: 100%;
             max-width: 1440px;
             margin: 0 auto;
-            padding: var(--page-pad-top) var(--page-pad-x) clamp(56px, 8vw, 84px);
+            padding: var(--page-pad-top) var(--page-pad-x) 3rem;
         }
 
         .article-corner-toggle {
-            position: absolute;
-            top: var(--page-pad-top);
-            left: var(--page-pad-x);
+            position: fixed;
+            top: calc(64px + var(--page-pad-top));
+            left: var(--page-left);
             z-index: 5;
+            padding: 6px;
+        }
+
+        .article-corner-toggle .sidebar-toggle-label {
+            display: none;
         }
 
         .article-layout {
@@ -82,9 +88,9 @@
 
         /* ----- 左侧分类栏 ----- */
         .article-sidebar {
-            position: absolute;
-            top: 0;
-            left: 0;
+            position: fixed;
+            top: calc(64px + var(--page-pad-top) + 48px);
+            left: var(--page-left);
             width: 200px;
             min-width: 0;
             overflow: hidden;
@@ -100,7 +106,7 @@
         }
 
         .sidebar-title {
-            padding-left: 104px;
+            display: inline-block;
             font-family: var(--serif);
             font-size: 2.5rem;
             font-weight: 700;
@@ -705,17 +711,18 @@
             transition: width 0.9s cubic-bezier(0.22, 0.7, 0.3, 1);
         }
 
-        @media (max-width: 1250px) {
-            .article-corner-toggle {
-                padding: 6px;
+        @media (min-width: 961px) {
+            .back-link {
+                position: fixed;
+                top: calc(64px + var(--page-pad-top) + 48px);
+                left: calc(var(--page-left) + 96px);
+                z-index: 4;
+                margin-bottom: 0;
+                padding: 2px 4px;
             }
 
-            .article-corner-toggle .sidebar-toggle-label {
+            .article-page.sidebar-hidden .back-link {
                 display: none;
-            }
-
-            .sidebar-title {
-                padding-left: 44px;
             }
         }
 
@@ -723,7 +730,7 @@
             .article-page {
                 display: flex;
                 flex-direction: column;
-                padding: 36px 1.25rem 56px;
+                padding: 36px 1.25rem 2rem;
             }
 
             .article-corner-toggle {
@@ -869,7 +876,6 @@
                 <rect x="3" y="4" width="18" height="16" rx="1"></rect>
                 <path d="M9 4v16"></path>
             </svg>
-            <span class="sidebar-toggle-label">隐藏侧栏</span>
         </button>
 
         <div class="article-layout">
@@ -912,11 +918,11 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=6"></script>
+    <script src="/article-page.js?v=7"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=30')
+        fetch('/components/nav.html?v=31')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();

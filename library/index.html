@@ -921,6 +921,10 @@
             border-bottom: 0;
         }
 
+        .collection-file .book-btn {
+            min-width: 64px;
+        }
+
         .collection-file-name {
             flex: 1 1 auto;
             min-width: 0;
@@ -1327,7 +1331,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=30')
+        fetch('/components/nav.html?v=31')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
