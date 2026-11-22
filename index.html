@@ -879,6 +879,8 @@
             }
         }
     </style>
+    <script src="/components/site-font.js?v=1"></script>
+    <link rel="stylesheet" href="/components/site-font.css?v=1" />
 </head>
 <body>
     <!-- 顶部导航栏占位 -->
@@ -1405,7 +1407,7 @@
     </script>
 
     <script>
-        fetch('/components/nav.html?v=38')
+        fetch('/components/nav.html?v=39')
             .then(function (res) {
                 if (!res.ok) throw new Error('导航栏加载失败');
                 return res.text();
@@ -1429,6 +1431,6 @@
                 console.warn('页脚加载失败:', err);
             });
     </script>
-    <script src="/components/nav.js?v=18"></script>
+    <script src="/components/nav.js?v=19"></script>
 </body>
 </html>

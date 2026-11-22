@@ -1,0 +1,8 @@
+/* 默认字体模式：全站统一切换为系统无衬线字体；衬线模式保持各页面原有字体。 */
+html[data-font="sans"] body,
+html[data-font="sans"] body *,
+html[data-font="sans"] body *::before,
+html[data-font="sans"] body *::after {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif !important;
+}

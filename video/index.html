@@ -88,7 +88,7 @@
             position: relative;
             display: flex;
             width: min(100%, 520px);
-            margin: 26px 0 30px;
+            margin: 26px auto 30px;
             padding: 4px;
             border-radius: 40px;
             background: #eae5db;
@@ -188,7 +188,7 @@
             }
 
             .video-filter {
-                margin: 20px 0 24px;
+                margin: 20px auto 24px;
             }
 
             .video-filter label {
@@ -208,6 +208,8 @@
             }
         }
     </style>
+    <script src="/components/site-font.js?v=1"></script>
+    <link rel="stylesheet" href="/components/site-font.css?v=1" />
 </head>
 <body>
 
@@ -218,14 +220,15 @@
             <p class="video-kicker">站内视频</p>
             <h1 class="video-title">视频</h1>
             <p class="video-intro">按网站宣传片与知识科普两类整理站内视频内容。页面框架已经建立，视频资源将在后续补充。</p>
-            <nav class="video-filter" id="videoFilter" aria-label="视频分类">
-                <span class="video-filter-slider" id="videoFilterSlider" aria-hidden="true"></span>
-                <input type="radio" name="video-category" id="video-promo" value="网站宣传片" checked>
-                <label for="video-promo">网站宣传片</label>
-                <input type="radio" name="video-category" id="video-knowledge" value="知识科普">
-                <label for="video-knowledge">知识科普</label>
-            </nav>
         </header>
+
+        <nav class="video-filter" id="videoFilter" aria-label="视频分类">
+            <span class="video-filter-slider" id="videoFilterSlider" aria-hidden="true"></span>
+            <input type="radio" name="video-category" id="video-promo" value="网站宣传片" checked>
+            <label for="video-promo">网站宣传片</label>
+            <input type="radio" name="video-category" id="video-knowledge" value="知识科普">
+            <label for="video-knowledge">知识科普</label>
+        </nav>
 
         <section class="video-empty" aria-live="polite">
             <span class="video-empty-icon" aria-hidden="true">
@@ -242,7 +245,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=38')
+        fetch('/components/nav.html?v=39')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -312,6 +315,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js?v=18"></script>
+    <script src="/components/nav.js?v=19"></script>
 </body>
 </html>

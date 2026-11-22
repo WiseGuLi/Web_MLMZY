@@ -35,6 +35,8 @@
             flex: 1;
         }
     </style>
+    <script src="/components/site-font.js?v=1"></script>
+    <link rel="stylesheet" href="/components/site-font.css?v=1" />
 </head>
 <body>
 
@@ -49,7 +51,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=38')
+        fetch('/components/nav.html?v=39')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -75,6 +77,6 @@
             });
     </script>
 
-    <script src="/components/nav.js?v=18"></script>
+    <script src="/components/nav.js?v=19"></script>
 </body>
 </html>

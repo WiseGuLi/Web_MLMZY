@@ -207,7 +207,7 @@
     var THEME_KEY = 'mlmzy-appearance-theme';
     var FONT_KEY = 'mlmzy-appearance-font';
     var THEME_TEXT = { light: '亮色模式', dark: '暗色模式' };
-    var FONT_TEXT = { serif: '衬线字体', sans: '系统字体' };
+    var FONT_TEXT = { serif: '衬线字体', sans: '默认字体' };
     var theme = null;
     var font = null;
 
@@ -258,8 +258,13 @@
         button.setAttribute('title', hint);
     }
 
+    function applyFont() {
+        document.documentElement.setAttribute('data-font', font);
+    }
+
     function syncAll() {
         ensureState();
+        applyFont();
         var buttons = document.querySelectorAll('[data-appearance-toggle]');
         for (var i = 0; i < buttons.length; i++) {
             syncButton(buttons[i]);
