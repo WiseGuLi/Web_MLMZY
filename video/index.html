@@ -6,7 +6,7 @@
     <meta name="application-name" content="马列毛主义学习站" />
     <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>视频 · 革命文艺 | 马列毛主义学习站</title>
+    <title>视频 | 马列毛主义学习站</title>
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
@@ -57,21 +57,6 @@
 
         .video-head {
             max-width: 760px;
-        }
-
-        .video-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 18px;
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        .video-back:hover {
-            color: var(--red);
         }
 
         .video-kicker {
@@ -230,10 +215,9 @@
 
     <main class="video-page">
         <header class="video-head">
-            <a class="video-back" href="/resources/revolutionary-art/">← 革命文艺</a>
-            <p class="video-kicker">革命文艺</p>
+            <p class="video-kicker">站内视频</p>
             <h1 class="video-title">视频</h1>
-            <p class="video-intro">按网站宣传片与知识科普两类整理视频内容。页面框架已经建立，视频资源将在后续补充。</p>
+            <p class="video-intro">按网站宣传片与知识科普两类整理站内视频内容。页面框架已经建立，视频资源将在后续补充。</p>
             <nav class="video-filter" id="videoFilter" aria-label="视频分类">
                 <span class="video-filter-slider" id="videoFilterSlider" aria-hidden="true"></span>
                 <input type="radio" name="video-category" id="video-promo" value="网站宣传片" checked>
@@ -258,7 +242,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=37')
+        fetch('/components/nav.html?v=38')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
