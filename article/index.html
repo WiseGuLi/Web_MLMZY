@@ -854,6 +854,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/components/loading.css?v=1" />
 </head>
 <body>
 
@@ -908,11 +909,11 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=8"></script>
+    <script src="/article-page.js?v=9"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=36')
+        fetch('/components/nav.html?v=37')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();

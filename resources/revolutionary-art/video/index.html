@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-language" content="zh-CN" />
+    <meta name="application-name" content="马列毛主义学习站" />
+    <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>视频 · 革命文艺 | 马列毛主义学习站</title>
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
+    <meta name="theme-color" content="#9e1414" />
+    <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
+    <style>
+        :root {
+            --paper: #faf9f5;
+            --ink: #1d1b19;
+            --muted: #68625b;
+            --red: #9e1414;
+            --red-dark: #7c0d0d;
+            --line: #e2ddd2;
+            --card: #fffefb;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        #nav-placeholder,
+        #footer-placeholder {
+            flex-shrink: 0;
+        }
+
+        .video-page {
+            flex: 1;
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: clamp(38px, 5vw, 64px) 1.5rem 80px;
+        }
+
+        .video-head {
+            max-width: 760px;
+        }
+
+        .video-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 18px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .video-back:hover {
+            color: var(--red);
+        }
+
+        .video-kicker {
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            line-height: 1.5;
+        }
+
+        .video-title {
+            margin-top: 6px;
+            font-family: var(--serif);
+            font-size: clamp(2.1rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            line-height: 1.3;
+        }
+
+        .video-intro {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        /* 与文库分类胶囊同一套样式，两个分类始终横向排列，不折叠成下拉。 */
+        .video-filter {
+            position: relative;
+            display: flex;
+            width: min(100%, 520px);
+            margin: 26px 0 30px;
+            padding: 4px;
+            border-radius: 40px;
+            background: #eae5db;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+            user-select: none;
+        }
+
+        .video-filter input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .video-filter label {
+            position: relative;
+            z-index: 2;
+            flex: 1 1 0;
+            padding: 10px 18px;
+            color: #666;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.4;
+            text-align: center;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .video-filter input:checked + label {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        .video-filter-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc((100% - 8px) / 2);
+            height: calc(100% - 8px);
+            z-index: 1;
+            border-radius: 30px;
+            background: var(--card);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            transition: left 0.25s ease, width 0.25s ease;
+        }
+
+        .video-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            padding: 48px 24px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--card);
+            text-align: center;
+        }
+
+        .video-empty-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(158, 20, 20, 0.2);
+            border-radius: 50%;
+            background: rgba(158, 20, 20, 0.04);
+            color: var(--red);
+        }
+
+        .video-empty-icon svg {
+            display: block;
+            width: 26px;
+            height: 26px;
+        }
+
+        .video-empty-title {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .video-empty-note {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 600px) {
+            .video-page {
+                padding: 30px 1.25rem 60px;
+            }
+
+            .video-filter {
+                margin: 20px 0 24px;
+            }
+
+            .video-filter label {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            .video-empty {
+                min-height: 250px;
+                padding: 38px 18px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .video-filter-slider {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="nav-placeholder"></div>
+
+    <main class="video-page">
+        <header class="video-head">
+            <a class="video-back" href="/resources/revolutionary-art/">← 革命文艺</a>
+            <p class="video-kicker">革命文艺</p>
+            <h1 class="video-title">视频</h1>
+            <p class="video-intro">按网站宣传片与知识科普两类整理视频内容。页面框架已经建立，视频资源将在后续补充。</p>
+            <nav class="video-filter" id="videoFilter" aria-label="视频分类">
+                <span class="video-filter-slider" id="videoFilterSlider" aria-hidden="true"></span>
+                <input type="radio" name="video-category" id="video-promo" value="网站宣传片" checked>
+                <label for="video-promo">网站宣传片</label>
+                <input type="radio" name="video-category" id="video-knowledge" value="知识科普">
+                <label for="video-knowledge">知识科普</label>
+            </nav>
+        </header>
+
+        <section class="video-empty" aria-live="polite">
+            <span class="video-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                    <path d="m10 9 5 3-5 3z"></path>
+                </svg>
+            </span>
+            <h2 class="video-empty-title" id="videoEmptyTitle">网站宣传片</h2>
+            <p class="video-empty-note" id="videoEmptyNote">该分类的视频正在整理中，敬请期待。</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('/components/nav.html?v=37')
+            .then(function (res) {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(function (data) {
+                document.getElementById('nav-placeholder').innerHTML = data;
+            })
+            .catch(function (err) {
+                console.warn('顶栏加载失败:', err);
+            });
+
+        fetch('/components/footer.html?v=10')
+            .then(function (res) {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(function (data) {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(function (err) {
+                console.warn('页脚加载失败:', err);
+            });
+    </script>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var filter = document.getElementById('videoFilter');
+            var slider = document.getElementById('videoFilterSlider');
+            var title = document.getElementById('videoEmptyTitle');
+            var note = document.getElementById('videoEmptyNote');
+            var inputs = Array.prototype.slice.call(filter.querySelectorAll('input[name="video-category"]'));
+            var descriptions = {
+                '网站宣传片': '该分类的视频正在整理中，敬请期待。',
+                '知识科普': '该分类的视频正在整理中，敬请期待。'
+            };
+
+            function updateSlider() {
+                if (!filter.offsetParent) return;
+                var checked = filter.querySelector('input[name="video-category"]:checked');
+                if (!checked) return;
+                var label = filter.querySelector('label[for="' + checked.id + '"]');
+                if (!label) return;
+                var filterRect = filter.getBoundingClientRect();
+                var labelRect = label.getBoundingClientRect();
+                slider.style.left = (labelRect.left - filterRect.left) + 'px';
+                slider.style.width = labelRect.width + 'px';
+            }
+
+            function syncCategory(value) {
+                inputs.forEach(function (input) {
+                    input.checked = input.value === value;
+                });
+                title.textContent = value;
+                note.textContent = descriptions[value] || descriptions['网站宣传片'];
+                updateSlider();
+            }
+
+            filter.addEventListener('change', function (event) {
+                if (!event.target.matches('input[name="video-category"]')) return;
+                syncCategory(event.target.value);
+            });
+
+            window.addEventListener('resize', updateSlider);
+            window.requestAnimationFrame(updateSlider);
+        })();
+    </script>
+
+    <script src="/components/nav.js?v=18"></script>
+</body>
+</html>

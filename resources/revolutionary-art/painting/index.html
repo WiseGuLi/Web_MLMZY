@@ -6,7 +6,7 @@
     <meta name="application-name" content="马列毛主义学习站" />
     <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>美术图片 | 革命文艺 | 马列毛主义学习站</title>
+    <title>美术图片 · 革命文艺 | 马列毛主义学习站</title>
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
@@ -354,6 +354,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/components/loading.css?v=1" />
 </head>
 <body>
 
@@ -378,7 +379,7 @@
             </nav>
         </header>
 
-        <p class="art-status" id="artStatus" role="status">正在加载宣传画…</p>
+        <p class="art-status is-loading" id="artStatus" role="status">正在加载宣传画…</p>
         <div class="art-sections" id="artSections"></div>
     </main>
 
@@ -392,7 +393,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=36')
+        fetch('/components/nav.html?v=37')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -642,7 +643,7 @@
                 sections.appendChild(section);
 
                 status.hidden = false;
-                status.className = 'art-status';
+                status.className = 'art-status is-loading';
                 status.textContent = '正在加载' + category + '…';
 
                 var dimsCache = readDimCache(category);
@@ -717,7 +718,7 @@
 
                 sections.innerHTML = '';
                 status.hidden = false;
-                status.className = 'art-status';
+                status.className = 'art-status is-loading';
                 status.textContent = '正在加载' + category + '…';
 
                 try {

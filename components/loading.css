@@ -1,0 +1,47 @@
+/* 全站加载状态：保留原有加载文字，在文字前增加红色渐变笔触动画。 */
+.is-loading::before {
+    content: "";
+    display: inline-block;
+    width: 64px;
+    height: 19px;
+    margin-right: 9px;
+    vertical-align: -4px;
+    background-image: linear-gradient(100deg,
+        #6f0b0b 0%,
+        #b21b1b 26%,
+        #f04438 48%,
+        #ff8177 52%,
+        #b21b1b 74%,
+        #6f0b0b 100%);
+    background-size: 128px 100%;
+    background-repeat: repeat-x;
+    -webkit-mask: url("/icons/加载.svg?v=1") no-repeat center / contain;
+    mask: url("/icons/加载.svg?v=1") no-repeat center / contain;
+    animation: site-loading-shimmer 1.45s linear infinite;
+}
+
+@keyframes site-loading-shimmer {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -128px 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .is-loading::before {
+        width: 54px;
+        height: 16px;
+        margin-right: 7px;
+        vertical-align: -3px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .is-loading::before {
+        animation: none;
+        background-position: 0 0;
+    }
+}

@@ -568,6 +568,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/components/loading.css?v=1" />
 </head>
 <body>
 
@@ -599,7 +600,7 @@
             <section class="section" aria-labelledby="budget">
                 <h2 id="budget">预算</h2>
                 <p class="budget-intro">每年一条等长进度条，按各项支出占当年预算的比例显示。</p>
-                <p class="budget-status" id="budgetStatus" role="status">正在加载预算…</p>
+                <p class="budget-status is-loading" id="budgetStatus" role="status">正在加载预算…</p>
                 <div class="budget-chart" id="budgetChart" hidden>
                     <ul class="budget-legend" aria-label="预算分类图例">
                         <li>
@@ -640,7 +641,7 @@
                         <tbody id="donationTableBody"></tbody>
                     </table>
                 </div>
-                <p class="donation-status" id="donationStatus" role="status">正在加载捐赠数据…</p>
+                <p class="donation-status is-loading" id="donationStatus" role="status">正在加载捐赠数据…</p>
 
                 <div class="donation-charts" id="donationCharts" hidden>
                     <div class="fund-progress">
@@ -773,6 +774,7 @@
 
             function renderBudget(items) {
                 var statusBox = document.getElementById('budgetStatus');
+                statusBox.classList.remove('is-loading');
                 var chart = document.getElementById('budgetChart');
                 var yearsBox = document.getElementById('budgetYears');
                 yearsBox.innerHTML = '';
@@ -883,6 +885,7 @@
                     });
 
                     if (!items.length) {
+                        statusBox.classList.remove('is-loading');
                         statusBox.textContent = '暂无预算数据。';
                         return;
                     }
@@ -890,6 +893,7 @@
                 } catch (error) {
                     console.error('预算数据加载失败:', error);
                     statusBox.hidden = false;
+                    statusBox.classList.remove('is-loading');
                     statusBox.textContent = '预算数据加载失败，请稍后刷新重试。';
                 }
             }
@@ -903,6 +907,7 @@
 
             function renderDonations(records) {
                 var statusBox = document.getElementById('donationStatus');
+                statusBox.classList.remove('is-loading');
                 var tableWrap = document.getElementById('donationTableWrap');
                 var tableBody = document.getElementById('donationTableBody');
                 var charts = document.getElementById('donationCharts');
@@ -1047,6 +1052,7 @@
                 } catch (error) {
                     console.error('捐赠数据加载失败:', error);
                     statusBox.hidden = false;
+                    statusBox.classList.remove('is-loading');
                     statusBox.textContent = '捐赠数据加载失败，请稍后刷新重试。';
                 }
             }
@@ -1085,7 +1091,7 @@
     </script>
 
     <script>
-        fetch('/components/nav.html?v=36')
+        fetch('/components/nav.html?v=37')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();

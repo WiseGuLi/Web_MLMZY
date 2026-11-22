@@ -370,7 +370,7 @@
         setPageTitle(article.title);
 
         view.innerHTML = renderArticleHeading(category, article) +
-            '<p class="article-state" id="articleState">正在加载正文…</p>';
+            '<p class="article-state is-loading" id="articleState">正在加载正文…</p>';
 
         var body = document.getElementById('articleBody');
         if (body) body.hidden = true;
@@ -520,7 +520,7 @@
 
     window.addEventListener('popstate', render);
 
-    view.innerHTML = '<p class="article-state">正在加载文章目录…</p>';
+    view.innerHTML = '<p class="article-state is-loading">正在加载文章目录…</p>';
     loadDownloadStats();
 
     fetch(CONFIG_URL + '?t=' + Date.now(), { cache: 'no-store' })

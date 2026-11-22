@@ -1227,6 +1227,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/components/loading.css?v=1" />
 </head>
 <body>
 
@@ -1304,7 +1305,7 @@
             <select class="author-select" id="authorSelect" aria-label="选择文库分类"></select>
         </div>
 
-        <p class="library-status" id="libraryStatus" role="status">正在加载文库…</p>
+        <p class="library-status is-loading" id="libraryStatus" role="status">正在加载文库…</p>
         <ul class="book-list" id="bookList" aria-live="polite"></ul>
         <div class="library-bottom-space" id="libraryBottomSpace" aria-hidden="true"></div>
 
@@ -1331,7 +1332,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=36')
+        fetch('/components/nav.html?v=37')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -2236,6 +2237,7 @@
 
             /* 按当前分类和搜索词过滤、排序，然后重建列表节点。 */
             function renderBooks() {
+                statusBox.classList.remove('is-loading');
                 var category = getSelectedCategory();
                 var terms = getSearchTerms();
                 setProgressVisible(terms.length === 0);
@@ -2435,6 +2437,7 @@
             async function loadBooks() {
                 /* 两个 CSV 并行加载；全集为空或缺失时不影响主文库。 */
                 statusBox.hidden = false;
+                statusBox.classList.add('is-loading');
                 statusBox.textContent = '正在加载文库…';
                 resetBottomSpace();
                 bookList.innerHTML = '';
@@ -2463,6 +2466,7 @@
                     resetBottomSpace();
                     bookList.innerHTML = '';
                     statusBox.hidden = false;
+                    statusBox.classList.remove('is-loading');
                     statusBox.textContent = '文库配置加载失败，请尝试刷新网页。';
                 }
             }
