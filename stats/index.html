@@ -106,41 +106,17 @@
             line-height: 1.7;
         }
 
-        .stats-range {
-            display: flex;
+        .stats-period {
             flex-shrink: 0;
-            padding: 4px;
+            padding: 8px 16px;
+            border: 1px solid var(--line);
             border-radius: 999px;
-            background: #eae5db;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
-
-        .stats-range button {
-            min-width: 64px;
-            padding: 8px 13px;
-            border: 0;
-            border-radius: 999px;
-            background: transparent;
-            color: #666;
-            font-family: inherit;
+            background: var(--card);
+            color: var(--red);
             font-size: 14px;
             font-weight: 600;
             line-height: 1.4;
             white-space: nowrap;
-            cursor: pointer;
-            transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-        }
-
-        .stats-range button:hover,
-        .stats-range button:focus-visible {
-            color: var(--red);
-            outline: none;
-        }
-
-        .stats-range button[aria-pressed="true"] {
-            background: var(--card);
-            color: var(--red);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
 
         .stats-status {
@@ -313,6 +289,19 @@
             r: 4.5;
         }
 
+        .trend-guide {
+            stroke: rgba(158, 20, 20, 0.45);
+            stroke-width: 1;
+            stroke-dasharray: 3 4;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.12s ease;
+        }
+
+        .trend-guide.is-visible {
+            opacity: 1;
+        }
+
         .chart-tooltip {
             position: absolute;
             z-index: 2;
@@ -326,7 +315,7 @@
             pointer-events: none;
             opacity: 0;
             transform: translate(-50%, -100%);
-            transition: opacity 0.12s ease;
+            transition: opacity 0.12s ease, left 0.16s ease, top 0.16s ease;
         }
 
         .chart-tooltip.is-visible {
@@ -434,25 +423,57 @@
             font-variant-numeric: tabular-nums;
         }
 
+        .rank-row:hover .rank-name {
+            color: var(--red);
+        }
+
         .rank-track {
-            height: 7px;
+            height: 18px;
             margin-top: 6px;
             overflow: hidden;
-            border-radius: 99px;
+            border-radius: 3px;
             background: #f0ebe2;
         }
 
         .rank-fill {
             display: block;
+            min-width: 2px;
             height: 100%;
             border-radius: inherit;
             background: var(--red);
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+            transition: width 0.3s ease;
         }
 
-        .rank-empty {
-            padding: 8px 0;
-            color: var(--muted);
+        .rank-row.is-empty .rank-name {
+            visibility: hidden;
+        }
+
+        .rank-row.is-empty .rank-track {
+            background: transparent;
+        }
+
+        .rank-tooltip {
+            position: fixed;
+            z-index: 4000;
+            max-width: min(420px, calc(100vw - 32px));
+            padding: 7px 10px;
+            border-radius: 3px;
+            background: #201b18;
+            color: #fffaf2;
             font-size: 14px;
+            line-height: 1.5;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.12s ease, left 0.16s ease, top 0.16s ease, transform 0.16s ease;
+        }
+
+        .rank-tooltip.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .device-wrap {
@@ -580,16 +601,6 @@
                 padding: 30px 1.25rem 60px;
             }
 
-            .stats-range {
-                width: 100%;
-            }
-
-            .stats-range button {
-                flex: 1;
-                min-width: 0;
-                padding: 8px 6px;
-            }
-
             .stat-cards {
                 gap: 12px;
             }
@@ -623,9 +634,10 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .stats-range button,
             .trend-point,
-            .chart-tooltip {
+            .chart-tooltip,
+            .rank-fill,
+            .rank-tooltip {
                 transition: none;
             }
         }
@@ -646,11 +658,7 @@
                 <p class="stats-intro">这里展示本站近期的访问情况，包括每日访问趋势、页面排行、访客地区与设备分布。数据来自 LibreCounter，仅用于了解网站的公开访问概况。</p>
                 <p class="stats-meta" id="statsMeta">数据来自 LibreCounter</p>
             </div>
-            <div class="stats-range" id="statsRange" role="group" aria-label="统计范围">
-                <button type="button" data-days="7" aria-pressed="false">近 7 天</button>
-                <button type="button" data-days="14" aria-pressed="false">近 14 天</button>
-                <button type="button" data-days="30" aria-pressed="true">近 30 天</button>
-            </div>
+            <span class="stats-period">近 30 天</span>
         </header>
 
         <p class="stats-status is-loading" id="statsStatus" role="status">正在加载统计数据…</p>
@@ -668,7 +676,7 @@
                     <p class="stat-note" id="statAverageNote">按有记录的天数计算</p>
                 </article>
                 <article class="stat-card">
-                    <p class="stat-label">最近一日</p>
+                    <p class="stat-label">今日访问</p>
                     <p class="stat-value" id="statLatest">—</p>
                     <p class="stat-note" id="statLatestNote">—</p>
                 </article>
@@ -695,7 +703,7 @@
                 <section class="stats-panel" aria-labelledby="pagesTitle">
                     <div class="stats-panel-head">
                         <h2 class="stats-panel-title" id="pagesTitle">页面访问排行</h2>
-                        <span class="stats-panel-note">前 8 名</span>
+                        <span class="stats-panel-note">前 10 名</span>
                     </div>
                     <ol class="rank-list" id="pageRank"></ol>
                 </section>
@@ -703,7 +711,7 @@
                 <section class="stats-panel" aria-labelledby="countryTitle">
                     <div class="stats-panel-head">
                         <h2 class="stats-panel-title" id="countryTitle">访客地区</h2>
-                        <span class="stats-panel-note">前 8 名</span>
+                        <span class="stats-panel-note">前 10 名</span>
                     </div>
                     <ol class="rank-list" id="countryRank"></ol>
                 </section>
@@ -729,7 +737,7 @@
                 <section class="stats-panel" aria-labelledby="deviceTitle">
                     <div class="stats-panel-head">
                         <h2 class="stats-panel-title" id="deviceTitle">设备类型</h2>
-                        <span class="stats-panel-note">按访问量</span>
+                        <span class="stats-panel-note">前 10 名</span>
                     </div>
                     <div class="device-wrap">
                         <div class="device-donut" id="deviceDonut" role="img" aria-label="设备类型占比">
@@ -746,6 +754,8 @@
             <p class="stats-source">数据由 <a href="https://librecounter.org/www.mlmzy.org/show" target="_blank" rel="noopener noreferrer">LibreCounter</a> 提供。统计结果可能因缓存与统计方式存在少量偏差。</p>
         </div>
     </main>
+
+    <div class="rank-tooltip" id="rankTooltip" role="status" aria-live="polite"></div>
 
     <div id="footer-placeholder"></div>
 
@@ -780,106 +790,14 @@
             'use strict';
 
             var API_URL = '/api/site-stats';
-            var ALLOWED_DAYS = [7, 14, 30];
-            var DEFAULT_DAYS = 30;
+            var REPORT_DAYS = 30;
             var PALETTE = ['#9e1414', '#b9822d', '#6f7b57', '#4d6a78', '#b35c44', '#8b7d6b'];
-            var PAGE_NAMES = {
-                '/': '首页',
-                '/about': '关于',
-                '/about/': '关于',
-                '/article': '文章',
-                '/article/': '文章',
-                '/library': '文库',
-                '/library/': '文库',
-                '/contribute': '投稿',
-                '/contribute/': '投稿',
-                '/download': '下载',
-                '/download/': '下载',
-                '/investment': '网站投入',
-                '/investment/': '网站投入',
-                '/international': '国际共运',
-                '/international/': '国际共运',
-                '/resources': '资源',
-                '/resources/': '资源',
-                '/resources/law': '学习法律',
-                '/resources/law/': '学习法律',
-                '/resources/revolutionary-art': '革命文艺',
-                '/resources/revolutionary-art/': '革命文艺',
-                '/resources/revolutionary-art/painting': '美术图片',
-                '/resources/revolutionary-art/painting/': '美术图片',
-                '/video': '视频',
-                '/video/': '视频',
-                '/stats': '网站数据',
-                '/stats/': '网站数据',
-                '/tutorial-1': '理论教程',
-                '/tutorial-1/': '理论教程',
-                '/tutorial-2': '实践教程',
-                '/tutorial-2/': '实践教程'
-            };
-            var COUNTRY_NAMES = {
-                CN: '中国', HK: '中国香港', MO: '中国澳门', TW: '中国台湾',
-                US: '美国', JP: '日本', SG: '新加坡', KR: '韩国', GB: '英国',
-                DE: '德国', FR: '法国', CA: '加拿大', NL: '荷兰', PL: '波兰',
-                SE: '瑞典', IT: '意大利', LT: '立陶宛', MY: '马来西亚',
-                VN: '越南', IN: '印度', MT: '马耳他'
-            };
-            var BROWSER_NAMES = {
-                'Chrome': 'Chrome',
-                'Chrome Mobile': 'Chrome 移动版',
-                'Chrome Mobile iOS': 'Chrome iOS',
-                'Chrome Webview': 'Chrome WebView',
-                'Microsoft Edge': 'Edge',
-                'WeChat': '微信',
-                'Safari': 'Safari',
-                'Mobile Safari': 'Safari 移动版',
-                'Firefox': 'Firefox',
-                'Firefox Mobile': 'Firefox 移动版',
-                'Quark': '夸克',
-                'vivo Browser': 'vivo 浏览器',
-                'Huawei Browser Mobile': '华为浏览器',
-                'Huawei Browser': '华为浏览器',
-                'Mi Browser': '小米浏览器',
-                'HeyTapBrowser': 'HeyTap 浏览器',
-                'QQ': 'QQ',
-                'QQ Browser': 'QQ 浏览器',
-                'UC Browser': 'UC 浏览器',
-                'Samsung Browser': '三星浏览器',
-                'Baidu Box App': '百度 App',
-                'Baidu Input': '百度输入法',
-                'Headless Chrome': '无头 Chrome',
-                'Generic Bot': '机器人',
-                'Googlebot': 'Google 爬虫'
-            };
-            var OS_NAMES = {
-                'Android': 'Android',
-                'Windows': 'Windows',
-                'iOS': 'iOS',
-                'Mac': 'macOS',
-                'HarmonyOS': '鸿蒙',
-                'GNU/Linux': 'Linux',
-                'Ubuntu': 'Ubuntu',
-                'iPadOS': 'iPadOS',
-                'browser': '浏览器',
-                'mobile app': '移动应用',
-                'bot': '机器人'
-            };
-            var DEVICE_NAMES = {
-                'smartphone': '手机',
-                'desktop': '桌面',
-                'tablet': '平板',
-                'phablet': '大屏手机',
-                'browser': '浏览器',
-                'mobile app': '移动应用',
-                'bot': '机器人'
-            };
 
             var status = document.getElementById('statsStatus');
             var dashboard = document.getElementById('statsDashboard');
             var meta = document.getElementById('statsMeta');
             var trendNote = document.getElementById('trendNote');
-            var range = document.getElementById('statsRange');
-            var rangeButtons = Array.prototype.slice.call(range.querySelectorAll('button[data-days]'));
-            var currentDays = DEFAULT_DAYS;
+            var rankTooltip = document.getElementById('rankTooltip');
             var requestToken = 0;
             var currentSeries = [];
             var resizeTimer = 0;
@@ -889,17 +807,8 @@
                 return new Intl.NumberFormat('zh-CN').format(Math.round(number));
             }
 
-            function formatCompact(value) {
-                var number = Number(value) || 0;
-                if (number >= 10000) {
-                    var wan = number / 10000;
-                    return (wan >= 10 ? wan.toFixed(0) : wan.toFixed(1)) + '万';
-                }
-                if (number >= 1000) {
-                    var k = number / 1000;
-                    return (k >= 10 ? k.toFixed(0) : k.toFixed(1)) + 'k';
-                }
-                return String(Math.round(number));
+            function formatAxis(value) {
+                return String(Math.round(Number(value) || 0));
             }
 
             function formatShortDate(day) {
@@ -912,25 +821,6 @@
                 var parts = String(day || '').split('-');
                 if (parts.length < 3) return String(day || '');
                 return Number(parts[1]) + '月' + Number(parts[2]) + '日';
-            }
-
-            function decodePath(path) {
-                try {
-                    return decodeURIComponent(path);
-                } catch (error) {
-                    return path;
-                }
-            }
-
-            function pageName(path) {
-                if (PAGE_NAMES[path]) return PAGE_NAMES[path];
-
-                if (path.indexOf('/article/') === 0) {
-                    var rest = decodePath(path.slice('/article/'.length));
-                    return '文章 · ' + rest.replace(/\/+/g, ' / ');
-                }
-
-                return decodePath(path);
             }
 
             function shorten(text, maxLength) {
@@ -1029,7 +919,7 @@
                     svgParts.push('<line class="trend-grid-line" x1="' + margin.left + '" y1="' + y +
                         '" x2="' + (margin.left + plotWidth) + '" y2="' + y + '"></line>');
                     svgParts.push('<text class="trend-axis-text" x="' + (margin.left - 9) + '" y="' +
-                        (y + 5) + '" text-anchor="end">' + formatCompact(value) + '</text>');
+                        (y + 5) + '" text-anchor="end">' + formatAxis(value) + '</text>');
                 }
 
                 svgParts.push('<path d="' + area + '" fill="url(#trendAreaFill)"></path>');
@@ -1049,6 +939,9 @@
                         '" text-anchor="middle">' + formatShortDate(series[index].day) + '</text>');
                 });
 
+                svgParts.push('<line class="trend-guide" x1="' + margin.left + '" x2="' + margin.left +
+                    '" y1="' + margin.top + '" y2="' + (margin.top + plotHeight) + '"></line>');
+
                 points.forEach(function (point, index) {
                     var slot = plotWidth / series.length;
                     var slotX = margin.left + slot * index;
@@ -1061,14 +954,25 @@
                 var tooltip = document.createElement('div');
                 tooltip.className = 'chart-tooltip';
                 container.appendChild(tooltip);
+                var guide = container.querySelector('.trend-guide');
 
-                function showTooltip(index) {
+                function showTooltip(index, event) {
                     var point = points[index];
                     if (!point) return;
+                    var guideX = point.x;
+                    if (event && typeof event.clientX === 'number') {
+                        var chartRect = container.getBoundingClientRect();
+                        guideX = Math.max(margin.left, Math.min(margin.left + plotWidth, event.clientX - chartRect.left));
+                    }
                     tooltip.textContent = formatLongDate(point.item.day) + ' · ' + formatNumber(point.item.value) + ' 次';
-                    tooltip.style.left = Math.max(58, Math.min(width - 58, point.x)) + 'px';
+                    tooltip.style.left = Math.max(58, Math.min(width - 58, guideX)) + 'px';
                     tooltip.style.top = Math.max(38, point.y - 10) + 'px';
                     tooltip.classList.add('is-visible');
+                    if (guide) {
+                        guide.setAttribute('x1', guideX);
+                        guide.setAttribute('x2', guideX);
+                        guide.classList.add('is-visible');
+                    }
                     var circles = container.querySelectorAll('.trend-point');
                     for (var i = 0; i < circles.length; i++) {
                         circles[i].classList.toggle('is-active', Number(circles[i].getAttribute('data-index')) === index);
@@ -1077,6 +981,7 @@
 
                 function hideTooltip() {
                     tooltip.classList.remove('is-visible');
+                    if (guide) guide.classList.remove('is-visible');
                     var circles = container.querySelectorAll('.trend-point');
                     for (var i = 0; i < circles.length; i++) {
                         circles[i].classList.remove('is-active');
@@ -1085,11 +990,14 @@
 
                 var hits = container.querySelectorAll('[data-hit]');
                 for (var i = 0; i < hits.length; i++) {
-                    hits[i].addEventListener('pointerenter', function () {
-                        showTooltip(Number(this.getAttribute('data-hit')));
+                    hits[i].addEventListener('pointerenter', function (event) {
+                        showTooltip(Number(this.getAttribute('data-hit')), event);
                     });
-                    hits[i].addEventListener('pointerdown', function () {
-                        showTooltip(Number(this.getAttribute('data-hit')));
+                    hits[i].addEventListener('pointerdown', function (event) {
+                        showTooltip(Number(this.getAttribute('data-hit')), event);
+                    });
+                    hits[i].addEventListener('pointermove', function (event) {
+                        showTooltip(Number(this.getAttribute('data-hit')), event);
                     });
                 }
                 container.addEventListener('pointerleave', hideTooltip);
@@ -1132,30 +1040,69 @@
                 container.appendChild(table);
             }
 
-            function renderRank(container, entries, limit, labelFn, startColor) {
+            function hideRankTooltip() {
+                rankTooltip.classList.remove('is-visible');
+            }
+
+            function positionRankTooltip(event) {
+                var width = rankTooltip.offsetWidth || 220;
+                var height = rankTooltip.offsetHeight || 40;
+                var left = Math.max(12, Math.min(event.clientX + 14, window.innerWidth - width - 12));
+                var top = Math.max(12, Math.min(event.clientY + 16, window.innerHeight - height - 12));
+                rankTooltip.style.left = left + 'px';
+                rankTooltip.style.top = top + 'px';
+            }
+
+            function showRankTooltip(event, text) {
+                rankTooltip.textContent = text;
+                rankTooltip.classList.add('is-visible');
+                positionRankTooltip(event);
+            }
+
+            function renderRank(container, entries, limit, startColor) {
                 container.innerHTML = '';
                 var top = entries.slice(0, limit);
-                if (!top.length) {
-                    var empty = document.createElement('li');
-                    empty.className = 'rank-empty';
-                    empty.textContent = '暂无数据。';
-                    container.appendChild(empty);
-                    return;
-                }
-
                 var max = Math.max.apply(null, top.map(function (entry) {
                     return entry[1];
                 })) || 1;
+                var total = entries.reduce(function (sum, entry) {
+                    return sum + entry[1];
+                }, 0);
 
-                top.forEach(function (entry, index) {
-                    var fullLabel = String(labelFn(entry[0], entry[1]));
+                for (var index = 0; index < limit; index++) {
+                    var entry = top[index];
                     var item = document.createElement('li');
+                    item.className = 'rank-row';
+
+                    if (!entry) {
+                        item.classList.add('is-empty');
+                        item.setAttribute('aria-hidden', 'true');
+                        var emptyLine = document.createElement('div');
+                        emptyLine.className = 'rank-line';
+                        var emptyName = document.createElement('span');
+                        emptyName.className = 'rank-name';
+                        emptyName.textContent = '\u00a0';
+                        var emptyValue = document.createElement('span');
+                        emptyValue.className = 'rank-value';
+                        emptyLine.appendChild(emptyName);
+                        emptyLine.appendChild(emptyValue);
+                        var emptyTrack = document.createElement('div');
+                        emptyTrack.className = 'rank-track';
+                        item.appendChild(emptyLine);
+                        item.appendChild(emptyTrack);
+                        container.appendChild(item);
+                        continue;
+                    }
+
+                    var fullLabel = String(entry[0]);
+                    var percent = total ? entry[1] / total * 100 : 0;
+                    var tooltipText = fullLabel + ' · ' + formatNumber(entry[1]) + ' 次 · ' + percent.toFixed(1) + '%';
 
                     var line = document.createElement('div');
                     line.className = 'rank-line';
                     var name = document.createElement('span');
                     name.className = 'rank-name';
-                    name.textContent = shorten(fullLabel, 42);
+                    name.textContent = shorten(fullLabel, 48);
                     name.title = fullLabel;
                     var value = document.createElement('span');
                     value.className = 'rank-value';
@@ -1173,8 +1120,19 @@
 
                     item.appendChild(line);
                     item.appendChild(track);
+                    item.setAttribute('data-tooltip', tooltipText);
+                    item.addEventListener('pointerenter', function (event) {
+                        showRankTooltip(event, this.dataset.tooltip);
+                    });
+                    item.addEventListener('pointerdown', function (event) {
+                        showRankTooltip(event, this.dataset.tooltip);
+                    });
+                    item.addEventListener('pointermove', function (event) {
+                        if (rankTooltip.classList.contains('is-visible')) positionRankTooltip(event);
+                    });
+                    item.addEventListener('pointerleave', hideRankTooltip);
                     container.appendChild(item);
-                });
+                }
             }
 
             function sortedEntries(object) {
@@ -1197,8 +1155,8 @@
                 legend.innerHTML = '';
                 totalLabel.textContent = formatNumber(total);
 
-                var visible = entries.slice(0, 5);
-                var rest = entries.slice(5).reduce(function (sum, entry) {
+                var visible = entries.slice(0, 10);
+                var rest = entries.slice(10).reduce(function (sum, entry) {
                     return sum + entry[1];
                 }, 0);
                 if (rest > 0) visible.push(['其他', rest]);
@@ -1235,7 +1193,7 @@
                 donut.style.background = 'conic-gradient(' + gradient.join(', ') + ')';
             }
 
-            function renderStats(data, days) {
+            function renderStats(data) {
                 var byDay = Array.isArray(data.byDay) ? data.byDay : [];
                 var series = byDay.map(function (item) {
                     return {
@@ -1270,7 +1228,7 @@
                 }, series[0]);
 
                 document.getElementById('statTotal').textContent = formatNumber(total);
-                document.getElementById('statTotalNote').textContent = '近 ' + days + ' 天累计';
+                document.getElementById('statTotalNote').textContent = '近 ' + REPORT_DAYS + ' 天累计';
                 document.getElementById('statAverage').textContent = formatNumber(average);
                 document.getElementById('statAverageNote').textContent = '按 ' + series.length + ' 天有记录计算';
                 document.getElementById('statLatest').textContent = formatNumber(latest.value);
@@ -1278,7 +1236,7 @@
                 document.getElementById('statPeak').textContent = formatNumber(peak.value);
                 document.getElementById('statPeakNote').textContent = formatLongDate(peak.day) + ' · 单日最高';
 
-                trendNote.textContent = '近 ' + days + ' 天';
+                trendNote.textContent = '近 ' + REPORT_DAYS + ' 天';
                 meta.textContent = '数据来自 LibreCounter · 更新于 ' +
                     new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 
@@ -1287,42 +1245,14 @@
                 renderTrend(series);
                 renderTrendTable(series);
 
-                var pageEntries = sortedEntries(data.byPage).filter(function (entry) {
-                    var path = entry[0];
-                    if (/\.(ico|txt|xml|json|png|jpg|jpeg|webp|svg|css|js)$/i.test(path)) return false;
-                    if (path.indexOf('/icons/') === 0 || path.indexOf('/.well-known/') === 0) return false;
-                    if (path.indexOf('zzz-nonexistent') !== -1) return false;
-                    return true;
-                });
-                renderRank(document.getElementById('pageRank'), pageEntries, 8, pageName, 0);
+                renderRank(document.getElementById('pageRank'), sortedEntries(data.byPage), 10, 0);
+                renderRank(document.getElementById('countryRank'), sortedEntries(data.byCountry), 10, 1);
+                renderRank(document.getElementById('browserRank'), sortedEntries(data.byBrowser), 10, 2);
+                renderRank(document.getElementById('osRank'), sortedEntries(data.byOs), 10, 3);
+                document.getElementById('browserNote').textContent = '前 10 名';
+                document.getElementById('osNote').textContent = '前 10 名';
 
-                var countryEntries = sortedEntries(data.byCountry).map(function (entry) {
-                    return [COUNTRY_NAMES[entry[0]] || entry[0], entry[1]];
-                });
-                renderRank(document.getElementById('countryRank'), countryEntries, 8, function (name) {
-                    return name;
-                }, 1);
-
-                var browserEntries = sortedEntries(data.byBrowser).map(function (entry) {
-                    return [BROWSER_NAMES[entry[0]] || entry[0], entry[1]];
-                });
-                renderRank(document.getElementById('browserRank'), browserEntries, 7, function (name) {
-                    return name;
-                }, 2);
-                document.getElementById('browserNote').textContent = '前 7 名';
-
-                var osEntries = sortedEntries(data.byOs).map(function (entry) {
-                    return [OS_NAMES[entry[0]] || entry[0], entry[1]];
-                });
-                renderRank(document.getElementById('osRank'), osEntries, 7, function (name) {
-                    return name;
-                }, 3);
-                document.getElementById('osNote').textContent = '前 7 名';
-
-                var deviceEntries = sortedEntries(data.byType).map(function (entry) {
-                    return [DEVICE_NAMES[entry[0]] || entry[0], entry[1]];
-                });
-                renderDevice(deviceEntries);
+                renderDevice(sortedEntries(data.byType));
 
                 currentSeries = series;
             }
@@ -1336,18 +1266,14 @@
                 button.className = 'stats-retry';
                 button.textContent = '重试';
                 button.addEventListener('click', function () {
-                    loadStats(currentDays);
+                    loadStats();
                 });
                 status.appendChild(button);
                 dashboard.hidden = true;
             }
 
-            async function loadStats(days) {
+            async function loadStats() {
                 var token = ++requestToken;
-                currentDays = days;
-                rangeButtons.forEach(function (button) {
-                    button.setAttribute('aria-pressed', String(Number(button.getAttribute('data-days')) === days));
-                });
 
                 status.hidden = false;
                 status.className = 'stats-status is-loading';
@@ -1355,27 +1281,18 @@
                 dashboard.hidden = true;
 
                 try {
-                    var response = await fetch(API_URL + '?days=' + days, { cache: 'no-store' });
+                    var response = await fetch(API_URL + '?days=' + REPORT_DAYS, { cache: 'no-store' });
                     if (!response.ok) throw new Error('HTTP ' + response.status);
                     var data = await response.json();
                     if (token !== requestToken) return;
                     if (!data || !Array.isArray(data.byDay)) throw new Error('Invalid stats payload');
-                    renderStats(data, days);
+                    renderStats(data);
                 } catch (error) {
                     if (token !== requestToken) return;
                     console.warn('统计数据加载失败:', error);
                     showError('统计数据加载失败，请稍后重试。');
                 }
             }
-
-            range.addEventListener('click', function (event) {
-                var button = event.target.closest('button[data-days]');
-                if (!button) return;
-                var days = Number(button.getAttribute('data-days'));
-                if (ALLOWED_DAYS.indexOf(days) === -1 || days === currentDays) return;
-                window.history.replaceState(null, '', window.location.pathname + '?days=' + days);
-                loadStats(days);
-            });
 
             window.addEventListener('resize', function () {
                 window.clearTimeout(resizeTimer);
@@ -1386,9 +1303,7 @@
                 }, 160);
             });
 
-            var initialDays = Number(new URLSearchParams(window.location.search).get('days'));
-            if (ALLOWED_DAYS.indexOf(initialDays) === -1) initialDays = DEFAULT_DAYS;
-            loadStats(initialDays);
+            loadStats();
         })();
     </script>
 
