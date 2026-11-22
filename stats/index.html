@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-language" content="zh-CN" />
+    <meta name="application-name" content="马列毛主义学习站" />
+    <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>网站数据 | 马列毛主义学习站</title>
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
+    <meta name="theme-color" content="#9e1414" />
+    <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
+    <style>
+        :root {
+            --paper: #faf9f5;
+            --ink: #1d1b19;
+            --muted: #68625b;
+            --red: #9e1414;
+            --red-dark: #7c0d0d;
+            --gold: #b9822d;
+            --olive: #6f7b57;
+            --slate: #4d6a78;
+            --clay: #b35c44;
+            --line: #e2ddd2;
+            --card: #fffefb;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        #nav-placeholder,
+        #footer-placeholder {
+            flex-shrink: 0;
+        }
+
+        .stats-page {
+            flex: 1;
+            width: 100%;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: clamp(38px, 5vw, 64px) 1.5rem 80px;
+        }
+
+        .stats-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            padding-bottom: 24px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .stats-head-main {
+            max-width: 760px;
+            min-width: 0;
+        }
+
+        .stats-kicker {
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            line-height: 1.5;
+        }
+
+        .stats-title {
+            margin-top: 6px;
+            font-family: var(--serif);
+            font-size: clamp(2.1rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            line-height: 1.3;
+        }
+
+        .stats-intro {
+            max-width: 720px;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.9;
+        }
+
+        .stats-meta {
+            margin-top: 10px;
+            color: #8a8278;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .stats-range {
+            display: flex;
+            flex-shrink: 0;
+            padding: 4px;
+            border-radius: 999px;
+            background: #eae5db;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .stats-range button {
+            min-width: 64px;
+            padding: 8px 13px;
+            border: 0;
+            border-radius: 999px;
+            background: transparent;
+            color: #666;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.4;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .stats-range button:hover,
+        .stats-range button:focus-visible {
+            color: var(--red);
+            outline: none;
+        }
+
+        .stats-range button[aria-pressed="true"] {
+            background: var(--card);
+            color: var(--red);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .stats-status {
+            padding: 34px 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .stats-status[hidden] {
+            display: none;
+        }
+
+        .stats-status--error {
+            color: #8a3a31;
+        }
+
+        .stats-retry {
+            margin-left: 8px;
+            padding: 3px 10px;
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            background: var(--card);
+            color: var(--red);
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .stats-retry:hover {
+            border-color: rgba(158, 20, 20, 0.45);
+        }
+
+        .stats-dashboard[hidden] {
+            display: none;
+        }
+
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 20px 18px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--card);
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--red);
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: var(--gold);
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: var(--olive);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: var(--slate);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .stat-value {
+            margin-top: 8px;
+            font-family: var(--serif);
+            font-size: clamp(1.7rem, 3vw, 2.15rem);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-note {
+            margin-top: 6px;
+            color: #8a8278;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .stats-panel {
+            min-width: 0;
+            padding: 22px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--card);
+        }
+
+        .stats-panel-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .stats-panel-title {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .stats-panel-note {
+            flex-shrink: 0;
+            color: #8a8278;
+            font-size: 14px;
+            line-height: 1.6;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stats-trend {
+            margin-bottom: 18px;
+        }
+
+        .trend-chart {
+            position: relative;
+            min-height: 260px;
+        }
+
+        .trend-chart svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .trend-chart text {
+            font-family: var(--sans);
+        }
+
+        .trend-grid-line {
+            stroke: #ece6dc;
+            stroke-width: 1;
+        }
+
+        .trend-axis-text {
+            fill: #8a8278;
+            font-size: 14px;
+        }
+
+        .trend-point {
+            fill: var(--card);
+            stroke: var(--red);
+            stroke-width: 2;
+            transition: r 0.15s ease, fill 0.15s ease;
+        }
+
+        .trend-point.is-active {
+            fill: var(--red);
+            r: 4.5;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            z-index: 2;
+            padding: 6px 10px;
+            border-radius: 3px;
+            background: #201b18;
+            color: #fffaf2;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transform: translate(-50%, -100%);
+            transition: opacity 0.12s ease;
+        }
+
+        .chart-tooltip.is-visible {
+            opacity: 1;
+        }
+
+        .chart-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 240px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .stats-details {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--line);
+        }
+
+        .stats-details summary {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .stats-details summary:hover {
+            color: var(--red);
+        }
+
+        .stats-table-wrap {
+            max-height: 280px;
+            margin-top: 10px;
+            overflow: auto;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 8px 6px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+        }
+
+        .stats-table th {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .stats-table th:last-child,
+        .stats-table td:last-child {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .stats-grid--two {
+            grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        }
+
+        .stats-grid--three {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            list-style: none;
+        }
+
+        .rank-line {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .rank-name {
+            min-width: 0;
+            overflow: hidden;
+            color: var(--ink);
+            font-weight: 500;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rank-value {
+            flex-shrink: 0;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rank-track {
+            height: 7px;
+            margin-top: 6px;
+            overflow: hidden;
+            border-radius: 99px;
+            background: #f0ebe2;
+        }
+
+        .rank-fill {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--red);
+        }
+
+        .rank-empty {
+            padding: 8px 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .device-wrap {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .device-donut {
+            position: relative;
+            width: 158px;
+            height: 158px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #eee8de;
+        }
+
+        .device-donut::after {
+            content: "";
+            position: absolute;
+            inset: 23%;
+            border-radius: 50%;
+            background: var(--card);
+        }
+
+        .device-donut-center {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.3;
+        }
+
+        .device-donut-center strong {
+            font-family: var(--serif);
+            font-size: 1.55rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .device-donut-center span {
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .device-legend {
+            flex: 1;
+            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .legend-dot {
+            width: 9px;
+            height: 9px;
+            flex-shrink: 0;
+            border-radius: 50%;
+        }
+
+        .legend-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .legend-value {
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stats-source {
+            margin-top: 8px;
+            color: #8a8278;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .stats-source a {
+            color: var(--muted);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .stats-source a:hover {
+            color: var(--red);
+        }
+
+        @media (max-width: 980px) {
+            .stats-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            .stat-cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .stats-grid--two,
+            .stats-grid--three {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-page {
+                padding: 30px 1.25rem 60px;
+            }
+
+            .stats-range {
+                width: 100%;
+            }
+
+            .stats-range button {
+                flex: 1;
+                min-width: 0;
+                padding: 8px 6px;
+            }
+
+            .stat-cards {
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px 14px 14px;
+            }
+
+            .stat-value {
+                font-size: 1.6rem;
+            }
+
+            .stats-panel {
+                padding: 17px 15px;
+            }
+
+            .stats-panel-head {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .trend-chart {
+                min-height: 230px;
+            }
+
+            .device-donut {
+                width: 138px;
+                height: 138px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .stats-range button,
+            .trend-point,
+            .chart-tooltip {
+                transition: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/components/loading.css?v=2" />
+    <script src="/components/site-font.js?v=1"></script>
+    <link rel="stylesheet" href="/components/site-font.css?v=1" />
+</head>
+<body>
+
+    <div id="nav-placeholder"></div>
+
+    <main class="stats-page">
+        <header class="stats-head">
+            <div class="stats-head-main">
+                <p class="stats-kicker">数据统计</p>
+                <h1 class="stats-title">网站数据</h1>
+                <p class="stats-intro">这里展示本站近期的访问情况，包括每日访问趋势、页面排行、访客地区与设备分布。数据来自 LibreCounter，仅用于了解网站的公开访问概况。</p>
+                <p class="stats-meta" id="statsMeta">数据来自 LibreCounter</p>
+            </div>
+            <div class="stats-range" id="statsRange" role="group" aria-label="统计范围">
+                <button type="button" data-days="7" aria-pressed="false">近 7 天</button>
+                <button type="button" data-days="14" aria-pressed="false">近 14 天</button>
+                <button type="button" data-days="30" aria-pressed="true">近 30 天</button>
+            </div>
+        </header>
+
+        <p class="stats-status is-loading" id="statsStatus" role="status">正在加载统计数据…</p>
+
+        <div class="stats-dashboard" id="statsDashboard" hidden>
+            <section class="stat-cards" aria-label="访问概览">
+                <article class="stat-card">
+                    <p class="stat-label">总访问量</p>
+                    <p class="stat-value" id="statTotal">—</p>
+                    <p class="stat-note" id="statTotalNote">所选区间累计</p>
+                </article>
+                <article class="stat-card">
+                    <p class="stat-label">日均访问</p>
+                    <p class="stat-value" id="statAverage">—</p>
+                    <p class="stat-note" id="statAverageNote">按有记录的天数计算</p>
+                </article>
+                <article class="stat-card">
+                    <p class="stat-label">最近一日</p>
+                    <p class="stat-value" id="statLatest">—</p>
+                    <p class="stat-note" id="statLatestNote">—</p>
+                </article>
+                <article class="stat-card">
+                    <p class="stat-label">单日最高</p>
+                    <p class="stat-value" id="statPeak">—</p>
+                    <p class="stat-note" id="statPeakNote">—</p>
+                </article>
+            </section>
+
+            <section class="stats-panel stats-trend" aria-labelledby="trendTitle">
+                <div class="stats-panel-head">
+                    <h2 class="stats-panel-title" id="trendTitle">每日访问趋势</h2>
+                    <span class="stats-panel-note" id="trendNote">近 30 天</span>
+                </div>
+                <div class="trend-chart" id="trendChart" role="img" aria-label="每日访问趋势图"></div>
+                <details class="stats-details">
+                    <summary>查看每日明细</summary>
+                    <div class="stats-table-wrap" id="trendTable"></div>
+                </details>
+            </section>
+
+            <div class="stats-grid stats-grid--two">
+                <section class="stats-panel" aria-labelledby="pagesTitle">
+                    <div class="stats-panel-head">
+                        <h2 class="stats-panel-title" id="pagesTitle">页面访问排行</h2>
+                        <span class="stats-panel-note">前 8 名</span>
+                    </div>
+                    <ol class="rank-list" id="pageRank"></ol>
+                </section>
+
+                <section class="stats-panel" aria-labelledby="countryTitle">
+                    <div class="stats-panel-head">
+                        <h2 class="stats-panel-title" id="countryTitle">访客地区</h2>
+                        <span class="stats-panel-note">前 8 名</span>
+                    </div>
+                    <ol class="rank-list" id="countryRank"></ol>
+                </section>
+            </div>
+
+            <div class="stats-grid stats-grid--three">
+                <section class="stats-panel" aria-labelledby="browserTitle">
+                    <div class="stats-panel-head">
+                        <h2 class="stats-panel-title" id="browserTitle">浏览器</h2>
+                        <span class="stats-panel-note" id="browserNote"></span>
+                    </div>
+                    <ol class="rank-list" id="browserRank"></ol>
+                </section>
+
+                <section class="stats-panel" aria-labelledby="osTitle">
+                    <div class="stats-panel-head">
+                        <h2 class="stats-panel-title" id="osTitle">操作系统</h2>
+                        <span class="stats-panel-note" id="osNote"></span>
+                    </div>
+                    <ol class="rank-list" id="osRank"></ol>
+                </section>
+
+                <section class="stats-panel" aria-labelledby="deviceTitle">
+                    <div class="stats-panel-head">
+                        <h2 class="stats-panel-title" id="deviceTitle">设备类型</h2>
+                        <span class="stats-panel-note">按访问量</span>
+                    </div>
+                    <div class="device-wrap">
+                        <div class="device-donut" id="deviceDonut" role="img" aria-label="设备类型占比">
+                            <div class="device-donut-center">
+                                <strong id="deviceTotal">—</strong>
+                                <span>次访问</span>
+                            </div>
+                        </div>
+                        <ul class="device-legend" id="deviceLegend"></ul>
+                    </div>
+                </section>
+            </div>
+
+            <p class="stats-source">数据由 <a href="https://librecounter.org/www.mlmzy.org/show" target="_blank" rel="noopener noreferrer">LibreCounter</a> 提供。统计结果可能因缓存与统计方式存在少量偏差。</p>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('/components/nav.html?v=41')
+            .then(function (res) {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(function (data) {
+                document.getElementById('nav-placeholder').innerHTML = data;
+            })
+            .catch(function (err) {
+                console.warn('顶栏加载失败:', err);
+            });
+
+        fetch('/components/footer.html?v=10')
+            .then(function (res) {
+                if (!res.ok) throw new Error('网络响应失败');
+                return res.text();
+            })
+            .then(function (data) {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(function (err) {
+                console.warn('页脚加载失败:', err);
+            });
+    </script>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var API_URL = '/api/site-stats';
+            var ALLOWED_DAYS = [7, 14, 30];
+            var DEFAULT_DAYS = 30;
+            var PALETTE = ['#9e1414', '#b9822d', '#6f7b57', '#4d6a78', '#b35c44', '#8b7d6b'];
+            var PAGE_NAMES = {
+                '/': '首页',
+                '/about': '关于',
+                '/about/': '关于',
+                '/article': '文章',
+                '/article/': '文章',
+                '/library': '文库',
+                '/library/': '文库',
+                '/contribute': '投稿',
+                '/contribute/': '投稿',
+                '/download': '下载',
+                '/download/': '下载',
+                '/investment': '网站投入',
+                '/investment/': '网站投入',
+                '/international': '国际共运',
+                '/international/': '国际共运',
+                '/resources': '资源',
+                '/resources/': '资源',
+                '/resources/law': '学习法律',
+                '/resources/law/': '学习法律',
+                '/resources/revolutionary-art': '革命文艺',
+                '/resources/revolutionary-art/': '革命文艺',
+                '/resources/revolutionary-art/painting': '美术图片',
+                '/resources/revolutionary-art/painting/': '美术图片',
+                '/video': '视频',
+                '/video/': '视频',
+                '/stats': '网站数据',
+                '/stats/': '网站数据',
+                '/tutorial-1': '理论教程',
+                '/tutorial-1/': '理论教程',
+                '/tutorial-2': '实践教程',
+                '/tutorial-2/': '实践教程'
+            };
+            var COUNTRY_NAMES = {
+                CN: '中国', HK: '中国香港', MO: '中国澳门', TW: '中国台湾',
+                US: '美国', JP: '日本', SG: '新加坡', KR: '韩国', GB: '英国',
+                DE: '德国', FR: '法国', CA: '加拿大', NL: '荷兰', PL: '波兰',
+                SE: '瑞典', IT: '意大利', LT: '立陶宛', MY: '马来西亚',
+                VN: '越南', IN: '印度', MT: '马耳他'
+            };
+            var BROWSER_NAMES = {
+                'Chrome': 'Chrome',
+                'Chrome Mobile': 'Chrome 移动版',
+                'Chrome Mobile iOS': 'Chrome iOS',
+                'Chrome Webview': 'Chrome WebView',
+                'Microsoft Edge': 'Edge',
+                'WeChat': '微信',
+                'Safari': 'Safari',
+                'Mobile Safari': 'Safari 移动版',
+                'Firefox': 'Firefox',
+                'Firefox Mobile': 'Firefox 移动版',
+                'Quark': '夸克',
+                'vivo Browser': 'vivo 浏览器',
+                'Huawei Browser Mobile': '华为浏览器',
+                'Huawei Browser': '华为浏览器',
+                'Mi Browser': '小米浏览器',
+                'HeyTapBrowser': 'HeyTap 浏览器',
+                'QQ': 'QQ',
+                'QQ Browser': 'QQ 浏览器',
+                'UC Browser': 'UC 浏览器',
+                'Samsung Browser': '三星浏览器',
+                'Baidu Box App': '百度 App',
+                'Baidu Input': '百度输入法',
+                'Headless Chrome': '无头 Chrome',
+                'Generic Bot': '机器人',
+                'Googlebot': 'Google 爬虫'
+            };
+            var OS_NAMES = {
+                'Android': 'Android',
+                'Windows': 'Windows',
+                'iOS': 'iOS',
+                'Mac': 'macOS',
+                'HarmonyOS': '鸿蒙',
+                'GNU/Linux': 'Linux',
+                'Ubuntu': 'Ubuntu',
+                'iPadOS': 'iPadOS',
+                'browser': '浏览器',
+                'mobile app': '移动应用',
+                'bot': '机器人'
+            };
+            var DEVICE_NAMES = {
+                'smartphone': '手机',
+                'desktop': '桌面',
+                'tablet': '平板',
+                'phablet': '大屏手机',
+                'browser': '浏览器',
+                'mobile app': '移动应用',
+                'bot': '机器人'
+            };
+
+            var status = document.getElementById('statsStatus');
+            var dashboard = document.getElementById('statsDashboard');
+            var meta = document.getElementById('statsMeta');
+            var trendNote = document.getElementById('trendNote');
+            var range = document.getElementById('statsRange');
+            var rangeButtons = Array.prototype.slice.call(range.querySelectorAll('button[data-days]'));
+            var currentDays = DEFAULT_DAYS;
+            var requestToken = 0;
+            var currentSeries = [];
+            var resizeTimer = 0;
+
+            function formatNumber(value) {
+                var number = Number(value) || 0;
+                return new Intl.NumberFormat('zh-CN').format(Math.round(number));
+            }
+
+            function formatCompact(value) {
+                var number = Number(value) || 0;
+                if (number >= 10000) {
+                    var wan = number / 10000;
+                    return (wan >= 10 ? wan.toFixed(0) : wan.toFixed(1)) + '万';
+                }
+                if (number >= 1000) {
+                    var k = number / 1000;
+                    return (k >= 10 ? k.toFixed(0) : k.toFixed(1)) + 'k';
+                }
+                return String(Math.round(number));
+            }
+
+            function formatShortDate(day) {
+                var parts = String(day || '').split('-');
+                if (parts.length < 3) return String(day || '');
+                return Number(parts[1]) + '/' + Number(parts[2]);
+            }
+
+            function formatLongDate(day) {
+                var parts = String(day || '').split('-');
+                if (parts.length < 3) return String(day || '');
+                return Number(parts[1]) + '月' + Number(parts[2]) + '日';
+            }
+
+            function decodePath(path) {
+                try {
+                    return decodeURIComponent(path);
+                } catch (error) {
+                    return path;
+                }
+            }
+
+            function pageName(path) {
+                if (PAGE_NAMES[path]) return PAGE_NAMES[path];
+
+                if (path.indexOf('/article/') === 0) {
+                    var rest = decodePath(path.slice('/article/'.length));
+                    return '文章 · ' + rest.replace(/\/+/g, ' / ');
+                }
+
+                return decodePath(path);
+            }
+
+            function shorten(text, maxLength) {
+                var value = String(text || '');
+                if (value.length <= maxLength) return value;
+                return value.slice(0, maxLength - 1) + '…';
+            }
+
+            function niceScale(maxValue) {
+                var max = Number(maxValue) || 0;
+                if (max <= 0) max = 1;
+                var rawStep = max / 4;
+                var magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+                var half = magnitude / 2;
+                var step = Math.ceil(rawStep / half) * half;
+                if (!isFinite(step) || step <= 0) step = 1;
+                return { step: step, top: step * 4 };
+            }
+
+            function pickIndices(length, count) {
+                if (length <= count) {
+                    var all = [];
+                    for (var i = 0; i < length; i++) all.push(i);
+                    return all;
+                }
+
+                var result = [];
+                for (var j = 0; j < count; j++) {
+                    var index = Math.round((length - 1) * j / (count - 1));
+                    if (result.indexOf(index) === -1) result.push(index);
+                }
+                return result;
+            }
+
+            function linePath(points) {
+                if (!points.length) return '';
+                if (points.length === 1) return 'M ' + points[0].x + ' ' + points[0].y;
+
+                var path = 'M ' + points[0].x + ' ' + points[0].y;
+                for (var i = 1; i < points.length; i++) {
+                    var previous = points[i - 1];
+                    var point = points[i];
+                    var middle = (previous.x + point.x) / 2;
+                    path += ' C ' + middle + ' ' + previous.y + ', ' + middle + ' ' + point.y +
+                        ', ' + point.x + ' ' + point.y;
+                }
+                return path;
+            }
+
+            function renderTrend(series) {
+                var container = document.getElementById('trendChart');
+                if (!container) return;
+                container.innerHTML = '';
+
+                if (!series.length) {
+                    var empty = document.createElement('div');
+                    empty.className = 'chart-empty';
+                    empty.textContent = '该区间暂无访问数据。';
+                    container.appendChild(empty);
+                    return;
+                }
+
+                var width = Math.max(260, Math.floor(container.clientWidth || 720));
+                var height = width < 560 ? 250 : 310;
+                var margin = { top: 18, right: 18, bottom: 34, left: 46 };
+                var plotWidth = width - margin.left - margin.right;
+                var plotHeight = height - margin.top - margin.bottom;
+                var maxValue = Math.max.apply(null, series.map(function (item) {
+                    return item.value;
+                }));
+                var scale = niceScale(maxValue);
+                var points = series.map(function (item, index) {
+                    var x = series.length === 1
+                        ? margin.left + plotWidth / 2
+                        : margin.left + plotWidth * index / (series.length - 1);
+                    var y = margin.top + plotHeight - (item.value / scale.top) * plotHeight;
+                    return { x: x, y: y, item: item };
+                });
+
+                var line = linePath(points);
+                var area = line +
+                    ' L ' + points[points.length - 1].x + ' ' + (margin.top + plotHeight) +
+                    ' L ' + points[0].x + ' ' + (margin.top + plotHeight) + ' Z';
+
+                var svgParts = [];
+                svgParts.push('<svg viewBox="0 0 ' + width + ' ' + height + '" width="' + width +
+                    '" height="' + height + '" aria-hidden="true">');
+                svgParts.push('<defs><linearGradient id="trendAreaFill" x1="0" y1="0" x2="0" y2="1">' +
+                    '<stop offset="0" stop-color="#9e1414" stop-opacity="0.22"></stop>' +
+                    '<stop offset="1" stop-color="#9e1414" stop-opacity="0.015"></stop>' +
+                    '</linearGradient></defs>');
+
+                for (var tick = 0; tick <= 4; tick++) {
+                    var value = scale.step * tick;
+                    var y = margin.top + plotHeight - (value / scale.top) * plotHeight;
+                    svgParts.push('<line class="trend-grid-line" x1="' + margin.left + '" y1="' + y +
+                        '" x2="' + (margin.left + plotWidth) + '" y2="' + y + '"></line>');
+                    svgParts.push('<text class="trend-axis-text" x="' + (margin.left - 9) + '" y="' +
+                        (y + 5) + '" text-anchor="end">' + formatCompact(value) + '</text>');
+                }
+
+                svgParts.push('<path d="' + area + '" fill="url(#trendAreaFill)"></path>');
+                svgParts.push('<path d="' + line + '" fill="none" stroke="#9e1414" stroke-width="2.4" ' +
+                    'stroke-linecap="round" stroke-linejoin="round"></path>');
+
+                points.forEach(function (point, index) {
+                    svgParts.push('<circle class="trend-point" data-index="' + index + '" cx="' + point.x +
+                        '" cy="' + point.y + '" r="3"></circle>');
+                });
+
+                var labelCount = width < 430 ? 3 : (width < 640 ? 4 : 5);
+                var labelIndices = pickIndices(series.length, labelCount);
+                labelIndices.forEach(function (index) {
+                    var x = points[index].x;
+                    svgParts.push('<text class="trend-axis-text" x="' + x + '" y="' + (height - 10) +
+                        '" text-anchor="middle">' + formatShortDate(series[index].day) + '</text>');
+                });
+
+                points.forEach(function (point, index) {
+                    var slot = plotWidth / series.length;
+                    var slotX = margin.left + slot * index;
+                    svgParts.push('<rect data-hit="' + index + '" x="' + slotX + '" y="' + margin.top +
+                        '" width="' + slot + '" height="' + plotHeight + '" fill="transparent"></rect>');
+                });
+                svgParts.push('</svg>');
+
+                container.innerHTML = svgParts.join('');
+                var tooltip = document.createElement('div');
+                tooltip.className = 'chart-tooltip';
+                container.appendChild(tooltip);
+
+                function showTooltip(index) {
+                    var point = points[index];
+                    if (!point) return;
+                    tooltip.textContent = formatLongDate(point.item.day) + ' · ' + formatNumber(point.item.value) + ' 次';
+                    tooltip.style.left = Math.max(58, Math.min(width - 58, point.x)) + 'px';
+                    tooltip.style.top = Math.max(38, point.y - 10) + 'px';
+                    tooltip.classList.add('is-visible');
+                    var circles = container.querySelectorAll('.trend-point');
+                    for (var i = 0; i < circles.length; i++) {
+                        circles[i].classList.toggle('is-active', Number(circles[i].getAttribute('data-index')) === index);
+                    }
+                }
+
+                function hideTooltip() {
+                    tooltip.classList.remove('is-visible');
+                    var circles = container.querySelectorAll('.trend-point');
+                    for (var i = 0; i < circles.length; i++) {
+                        circles[i].classList.remove('is-active');
+                    }
+                }
+
+                var hits = container.querySelectorAll('[data-hit]');
+                for (var i = 0; i < hits.length; i++) {
+                    hits[i].addEventListener('pointerenter', function () {
+                        showTooltip(Number(this.getAttribute('data-hit')));
+                    });
+                    hits[i].addEventListener('pointerdown', function () {
+                        showTooltip(Number(this.getAttribute('data-hit')));
+                    });
+                }
+                container.addEventListener('pointerleave', hideTooltip);
+            }
+
+            function renderTrendTable(series) {
+                var container = document.getElementById('trendTable');
+                container.innerHTML = '';
+                if (!series.length) {
+                    container.textContent = '暂无数据。';
+                    return;
+                }
+
+                var table = document.createElement('table');
+                table.className = 'stats-table';
+                var thead = document.createElement('thead');
+                var headRow = document.createElement('tr');
+                var dateHead = document.createElement('th');
+                dateHead.textContent = '日期';
+                var valueHead = document.createElement('th');
+                valueHead.textContent = '访问量';
+                headRow.appendChild(dateHead);
+                headRow.appendChild(valueHead);
+                thead.appendChild(headRow);
+
+                var tbody = document.createElement('tbody');
+                series.slice().reverse().forEach(function (item) {
+                    var row = document.createElement('tr');
+                    var date = document.createElement('td');
+                    date.textContent = formatLongDate(item.day);
+                    var value = document.createElement('td');
+                    value.textContent = formatNumber(item.value);
+                    row.appendChild(date);
+                    row.appendChild(value);
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                container.appendChild(table);
+            }
+
+            function renderRank(container, entries, limit, labelFn, startColor) {
+                container.innerHTML = '';
+                var top = entries.slice(0, limit);
+                if (!top.length) {
+                    var empty = document.createElement('li');
+                    empty.className = 'rank-empty';
+                    empty.textContent = '暂无数据。';
+                    container.appendChild(empty);
+                    return;
+                }
+
+                var max = Math.max.apply(null, top.map(function (entry) {
+                    return entry[1];
+                })) || 1;
+
+                top.forEach(function (entry, index) {
+                    var fullLabel = String(labelFn(entry[0], entry[1]));
+                    var item = document.createElement('li');
+
+                    var line = document.createElement('div');
+                    line.className = 'rank-line';
+                    var name = document.createElement('span');
+                    name.className = 'rank-name';
+                    name.textContent = shorten(fullLabel, 42);
+                    name.title = fullLabel;
+                    var value = document.createElement('span');
+                    value.className = 'rank-value';
+                    value.textContent = formatNumber(entry[1]);
+                    line.appendChild(name);
+                    line.appendChild(value);
+
+                    var track = document.createElement('div');
+                    track.className = 'rank-track';
+                    var fill = document.createElement('span');
+                    fill.className = 'rank-fill';
+                    fill.style.width = Math.max(2, entry[1] / max * 100) + '%';
+                    fill.style.background = PALETTE[(index + startColor) % PALETTE.length];
+                    track.appendChild(fill);
+
+                    item.appendChild(line);
+                    item.appendChild(track);
+                    container.appendChild(item);
+                });
+            }
+
+            function sortedEntries(object) {
+                return Object.keys(object || {}).map(function (key) {
+                    return [key, Number(object[key]) || 0];
+                }).filter(function (entry) {
+                    return entry[1] > 0;
+                }).sort(function (a, b) {
+                    return b[1] - a[1];
+                });
+            }
+
+            function renderDevice(entries) {
+                var total = entries.reduce(function (sum, entry) {
+                    return sum + entry[1];
+                }, 0);
+                var donut = document.getElementById('deviceDonut');
+                var legend = document.getElementById('deviceLegend');
+                var totalLabel = document.getElementById('deviceTotal');
+                legend.innerHTML = '';
+                totalLabel.textContent = formatNumber(total);
+
+                var visible = entries.slice(0, 5);
+                var rest = entries.slice(5).reduce(function (sum, entry) {
+                    return sum + entry[1];
+                }, 0);
+                if (rest > 0) visible.push(['其他', rest]);
+
+                if (!total) {
+                    donut.style.background = '#eee8de';
+                    return;
+                }
+
+                var gradient = [];
+                var start = 0;
+                visible.forEach(function (entry, index) {
+                    var end = start + entry[1] / total * 100;
+                    var color = PALETTE[index % PALETTE.length];
+                    gradient.push(color + ' ' + start.toFixed(2) + '% ' + end.toFixed(2) + '%');
+                    start = end;
+
+                    var item = document.createElement('li');
+                    item.className = 'legend-item';
+                    var dot = document.createElement('span');
+                    dot.className = 'legend-dot';
+                    dot.style.background = color;
+                    var name = document.createElement('span');
+                    name.className = 'legend-name';
+                    name.textContent = entry[0];
+                    var value = document.createElement('span');
+                    value.className = 'legend-value';
+                    value.textContent = (entry[1] / total * 100).toFixed(1) + '%';
+                    item.appendChild(dot);
+                    item.appendChild(name);
+                    item.appendChild(value);
+                    legend.appendChild(item);
+                });
+                donut.style.background = 'conic-gradient(' + gradient.join(', ') + ')';
+            }
+
+            function renderStats(data, days) {
+                var byDay = Array.isArray(data.byDay) ? data.byDay : [];
+                var series = byDay.map(function (item) {
+                    return {
+                        day: String(item.day || '').replace(/-hidden$/, ''),
+                        value: Number(item.value) || 0
+                    };
+                }).filter(function (item) {
+                    return /^\d{4}-\d{2}-\d{2}$/.test(item.day);
+                }).sort(function (a, b) {
+                    return a.day.localeCompare(b.day);
+                });
+
+                if (!series.length) {
+                    status.hidden = false;
+                    status.className = 'stats-status';
+                    status.textContent = '该区间暂无统计数据。';
+                    dashboard.hidden = true;
+                    return;
+                }
+
+                var total = Number(data.total);
+                if (!isFinite(total) || total < 0) {
+                    total = series.reduce(function (sum, item) {
+                        return sum + item.value;
+                    }, 0);
+                }
+
+                var average = total / series.length;
+                var latest = series[series.length - 1];
+                var peak = series.reduce(function (best, item) {
+                    return item.value > best.value ? item : best;
+                }, series[0]);
+
+                document.getElementById('statTotal').textContent = formatNumber(total);
+                document.getElementById('statTotalNote').textContent = '近 ' + days + ' 天累计';
+                document.getElementById('statAverage').textContent = formatNumber(average);
+                document.getElementById('statAverageNote').textContent = '按 ' + series.length + ' 天有记录计算';
+                document.getElementById('statLatest').textContent = formatNumber(latest.value);
+                document.getElementById('statLatestNote').textContent = formatLongDate(latest.day);
+                document.getElementById('statPeak').textContent = formatNumber(peak.value);
+                document.getElementById('statPeakNote').textContent = formatLongDate(peak.day) + ' · 单日最高';
+
+                trendNote.textContent = '近 ' + days + ' 天';
+                meta.textContent = '数据来自 LibreCounter · 更新于 ' +
+                    new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+                dashboard.hidden = false;
+                status.hidden = true;
+                renderTrend(series);
+                renderTrendTable(series);
+
+                var pageEntries = sortedEntries(data.byPage).filter(function (entry) {
+                    var path = entry[0];
+                    if (/\.(ico|txt|xml|json|png|jpg|jpeg|webp|svg|css|js)$/i.test(path)) return false;
+                    if (path.indexOf('/icons/') === 0 || path.indexOf('/.well-known/') === 0) return false;
+                    if (path.indexOf('zzz-nonexistent') !== -1) return false;
+                    return true;
+                });
+                renderRank(document.getElementById('pageRank'), pageEntries, 8, pageName, 0);
+
+                var countryEntries = sortedEntries(data.byCountry).map(function (entry) {
+                    return [COUNTRY_NAMES[entry[0]] || entry[0], entry[1]];
+                });
+                renderRank(document.getElementById('countryRank'), countryEntries, 8, function (name) {
+                    return name;
+                }, 1);
+
+                var browserEntries = sortedEntries(data.byBrowser).map(function (entry) {
+                    return [BROWSER_NAMES[entry[0]] || entry[0], entry[1]];
+                });
+                renderRank(document.getElementById('browserRank'), browserEntries, 7, function (name) {
+                    return name;
+                }, 2);
+                document.getElementById('browserNote').textContent = '前 7 名';
+
+                var osEntries = sortedEntries(data.byOs).map(function (entry) {
+                    return [OS_NAMES[entry[0]] || entry[0], entry[1]];
+                });
+                renderRank(document.getElementById('osRank'), osEntries, 7, function (name) {
+                    return name;
+                }, 3);
+                document.getElementById('osNote').textContent = '前 7 名';
+
+                var deviceEntries = sortedEntries(data.byType).map(function (entry) {
+                    return [DEVICE_NAMES[entry[0]] || entry[0], entry[1]];
+                });
+                renderDevice(deviceEntries);
+
+                currentSeries = series;
+            }
+
+            function showError(message) {
+                status.hidden = false;
+                status.className = 'stats-status stats-status--error';
+                status.textContent = message + ' ';
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'stats-retry';
+                button.textContent = '重试';
+                button.addEventListener('click', function () {
+                    loadStats(currentDays);
+                });
+                status.appendChild(button);
+                dashboard.hidden = true;
+            }
+
+            async function loadStats(days) {
+                var token = ++requestToken;
+                currentDays = days;
+                rangeButtons.forEach(function (button) {
+                    button.setAttribute('aria-pressed', String(Number(button.getAttribute('data-days')) === days));
+                });
+
+                status.hidden = false;
+                status.className = 'stats-status is-loading';
+                status.textContent = '正在加载统计数据…';
+                dashboard.hidden = true;
+
+                try {
+                    var response = await fetch(API_URL + '?days=' + days, { cache: 'no-store' });
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    var data = await response.json();
+                    if (token !== requestToken) return;
+                    if (!data || !Array.isArray(data.byDay)) throw new Error('Invalid stats payload');
+                    renderStats(data, days);
+                } catch (error) {
+                    if (token !== requestToken) return;
+                    console.warn('统计数据加载失败:', error);
+                    showError('统计数据加载失败，请稍后重试。');
+                }
+            }
+
+            range.addEventListener('click', function (event) {
+                var button = event.target.closest('button[data-days]');
+                if (!button) return;
+                var days = Number(button.getAttribute('data-days'));
+                if (ALLOWED_DAYS.indexOf(days) === -1 || days === currentDays) return;
+                window.history.replaceState(null, '', window.location.pathname + '?days=' + days);
+                loadStats(days);
+            });
+
+            window.addEventListener('resize', function () {
+                window.clearTimeout(resizeTimer);
+                resizeTimer = window.setTimeout(function () {
+                    if (!dashboard.hidden && currentSeries.length) {
+                        renderTrend(currentSeries);
+                    }
+                }, 160);
+            });
+
+            var initialDays = Number(new URLSearchParams(window.location.search).get('days'));
+            if (ALLOWED_DAYS.indexOf(initialDays) === -1) initialDays = DEFAULT_DAYS;
+            loadStats(initialDays);
+        })();
+    </script>
+
+    <script src="/components/nav.js?v=19"></script>
+</body>
+</html>
