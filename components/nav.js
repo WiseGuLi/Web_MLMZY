@@ -17,10 +17,10 @@ var navCloseSuppressUntil = 0;
         if (toggle) {
             return window.getComputedStyle(toggle).display === 'none';
         }
-        return window.matchMedia('(min-width: 1200px)').matches;
+        return window.matchMedia('(min-width: 1100px)').matches;
     }
 
-    var wideQuery = window.matchMedia('(min-width: 1200px)');
+    var wideQuery = window.matchMedia('(min-width: 1100px)');
     var lastMode = wideQuery.matches ? 'wide' : 'narrow';
 
     function resetModeIfChanged() {

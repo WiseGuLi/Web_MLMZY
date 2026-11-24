@@ -764,7 +764,7 @@
     /* ===== 宽屏：直接入口等宽；“资源/教程/下载”因含图标和箭头适当加宽 ===== */
     @media (min-width: 1366px) {
         .top-bar {
-            padding-right: 1.5rem;
+            padding-right: 0.75rem;
         }
 
         .nav-links > li {
@@ -781,7 +781,7 @@
         }
 
         .nav-links > li.nav-art-entry > a {
-            width: 116px;
+            width: 102px;
         }
 
         /* 按钮内的图标、文字和下拉箭头作为一个整体居中 */
@@ -800,17 +800,16 @@
             filter: invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%);
         }
 
-        /* “更多”按钮收紧，减少文字和箭头右侧的空白 */
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 64px;
+            width: 70px;
             height: 34px;
         }
     }
 
-    /* ===== 中等屏幕：稍微收紧，避免十一个栏目拥挤 ===== */
-    @media (min-width: 1200px) and (max-width: 1365px) {
+    /* ===== 中等屏幕：稍微收紧，避免栏目拥挤 ===== */
+    @media (min-width: 1100px) and (max-width: 1365px) {
         .top-bar {
-            padding: 0 1rem 0 1.25rem;
+            padding: 0 0.5rem 0 1.25rem;
         }
         .title-text {
             font-size: 19px;
@@ -831,7 +830,7 @@
         }
 
         .nav-links > li.nav-art-entry > a {
-            width: 106px;
+            width: 90px;
         }
         .nav-more--icon > details > summary {
             width: 86px;
@@ -839,7 +838,7 @@
             font-size: 14px;
         }
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 60px;
+            width: 70px;
             padding: 6px 8px;
             font-size: 14px;
         }
@@ -859,7 +858,7 @@
     }
 
     /* ===== 移动端：只保留标题 + 三横线折叠菜单 ===== */
-    @media (max-width: 1199px) {
+    @media (max-width: 1099px) {
         .top-bar {
             height: 56px;
             padding: 0 1rem;
@@ -1227,7 +1226,7 @@
             </details>
         </li>
         <li class="nav-art-entry">
-            <a href="/resources/revolutionary-art/">
+            <a href="/revolutionary-art/">
                 <span class="nav-art-icon" aria-hidden="true"></span>
                 <span class="label">革命文艺</span>
             </a>
@@ -1241,7 +1240,7 @@
                 </summary>
                 <ul class="nav-sub">
                     <li>
-                        <a class="nav-sub-link nav-video" href="/video/">
+                        <a class="nav-sub-link nav-video" href="/resources/video/">
                             <span class="sub-icon nav-video-icon" aria-hidden="true"></span>
                             <span class="label">视频</span>
                         </a>
@@ -1264,22 +1263,22 @@
                 </summary>
                 <ul class="nav-sub">
                     <li>
-                        <a href="/tutorial-1">
+                        <span class="nav-sub-link nav-disabled" aria-disabled="true" title="功能暂未开放">
+                            <img src="/icons/顶栏/教程/本站导航.svg?v=1" alt="本站导航图标">
+                            <span class="label">本站导航</span>
+                        </span>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link nav-disabled" href="/tutorial-1" aria-disabled="true" title="功能暂未开放">
                             <img src="/icons/顶栏/教程/从0学习.svg?v=3" alt="理论教程图标">
                             <span class="label">理论：从“0”学习马列毛主义</span>
                         </a>
                     </li>
                     <li>
-                        <a href="/tutorial-2">
+                        <a class="nav-sub-link nav-disabled" href="/tutorial-2" aria-disabled="true" title="功能暂未开放">
                             <img src="/icons/顶栏/教程/实践.svg?v=2" alt="实践教程图标">
                             <span class="label">实践：将马列毛主义与实践结合</span>
                         </a>
-                    </li>
-                    <li>
-                        <span class="nav-sub-link nav-disabled" aria-disabled="true" title="功能暂未开放">
-                            <img src="/icons/顶栏/教程/本站导航.svg?v=1" alt="本站导航图标">
-                            <span class="label">本站导航</span>
-                        </span>
                     </li>
                 </ul>
             </details>

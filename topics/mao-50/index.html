@@ -71,7 +71,7 @@
             .blank-page { padding: 30px 1.25rem 60px; }
         }
     </style>
-    <script src="/components/site-font.js?v=2"></script>
+    <script src="/components/site-font.js?v=4"></script>
     <link rel="stylesheet" href="/components/site-font.css?v=1" />
 </head>
 <body>
@@ -86,7 +86,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=42')
+        fetch('/components/nav.html?v=43')
             .then(function (res) { return res.text(); })
             .then(function (data) { document.getElementById('nav-placeholder').innerHTML = data; })
             .catch(function (err) { console.warn('顶栏加载失败:', err); });
@@ -96,6 +96,6 @@
             .then(function (data) { document.getElementById('footer-placeholder').innerHTML = data; })
             .catch(function (err) { console.warn('页脚加载失败:', err); });
     </script>
-    <script src="/components/nav.js?v=20"></script>
+    <script src="/components/nav.js?v=21"></script>
 </body>
 </html>
