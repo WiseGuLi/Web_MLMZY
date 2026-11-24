@@ -352,6 +352,9 @@
         }
         if (article.publishedDate) {
             metaItems.push('<span class="article-meta-item"><span class="article-meta-label">刊登日期</span>' + escapeHtml(article.publishedDate) + '</span>');
+            var articleUrl = new URL(articleHref(category, article), window.location.origin).href;
+            metaItems.push('<button class="article-copy-link" type="button" data-copy-article data-copy-url="' +
+                escapeHtml(articleUrl) + '">复制文章链接</button>');
         }
         var meta = metaItems.length
             ? '<p class="article-meta">' + metaItems.join('') + '</p>'
@@ -362,6 +365,55 @@
             meta +
             tags +
             '<div class="article-body markdown-body" id="articleBody"></div>';
+    }
+
+    function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text).catch(function () {
+                return fallbackCopy(text);
+            });
+        }
+        return fallbackCopy(text);
+    }
+
+    function fallbackCopy(text) {
+        return new Promise(function (resolve, reject) {
+            var area = document.createElement('textarea');
+            area.value = text;
+            area.setAttribute('readonly', '');
+            area.style.position = 'fixed';
+            area.style.top = '-1000px';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            area.setSelectionRange(0, area.value.length);
+            var ok = false;
+            try {
+                ok = document.execCommand('copy');
+            } catch (error) {
+                ok = false;
+            }
+            document.body.removeChild(area);
+            if (ok) resolve();
+            else reject(new Error('Copy failed'));
+        });
+    }
+
+    function copyArticleLink(button) {
+        var url = button.getAttribute('data-copy-url');
+        if (!url) return;
+        var original = button.textContent;
+
+        copyText(url).then(function () {
+            button.textContent = '已复制';
+            button.classList.add('is-copied');
+            window.setTimeout(function () {
+                button.textContent = original;
+                button.classList.remove('is-copied');
+            }, 1500);
+        }).catch(function () {
+            window.prompt('复制文章链接', url);
+        });
     }
 
     function renderArticleLoading(category, article) {
@@ -490,6 +542,13 @@
     }
 
     document.addEventListener('click', function (event) {
+        var copyButton = event.target.closest('[data-copy-article]');
+        if (copyButton) {
+            event.preventDefault();
+            copyArticleLink(copyButton);
+            return;
+        }
+
         var link = event.target.closest('a[data-route]');
         if (link) {
             if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;

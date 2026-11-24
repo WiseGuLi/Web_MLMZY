@@ -1,4 +1,6 @@
 /* 顶栏“更多”下拉：点击外部或页面滚动时关闭。 */
+var navCloseSuppressUntil = 0;
+
 (function () {
     'use strict';
 
@@ -55,6 +57,8 @@
     });
 
     window.addEventListener('scroll', function () {
+        /* 切换字体可能引起页面轻微回流滚动，此时不要关闭已经打开的外观菜单。 */
+        if (navCloseSuppressUntil && Date.now() < navCloseSuppressUntil) return;
         if (isWideScreen()) closeMore();
     }, { passive: true });
 
@@ -304,6 +308,7 @@
             theme = theme === 'light' ? 'dark' : 'light';
             saveValue(THEME_KEY, theme);
         } else if (type === 'font') {
+            navCloseSuppressUntil = Date.now() + 1200;
             font = font === 'serif' ? 'sans' : 'serif';
             saveValue(FONT_KEY, font);
         } else {

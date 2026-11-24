@@ -4,6 +4,11 @@
 
     var KEY = 'mlmzy-appearance-font';
     var DEFAULT_FONT = 'serif';
+    var LOADING_MASKS = [
+        '/icons/加载动画/加载1.svg',
+        '/icons/加载动画/加载2.svg',
+        '/icons/加载动画/加载3.svg'
+    ];
 
     function readFont() {
         try {
@@ -21,6 +26,9 @@
     }
 
     applyFont(readFont());
+
+    var loadingMask = LOADING_MASKS[Math.floor(Math.random() * LOADING_MASKS.length)];
+    document.documentElement.style.setProperty('--loading-mask', 'url("' + loadingMask + '")');
 
     window.addEventListener('storage', function (event) {
         if (event.key !== KEY) return;

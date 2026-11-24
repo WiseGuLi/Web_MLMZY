@@ -19,8 +19,8 @@
         #6f0b0b 100%);
     background-size: 160px 100%;
     background-repeat: repeat-x;
-    -webkit-mask: url("/icons/加载.svg?v=1") no-repeat center / contain;
-    mask: url("/icons/加载.svg?v=1") no-repeat center / contain;
+    -webkit-mask: var(--loading-mask, url("/icons/加载动画/加载1.svg")) no-repeat center / contain;
+    mask: var(--loading-mask, url("/icons/加载动画/加载1.svg")) no-repeat center / contain;
     animation: site-loading-shimmer 1.8s linear infinite;
 }
 

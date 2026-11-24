@@ -117,6 +117,17 @@
         transition: filter 0.15s;
     }
 
+    .nav-links .nav-art-icon {
+        width: 18px;
+        height: 18px;
+        display: block;
+        flex-shrink: 0;
+        background-color: currentColor;
+        -webkit-mask: url('/icons/顶栏/资源/文艺.svg?v=1') no-repeat center / contain;
+        mask: url('/icons/顶栏/资源/文艺.svg?v=1') no-repeat center / contain;
+        transition: background-color 0.15s;
+    }
+
     .nav-links .label {
         display: inline-block;
     }
@@ -769,6 +780,10 @@
             width: 102px;
         }
 
+        .nav-links > li.nav-art-entry > a {
+            width: 116px;
+        }
+
         /* 按钮内的图标、文字和下拉箭头作为一个整体居中 */
         .nav-links > li > a,
         .nav-more > details > summary {
@@ -787,7 +802,7 @@
 
         /* “更多”按钮收紧，减少文字和箭头右侧的空白 */
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 70px;
+            width: 64px;
             height: 34px;
         }
     }
@@ -814,13 +829,17 @@
         .nav-links > li.nav-international > a {
             width: 90px;
         }
+
+        .nav-links > li.nav-art-entry > a {
+            width: 106px;
+        }
         .nav-more--icon > details > summary {
             width: 86px;
             padding: 6px 6px;
             font-size: 14px;
         }
         .nav-more:not(.nav-more--icon) > details > summary {
-            width: 70px;
+            width: 60px;
             padding: 6px 8px;
             font-size: 14px;
         }
@@ -981,6 +1000,11 @@
         }
 
         .nav-links a img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-links .nav-art-icon {
             width: 20px;
             height: 20px;
         }
@@ -1182,17 +1206,40 @@
         <li class="nav-more nav-more--icon">
             <details>
                 <summary>
+                    <img src="/icons/顶栏/专题/专题.svg?v=1" alt="专题图标">
+                    <span class="label">专题</span>
+                    <span class="caret" aria-hidden="true"></span>
+                </summary>
+                <ul class="nav-sub">
+                    <li>
+                        <a class="nav-sub-link nav-disabled" href="/topics/international/" aria-disabled="true" title="功能暂未开放">
+                            <img src="/icons/顶栏/专题/国际共运.svg?v=1" alt="国际共产主义运动图标">
+                            <span class="label">国际共产主义运动</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-sub-link nav-disabled" href="/topics/mao-50/" aria-disabled="true" title="功能暂未开放">
+                            <img src="/icons/顶栏/专题/纪念毛泽东.svg?v=1" alt="纪念毛泽东逝世50周年图标">
+                            <span class="label">纪念毛泽东逝世50周年</span>
+                        </a>
+                    </li>
+                </ul>
+            </details>
+        </li>
+        <li class="nav-art-entry">
+            <a href="/resources/revolutionary-art/">
+                <span class="nav-art-icon" aria-hidden="true"></span>
+                <span class="label">革命文艺</span>
+            </a>
+        </li>
+        <li class="nav-more nav-more--icon">
+            <details>
+                <summary>
                     <img src="/icons/顶栏/资源/资源.svg?v=1" alt="资源图标">
                     <span class="label">资源</span>
                     <span class="caret" aria-hidden="true"></span>
                 </summary>
                 <ul class="nav-sub">
-                    <li>
-                        <a class="nav-sub-link nav-art" href="/resources/revolutionary-art/">
-                            <span class="sub-icon nav-art-icon" aria-hidden="true"></span>
-                            <span class="label">革命文艺</span>
-                        </a>
-                    </li>
                     <li>
                         <a class="nav-sub-link nav-video" href="/video/">
                             <span class="sub-icon nav-video-icon" aria-hidden="true"></span>
@@ -1208,15 +1255,9 @@
                 </ul>
             </details>
         </li>
-        <li class="nav-international">
-            <a class="nav-disabled-link" aria-disabled="true" title="功能暂未开放">
-                <img src="/icons/顶栏/国际.svg?v=1" alt="国际共运图标">
-                <span class="label">国际共运</span>
-            </a>
-        </li>
-        <li class="nav-more nav-more--icon nav-disabled">
+        <li class="nav-more nav-more--icon">
             <details>
-                <summary aria-disabled="true" tabindex="-1" title="功能暂未开放">
+                <summary>
                     <img src="/icons/顶栏/教程/教程.svg?v=2" alt="教程图标">
                     <span class="label">教程</span>
                     <span class="caret" aria-hidden="true"></span>
@@ -1234,14 +1275,14 @@
                             <span class="label">实践：将马列毛主义与实践结合</span>
                         </a>
                     </li>
+                    <li>
+                        <span class="nav-sub-link nav-disabled" aria-disabled="true" title="功能暂未开放">
+                            <img src="/icons/顶栏/教程/本站导航.svg?v=1" alt="本站导航图标">
+                            <span class="label">本站导航</span>
+                        </span>
+                    </li>
                 </ul>
             </details>
-        </li>
-        <li>
-            <a href="/contribute">
-                <img src="/icons/顶栏/投稿.svg?v=2" alt="投稿图标">
-                <span class="label">投稿</span>
-            </a>
         </li>
         <li class="nav-more nav-more--icon">
             <details>
@@ -1265,12 +1306,6 @@
                     </li>
                 </ul>
             </details>
-        </li>
-        <li>
-            <a href="/about">
-                <img src="/icons/顶栏/关于.svg?v=2" alt="关于图标">
-                <span class="label">关于</span>
-            </a>
         </li>
         <li class="nav-more nav-more--icon nav-appearance">
             <details>
@@ -1324,6 +1359,18 @@
                     <span class="caret" aria-hidden="true"></span>
                 </summary>
                 <ul class="nav-sub">
+                    <li>
+                        <a href="/contribute">
+                            <img src="/icons/顶栏/更多/投稿.svg?v=1" alt="投稿图标">
+                            <span class="label">投稿</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/about">
+                            <img src="/icons/顶栏/更多/关于.svg?v=1" alt="关于本站图标">
+                            <span class="label">关于本站</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="/investment">
                             <img src="/icons/顶栏/更多/投入.svg?v=1" alt="网站投入图标">

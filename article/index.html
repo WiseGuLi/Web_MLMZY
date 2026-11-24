@@ -402,6 +402,27 @@
             color: #8a8177;
         }
 
+        .article-copy-link {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--red);
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.7;
+            cursor: pointer;
+        }
+
+        .article-copy-link:hover,
+        .article-copy-link:focus-visible {
+            text-decoration: underline;
+            outline: none;
+        }
+
+        .article-copy-link.is-copied {
+            color: #6f7b57;
+        }
+
         .article-body {
             max-width: 100%;
             margin-top: 26px;
@@ -854,8 +875,8 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="/components/loading.css?v=2" />
-    <script src="/components/site-font.js?v=1"></script>
+    <link rel="stylesheet" href="/components/loading.css?v=3" />
+    <script src="/components/site-font.js?v=2"></script>
     <link rel="stylesheet" href="/components/site-font.css?v=1" />
 </head>
 <body>
@@ -911,11 +932,11 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=9"></script>
+    <script src="/article-page.js?v=10"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=41')
+        fetch('/components/nav.html?v=42')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -940,6 +961,6 @@
             });
     </script>
 
-    <script src="/components/nav.js?v=19"></script>
+    <script src="/components/nav.js?v=20"></script>
 </body>
 </html>

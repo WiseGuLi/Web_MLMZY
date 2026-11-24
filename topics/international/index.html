@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>国际共产主义运动 | 马列毛主义学习站</title>
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
+    <meta name="theme-color" content="#9e1414" />
+    <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
+    <style>
+        :root {
+            --paper: #faf9f5;
+            --ink: #1d1b19;
+            --muted: #68625b;
+            --red: #9e1414;
+            --line: #e2ddd2;
+            --card: #fffefb;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        #nav-placeholder, #footer-placeholder { flex-shrink: 0; }
+
+        .blank-page {
+            flex: 1;
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: clamp(38px, 5vw, 64px) 1.5rem 80px;
+        }
+
+        .blank-kicker {
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+        }
+
+        .blank-title {
+            margin-top: 6px;
+            font-family: var(--serif);
+            font-size: clamp(2rem, 4vw, 2.6rem);
+            line-height: 1.35;
+        }
+
+        .blank-note {
+            margin-top: 22px;
+            padding: 34px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--card);
+            color: var(--muted);
+            font-size: 15px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .blank-page { padding: 30px 1.25rem 60px; }
+        }
+    </style>
+    <script src="/components/site-font.js?v=2"></script>
+    <link rel="stylesheet" href="/components/site-font.css?v=1" />
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <main class="blank-page">
+        <p class="blank-kicker">专题</p>
+        <h1 class="blank-title">国际共产主义运动</h1>
+        <p class="blank-note">内容正在整理中，敬请期待。</p>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('/components/nav.html?v=42')
+            .then(function (res) { return res.text(); })
+            .then(function (data) { document.getElementById('nav-placeholder').innerHTML = data; })
+            .catch(function (err) { console.warn('顶栏加载失败:', err); });
+
+        fetch('/components/footer.html?v=10')
+            .then(function (res) { return res.text(); })
+            .then(function (data) { document.getElementById('footer-placeholder').innerHTML = data; })
+            .catch(function (err) { console.warn('页脚加载失败:', err); });
+    </script>
+    <script src="/components/nav.js?v=20"></script>
+</body>
+</html>
