@@ -202,21 +202,21 @@
                 </span>
             </a>
 
-            <div class="entry-card is-disabled" aria-disabled="true">
-                <span class="entry-thumb"><img src="/icons/革命文艺/movie.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
+            <a class="entry-card" href="/revolutionary-art/movie/">
+                <span class="entry-thumb"><img src="/icons/革命文艺/film.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
                 <span class="entry-body">
                     <span class="entry-name">电影</span>
-                    <span class="entry-note">即将开放</span>
+                    <span class="entry-note">进入 →</span>
                 </span>
-            </div>
+            </a>
 
-            <div class="entry-card is-disabled" aria-disabled="true">
+            <a class="entry-card" href="/revolutionary-art/dance/">
                 <span class="entry-thumb"><img src="/icons/革命文艺/dance.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
                 <span class="entry-body">
                     <span class="entry-name">舞蹈</span>
-                    <span class="entry-note">即将开放</span>
+                    <span class="entry-note">进入 →</span>
                 </span>
-            </div>
+            </a>
 
             <div class="entry-card is-disabled" aria-disabled="true">
                 <span class="entry-thumb"><img src="/icons/革命文艺/drama.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
@@ -239,7 +239,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=45')
+        fetch('/components/nav.html?v=46')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -270,6 +270,6 @@
         });
     </script>
 
-    <script src="/components/nav.js?v=23"></script>
+    <script src="/components/nav.js?v=24"></script>
 </body>
 </html>

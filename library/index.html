@@ -9,7 +9,7 @@
     <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
     <meta name="theme-color" content="#9e1414" />
     <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
-    <title>文库 | 马列毛主义学习站</title>
+    <title>马列毛经典文库 | 马列毛主义学习站</title>
     <style>
         :root {
             --paper: #faf9f5;
@@ -52,8 +52,63 @@
         }
 
         .library-head {
+            position: relative;
             text-align: center;
             margin-bottom: 1.35rem;
+        }
+
+        .library-source {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+        }
+
+        .library-source::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            width: 7px;
+            height: 7px;
+            border-right: 2px solid #6f675e;
+            border-bottom: 2px solid #6f675e;
+            transform: translateY(-65%) rotate(45deg);
+            pointer-events: none;
+        }
+
+        .library-source select {
+            max-width: 230px;
+            height: 38px;
+            padding: 0 34px 0 12px;
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            background: var(--card);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 14px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .library-source select:hover,
+        .library-source select:focus {
+            border-color: rgba(158, 20, 20, 0.45);
+            outline: none;
+        }
+
+        @media (max-width: 900px) {
+            .library-head {
+                padding-top: 48px;
+            }
+
+            .library-source {
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+            }
         }
 
         .library-title {
@@ -1031,6 +1086,17 @@
                 padding: 0 1.25rem;
             }
 
+            .library-head {
+                padding-top: 48px;
+            }
+
+            .library-source {
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+            }
+
             .library-title {
                 font-size: 2rem;
             }
@@ -1239,8 +1305,17 @@
     <!-- ===== 文库页面主体 ===== -->
     <main class="library-container">
         <header class="library-head">
-            <h1 class="library-title">文库</h1>
-            <p class="library-subtitle">经典著作 · 免费阅读<span class="library-book-count" id="libraryBookCount" hidden></span></p>
+            <div class="library-source">
+                <select id="librarySource" aria-label="选择文库">
+                    <option value="classic" selected>马列毛经典文库</option>
+                    <option value="historical" disabled>历史书籍文库（锁定）</option>
+                    <option value="literature" disabled>文学类文库（锁定）</option>
+                    <option value="non-zh" disabled>非汉语文库（锁定）</option>
+                    <option value="other" disabled>其他文库（锁定）</option>
+                </select>
+            </div>
+            <h1 class="library-title">马列毛经典文库</h1>
+            <p class="library-subtitle" id="libraryBookCount">总收录 — 本 · 当前分类 — 本</p>
         </header>
 
         <div class="library-tools">
@@ -1334,7 +1409,7 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=45')
+        fetch('/components/nav.html?v=46')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
@@ -1382,6 +1457,7 @@
             CATEGORIES = ['全部'].concat(CATEGORY_ORDER);
 
             var authorSelect = document.getElementById('authorSelect');
+            var librarySource = document.getElementById('librarySource');
             var statusBox = document.getElementById('libraryStatus');
             var bookList = document.getElementById('bookList');
             var searchInput = document.getElementById('librarySearch');
@@ -1617,6 +1693,7 @@
 
             var books = [];
             var collections = [];
+            var totalBookCount = 0;
             var collectionPanelSeq = 0;
             var initialSelectionDone = false;
 
@@ -2242,6 +2319,7 @@
                 statusBox.classList.remove('is-loading');
                 var category = getSelectedCategory();
                 var terms = getSearchTerms();
+                updateBookCount();
                 setProgressVisible(terms.length === 0);
 
                 resetBottomSpace();
@@ -2422,18 +2500,23 @@
                 return { collections: collections, rowCount: rows.length - 1 };
             }
 
-            function updateBookCount(count) {
+            function updateBookCount() {
                 var label = document.getElementById('libraryBookCount');
                 if (!label) return;
 
-                if (!count) {
-                    label.hidden = true;
-                    label.textContent = '';
-                    return;
+                var category = getSelectedCategory();
+                var categoryCount = 0;
+                if (category === '全集') {
+                    categoryCount = collections.length;
+                } else if (category === '全部') {
+                    categoryCount = totalBookCount;
+                } else {
+                    categoryCount = books.filter(function (book) {
+                        return book.categories.indexOf(category) !== -1;
+                    }).length;
                 }
 
-                label.hidden = false;
-                label.textContent = '共收录 ' + formatCount(count) + ' 本';
+                label.textContent = '总收录 ' + formatCount(totalBookCount) + ' 本 · 当前分类 ' + formatCount(categoryCount) + ' 本';
             }
 
             async function loadBooks() {
@@ -2455,7 +2538,7 @@
 
                     books = results[0].books;
                     collections = results[1].collections;
-                    updateBookCount(results[0].rowCount + results[1].rowCount);
+                    totalBookCount = results[0].rowCount + results[1].rowCount;
 
                     if (!initialSelectionDone) {
                         selectFirstAvailableCategory();
@@ -2491,6 +2574,12 @@
                 updateSlider();
                 renderBooks();
             });
+
+            if (librarySource) {
+                librarySource.addEventListener('change', function () {
+                    if (librarySource.value !== 'classic') librarySource.value = 'classic';
+                });
+            }
 
             searchInput.addEventListener('input', function () {
                 searchClear.hidden = !searchInput.value;
@@ -2592,6 +2681,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js?v=23"></script>
+    <script src="/components/nav.js?v=24"></script>
 </body>
 </html>

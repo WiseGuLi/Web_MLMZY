@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-language" content="zh-CN" />
+    <meta name="application-name" content="马列毛主义学习站" />
+    <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>舞蹈 · 革命文艺 | 马列毛主义学习站</title>
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
+    <meta name="theme-color" content="#9e1414" />
+    <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
+    <style>
+        :root {
+            --paper: #faf9f5;
+            --ink: #1d1b19;
+            --muted: #68625b;
+            --red: #9e1414;
+            --line: #e2ddd2;
+            --card: #fffefb;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+    </style>
+    <link rel="stylesheet" href="/components/art-media.css?v=1" />
+    <link rel="stylesheet" href="/components/loading.css?v=4" />
+    <script src="/components/site-font.js?v=5"></script>
+    <link rel="stylesheet" href="/components/site-font.css?v=1" />
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <main class="media-page" data-csv="/data/革命文艺/舞蹈.csv" data-categories="革命斗争,生产建设,群众生活,军民团结" data-label="舞蹈">
+        <header class="media-head">
+            <a class="media-back" href="/revolutionary-art/">← 革命文艺</a>
+            <p class="media-kicker">革命文艺</p>
+            <h1 class="media-title">舞蹈</h1>
+            <p class="media-intro">按题材整理革命舞蹈作品，点击作品名称即可在站内预览。</p>
+        </header>
+
+        <nav class="media-filter" id="mediaFilter" aria-label="舞蹈分类"></nav>
+
+        <p class="media-status is-loading" id="mediaStatus" role="status">正在加载舞蹈…</p>
+
+        <section class="media-list-card" id="mediaListCard" hidden>
+            <div class="media-list-head">
+                <h2 class="media-list-title" id="mediaListTitle">舞蹈</h2>
+                <span class="media-list-count" id="mediaListCount"></span>
+            </div>
+            <ul class="media-list" id="mediaList" aria-live="polite"></ul>
+            <div class="media-empty" id="mediaEmpty" hidden>
+                <span class="media-empty-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                        <path d="m10 9 5 3-5 3z"></path>
+                    </svg>
+                </span>
+                <h2 class="media-empty-title" id="mediaEmptyTitle">舞蹈</h2>
+                <p class="media-empty-note" id="mediaEmptyNote">该分类的舞蹈正在整理中，敬请期待。</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="media-modal" id="mediaModal" role="dialog" aria-modal="true" aria-labelledby="mediaModalTitle" hidden>
+        <div class="media-modal-backdrop" data-media-close></div>
+        <div class="media-modal-panel" role="document">
+            <header class="media-modal-head">
+                <div class="media-modal-main">
+                    <p class="media-modal-kicker" id="mediaModalCategory">舞蹈</p>
+                    <h2 class="media-modal-title" id="mediaModalTitle">舞蹈标题</h2>
+                </div>
+                <button class="media-modal-close" id="mediaModalClose" type="button" aria-label="关闭视频预览" data-media-close>×</button>
+            </header>
+            <div class="media-player-wrap">
+                <iframe id="mediaPlayer" title="B 站视频播放器" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <div class="media-player-fallback" id="mediaFallback" hidden>该视频链接暂不支持站内预览，请点击下方按钮前往 B 站观看。</div>
+            </div>
+            <p class="media-modal-foot">
+                <span id="mediaModalSource">视频来源：B 站</span>
+                <a id="mediaExternal" href="#" target="_blank" rel="noopener noreferrer">在 B 站打开 ↗</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('/components/nav.html?v=46')
+            .then(function (res) { return res.text(); })
+            .then(function (data) { document.getElementById('nav-placeholder').innerHTML = data; })
+            .catch(function (err) { console.warn('顶栏加载失败:', err); });
+
+        fetch('/components/footer.html?v=10')
+            .then(function (res) { return res.text(); })
+            .then(function (data) { document.getElementById('footer-placeholder').innerHTML = data; })
+            .catch(function (err) { console.warn('页脚加载失败:', err); });
+    </script>
+    <script src="/components/art-media.js?v=1"></script>
+    <script src="/components/nav.js?v=24"></script>
+</body>
+</html>

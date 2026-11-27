@@ -213,7 +213,7 @@ var navCloseSuppressUntil = 0;
     var NAV_KEY = 'mlmzy-appearance-nav-position';
     var THEME_TEXT = { light: '亮色模式', dark: '暗色模式' };
     var FONT_TEXT = { serif: '衬线字体', sans: '默认字体' };
-    var NAV_TEXT = { top: '导航位置：顶部', bottom: '导航位置：底部' };
+    var NAV_TEXT = { top: '顶栏模式', bottom: '底栏模式' };
     var theme = null;
     var font = null;
     var navPosition = null;
@@ -389,6 +389,11 @@ var navCloseSuppressUntil = 0;
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') closePanel();
     });
+
+    window.addEventListener('scroll', function () {
+        if (navCloseSuppressUntil && Date.now() < navCloseSuppressUntil) return;
+        closePanel();
+    }, { passive: true });
 
     window.addEventListener('resize', function () {
         if (window.matchMedia('(min-width: 1100px)').matches) closePanel();
