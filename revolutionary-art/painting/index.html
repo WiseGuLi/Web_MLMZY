@@ -354,8 +354,8 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="/components/loading.css?v=3" />
-    <script src="/components/site-font.js?v=4"></script>
+    <link rel="stylesheet" href="/components/loading.css?v=4" />
+    <script src="/components/site-font.js?v=5"></script>
     <link rel="stylesheet" href="/components/site-font.css?v=1" />
 </head>
 <body>
@@ -395,7 +395,7 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=43')
+        fetch('/components/nav.html?v=45')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -492,8 +492,7 @@
             function getColumnCount() {
                 if (window.innerWidth > 1100) return 4;
                 if (window.innerWidth > 800) return 3;
-                if (window.innerWidth > 360) return 2;
-                return 1;
+                return 2;
             }
 
             function readCachedList(category) {
@@ -774,6 +773,6 @@
         })();
     </script>
 
-    <script src="/components/nav.js?v=21"></script>
+    <script src="/components/nav.js?v=23"></script>
 </body>
 </html>

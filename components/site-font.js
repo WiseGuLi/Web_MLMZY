@@ -3,7 +3,9 @@
     'use strict';
 
     var KEY = 'mlmzy-appearance-font';
+    var NAV_KEY = 'mlmzy-appearance-nav-position';
     var DEFAULT_FONT = 'serif';
+    var DEFAULT_NAV_POSITION = 'top';
     var LOADING_MASKS = [
         '/icons/加载动画/加载1.svg',
         '/icons/加载动画/加载2.svg',
@@ -25,7 +27,23 @@
         return font;
     }
 
+    function readNavPosition() {
+        try {
+            var value = window.localStorage.getItem(NAV_KEY);
+            return value === 'bottom' || value === 'top' ? value : DEFAULT_NAV_POSITION;
+        } catch (error) {
+            return DEFAULT_NAV_POSITION;
+        }
+    }
+
+    function applyNavPosition(value) {
+        var position = value === 'bottom' ? 'bottom' : 'top';
+        document.documentElement.setAttribute('data-nav-position', position);
+        return position;
+    }
+
     applyFont(readFont());
+    applyNavPosition(readNavPosition());
 
     function randomizeLoadingMask() {
         var loadingMask = LOADING_MASKS[Math.floor(Math.random() * LOADING_MASKS.length)];
@@ -77,15 +95,21 @@
     }
 
     window.addEventListener('storage', function (event) {
-        if (event.key !== KEY) return;
-        applyFont(event.newValue === 'sans' ? 'sans' : 'serif');
+        if (event.key === KEY) {
+            applyFont(event.newValue === 'sans' ? 'sans' : 'serif');
+        } else if (event.key === NAV_KEY) {
+            applyNavPosition(event.newValue === 'bottom' ? 'bottom' : 'top');
+        }
     });
 
     /* 供顶栏脚本调用；即使没有这个对象，nav.js 也会直接设置属性。 */
     window.SiteFont = {
         key: KEY,
+        navKey: NAV_KEY,
         read: readFont,
         apply: applyFont,
+        readNavPosition: readNavPosition,
+        applyNavPosition: applyNavPosition,
         randomizeLoading: randomizeLoadingMask
     };
 })();

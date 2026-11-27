@@ -210,10 +210,13 @@ var navCloseSuppressUntil = 0;
 
     var THEME_KEY = 'mlmzy-appearance-theme';
     var FONT_KEY = 'mlmzy-appearance-font';
+    var NAV_KEY = 'mlmzy-appearance-nav-position';
     var THEME_TEXT = { light: '亮色模式', dark: '暗色模式' };
     var FONT_TEXT = { serif: '衬线字体', sans: '默认字体' };
+    var NAV_TEXT = { top: '导航位置：顶部', bottom: '导航位置：底部' };
     var theme = null;
     var font = null;
+    var navPosition = null;
 
     function readValue(key, allowed, fallback) {
         try {
@@ -239,20 +242,26 @@ var navCloseSuppressUntil = 0;
         if (font === null) {
             font = readValue(FONT_KEY, ['serif', 'sans'], 'serif');
         }
+        if (navPosition === null) {
+            navPosition = readValue(NAV_KEY, ['top', 'bottom'], 'top');
+        }
     }
 
     function getText(type) {
-        return type === 'theme' ? THEME_TEXT[theme] : FONT_TEXT[font];
+        if (type === 'theme') return THEME_TEXT[theme];
+        if (type === 'nav') return NAV_TEXT[navPosition];
+        return FONT_TEXT[font];
     }
 
     function syncButton(button) {
         if (button.disabled) return;
 
         var type = button.getAttribute('data-appearance-toggle');
-        if (type !== 'theme' && type !== 'font') return;
+        if (type !== 'theme' && type !== 'font' && type !== 'nav') return;
 
         var text = getText(type);
-        button.setAttribute('data-value', type === 'theme' ? theme : font);
+        var value = type === 'theme' ? theme : (type === 'nav' ? navPosition : font);
+        button.setAttribute('data-value', value);
 
         var label = button.querySelector('[data-appearance-label]');
         if (label && label.textContent !== text) label.textContent = text;
@@ -262,13 +271,14 @@ var navCloseSuppressUntil = 0;
         button.setAttribute('title', hint);
     }
 
-    function applyFont() {
+    function applyAppearance() {
         document.documentElement.setAttribute('data-font', font);
+        document.documentElement.setAttribute('data-nav-position', navPosition);
     }
 
     function syncAll() {
         ensureState();
-        applyFont();
+        applyAppearance();
         var buttons = document.querySelectorAll('[data-appearance-toggle]');
         for (var i = 0; i < buttons.length; i++) {
             syncButton(buttons[i]);
@@ -311,6 +321,10 @@ var navCloseSuppressUntil = 0;
             navCloseSuppressUntil = Date.now() + 1200;
             font = font === 'serif' ? 'sans' : 'serif';
             saveValue(FONT_KEY, font);
+        } else if (type === 'nav') {
+            navCloseSuppressUntil = Date.now() + 1200;
+            navPosition = navPosition === 'top' ? 'bottom' : 'top';
+            saveValue(NAV_KEY, navPosition);
         } else {
             return;
         }
@@ -330,4 +344,53 @@ var navCloseSuppressUntil = 0;
             subtree: true
         });
     }
+})();
+
+/* 手机端外观按钮：展开/收起外观面板。 */
+(function () {
+    'use strict';
+
+    function panel() {
+        return document.getElementById('mobileAppearanceMenu');
+    }
+
+    function trigger() {
+        return document.querySelector('.nav-appearance-trigger');
+    }
+
+    function closePanel() {
+        var menu = panel();
+        var button = trigger();
+        if (!menu) return;
+        menu.hidden = true;
+        menu.classList.remove('is-open');
+        if (button) button.setAttribute('aria-expanded', 'false');
+    }
+
+    document.addEventListener('click', function (event) {
+        var button = event.target.closest ? event.target.closest('.nav-appearance-trigger') : null;
+        if (button) {
+            var menu = panel();
+            if (!menu) return;
+            if (menu.hidden) {
+                menu.hidden = false;
+                menu.classList.add('is-open');
+                button.setAttribute('aria-expanded', 'true');
+            } else {
+                closePanel();
+            }
+            return;
+        }
+
+        if (event.target.closest && event.target.closest('#mobileAppearanceMenu')) return;
+        closePanel();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closePanel();
+    });
+
+    window.addEventListener('resize', function () {
+        if (window.matchMedia('(min-width: 1100px)').matches) closePanel();
+    });
 })();

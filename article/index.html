@@ -293,7 +293,30 @@
         }
 
         .mobile-category-list {
-            display: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .mobile-category-list a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 38px;
+            padding: 6px 16px;
+            border: 1px solid var(--line);
+            border-radius: 2px;
+            background: var(--card);
+            color: #4b463f;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .mobile-category-list a:hover {
+            color: var(--red);
+            border-color: rgba(158, 20, 20, 0.4);
         }
 
         .category-title {
@@ -875,8 +898,8 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="/components/loading.css?v=3" />
-    <script src="/components/site-font.js?v=4"></script>
+    <link rel="stylesheet" href="/components/loading.css?v=4" />
+    <script src="/components/site-font.js?v=5"></script>
     <link rel="stylesheet" href="/components/site-font.css?v=1" />
 </head>
 <body>
@@ -932,11 +955,11 @@
     <div id="footer-placeholder"></div>
 
     <script src="/components/marked.min.js?v=1"></script>
-    <script src="/article-page.js?v=10"></script>
+    <script src="/article-page.js?v=11"></script>
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=43')
+        fetch('/components/nav.html?v=45')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -961,6 +984,6 @@
             });
     </script>
 
-    <script src="/components/nav.js?v=21"></script>
+    <script src="/components/nav.js?v=23"></script>
 </body>
 </html>

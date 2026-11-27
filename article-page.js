@@ -19,6 +19,8 @@
     var articleRequestToken = 0;
     var downloadStats = null;
     var downloadStatsPromise = null;
+    var downloadAllowed = false;
+    var downloadSection = document.getElementById('articleDownload');
 
     function setSidebarHidden(hidden) {
         articlePage.classList.toggle('sidebar-hidden', hidden);
@@ -232,6 +234,8 @@
                 '<p>可以按左侧分类浏览，或从下方分类入口进入。</p>' +
             '</div>' +
             '<nav class="mobile-category-list" aria-label="文章分类">' + mobileCategories + '</nav>';
+
+        setDownloadStatsVisible(true);
     }
 
     function formatCount(value) {
@@ -242,9 +246,19 @@
         return Number(value).toFixed(2) + '%';
     }
 
+    function setDownloadStatsVisible(visible) {
+        downloadAllowed = visible;
+        if (!downloadSection) return;
+        if (!visible) {
+            downloadSection.hidden = true;
+        } else if (downloadStats) {
+            renderDownloadStats();
+        }
+    }
+
     function renderDownloadStats() {
-        var section = document.getElementById('articleDownload');
-        if (!section || !downloadStats) return;
+        var section = downloadSection;
+        if (!section || !downloadStats || !downloadAllowed) return;
 
         var monthly = document.getElementById('articleDownloadMonthly');
         var limit = document.getElementById('articleDownloadLimit');
@@ -316,6 +330,7 @@
     }
 
     function renderCategory(category) {
+        setDownloadStatsVisible(false);
         renderTabs(category.slug);
         setBackTarget('/article');
         setPageTitle(category.name + ' · 文章');
@@ -353,6 +368,11 @@
         if (article.publishedDate) {
             metaItems.push('<span class="article-meta-item"><span class="article-meta-label">刊登日期</span>' + escapeHtml(article.publishedDate) + '</span>');
             var articleUrl = new URL(articleHref(category, article), window.location.origin).href;
+            try {
+                articleUrl = decodeURI(articleUrl);
+            } catch (error) {
+                /* 保留原始 URL */
+            }
             metaItems.push('<button class="article-copy-link" type="button" data-copy-article data-copy-url="' +
                 escapeHtml(articleUrl) + '">复制文章链接</button>');
         }
@@ -417,6 +437,7 @@
     }
 
     function renderArticleLoading(category, article) {
+        setDownloadStatsVisible(false);
         renderTabs(category.slug);
         setBackTarget(categoryHref(category));
         setPageTitle(article.title);
