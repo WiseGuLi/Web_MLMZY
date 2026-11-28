@@ -81,7 +81,7 @@
 
         .entry-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 18px;
             margin-top: 34px;
         }
@@ -226,20 +226,20 @@
                 </span>
             </div>
 
-            <div class="entry-card is-disabled" aria-disabled="true">
+            <a class="entry-card" href="/revolutionary-art/music/">
                 <span class="entry-thumb"><img src="/icons/革命文艺/music.webp" alt="" loading="lazy" onerror="this.remove()" /></span>
                 <span class="entry-body">
                     <span class="entry-name">音乐</span>
-                    <span class="entry-note">即将开放</span>
+                    <span class="entry-note">进入 →</span>
                 </span>
-            </div>
+            </a>
         </div>
     </main>
 
     <div id="footer-placeholder"></div>
 
     <script>
-        fetch('/components/nav.html?v=46')
+        fetch('/components/nav.html?v=47')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -251,7 +251,7 @@
                 console.warn('顶栏加载失败:', err);
             });
 
-        fetch('/components/footer.html?v=10')
+        fetch('/components/footer.html?v=11')
             .then(function (res) {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-language" content="zh-CN" />
+    <meta name="application-name" content="马列毛主义学习站" />
+    <meta name="apple-mobile-web-app-title" content="马列毛主义学习站" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音乐 · 革命文艺 | 马列毛主义学习站</title>
+    <link rel="manifest" href="/manifest.json?v=2" crossorigin="use-credentials" />
+    <meta name="theme-color" content="#9e1414" />
+    <link rel="apple-touch-icon" href="/icons/pwa/icon-192.png" />
+    <style>
+        :root {
+            --paper: #faf9f5;
+            --ink: #1d1b19;
+            --muted: #68625b;
+            --red: #9e1414;
+            --line: #e2ddd2;
+            --card: #fffefb;
+            --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+            --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+    </style>
+    <link rel="stylesheet" href="/components/art-media.css?v=1" />
+    <link rel="stylesheet" href="/components/music.css?v=1" />
+    <link rel="stylesheet" href="/components/loading.css?v=4" />
+    <script src="/components/site-font.js?v=5"></script>
+    <link rel="stylesheet" href="/components/site-font.css?v=1" />
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <main class="media-page music-page">
+        <header class="media-head">
+            <a class="media-back" href="/revolutionary-art/">← 革命文艺</a>
+            <p class="media-kicker">革命文艺</p>
+            <h1 class="media-title">音乐</h1>
+            <p class="media-intro">按曲目整理革命歌曲与《国际歌》多语种版本，点击播放，展开歌词跟唱。</p>
+        </header>
+
+        <p class="music-status is-loading" id="musicStatus" role="status">正在加载音乐…</p>
+
+        <section class="media-list-card" id="musicListCard" hidden>
+            <div class="media-list-head">
+                <h2 class="media-list-title">曲目</h2>
+                <span class="media-list-count" id="musicCount"></span>
+            </div>
+            <ul class="music-list" id="musicList" aria-live="polite"></ul>
+        </section>
+    </main>
+
+    <div class="music-player" id="musicPlayer" hidden>
+        <div class="music-player-info">
+            <span class="music-player-label">正在播放</span>
+            <strong class="music-player-title" id="musicNow">—</strong>
+        </div>
+        <audio id="musicAudio" controls preload="metadata"></audio>
+        <button class="music-player-close" id="musicPlayerClose" type="button" aria-label="关闭播放器">×</button>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('/components/nav.html?v=47')
+            .then(function (res) { return res.text(); })
+            .then(function (data) { document.getElementById('nav-placeholder').innerHTML = data; })
+            .catch(function (err) { console.warn('顶栏加载失败:', err); });
+
+        fetch('/components/footer.html?v=11')
+            .then(function (res) { return res.text(); })
+            .then(function (data) { document.getElementById('footer-placeholder').innerHTML = data; })
+            .catch(function (err) { console.warn('页脚加载失败:', err); });
+    </script>
+    <script src="/components/music.js?v=1"></script>
+    <script src="/components/nav.js?v=24"></script>
+</body>
+</html>

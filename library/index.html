@@ -57,11 +57,19 @@
             margin-bottom: 1.35rem;
         }
 
+        .library-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* 宽屏时文库切换固定在页面右上角，不随标题位置移动 */
         .library-source {
-            position: absolute;
-            top: 0;
-            right: 0;
-            z-index: 2;
+            position: fixed;
+            top: 84px;
+            right: clamp(18px, 2.6vw, 40px);
+            z-index: 60;
         }
 
         .library-source::after {
@@ -98,16 +106,77 @@
             outline: none;
         }
 
+        .library-switch {
+            display: contents;
+        }
+
+        .library-switch-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            padding: 0 12px;
+            border: 1px solid rgba(158, 20, 20, 0.35);
+            border-radius: 3px;
+            background: var(--card);
+            color: var(--red);
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
         @media (max-width: 900px) {
             .library-head {
-                padding-top: 48px;
+                padding-top: 0;
             }
 
+            .library-title-row {
+                gap: 8px;
+            }
+
+            .library-head .library-title {
+                font-size: clamp(1.45rem, 6.2vw, 2rem);
+                white-space: nowrap;
+            }
+
+            .library-switch {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                flex: 0 0 auto;
+            }
+
+            .library-switch-btn {
+                display: inline-flex;
+            }
+
+            /* 透明原生选择框覆盖在按钮上，点击直接打开浏览器选择框 */
             .library-source {
-                left: 0;
-                right: 0;
-                display: flex;
-                justify-content: center;
+                position: absolute;
+                inset: 0;
+                z-index: 2;
+            }
+
+            .library-source::after {
+                display: none;
+            }
+
+            .library-source select {
+                width: 100%;
+                height: 100%;
+                max-width: none;
+                padding: 0;
+                border: 0;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            .library-source select:focus-visible {
+                outline: 2px solid rgba(158, 20, 20, 0.4);
+                outline-offset: 2px;
+                border-radius: 3px;
             }
         }
 
@@ -1087,18 +1156,12 @@
             }
 
             .library-head {
-                padding-top: 48px;
-            }
-
-            .library-source {
-                left: 0;
-                right: 0;
-                display: flex;
-                justify-content: center;
+                padding-top: 0;
             }
 
             .library-title {
-                font-size: 2rem;
+                font-size: clamp(1.45rem, 6.2vw, 2rem);
+                white-space: nowrap;
             }
 
             .segmented-control label {
@@ -1305,16 +1368,21 @@
     <!-- ===== 文库页面主体 ===== -->
     <main class="library-container">
         <header class="library-head">
-            <div class="library-source">
-                <select id="librarySource" aria-label="选择文库">
-                    <option value="classic" selected>马列毛经典文库</option>
-                    <option value="historical" disabled>历史书籍文库（锁定）</option>
-                    <option value="literature" disabled>文学类文库（锁定）</option>
-                    <option value="non-zh" disabled>非汉语文库（锁定）</option>
-                    <option value="other" disabled>其他文库（锁定）</option>
-                </select>
+            <div class="library-title-row">
+                <h1 class="library-title">马列毛经典文库</h1>
+                <div class="library-switch">
+                    <button class="library-switch-btn" type="button" aria-hidden="true" tabindex="-1">切换文库</button>
+                    <div class="library-source">
+                        <select id="librarySource" aria-label="切换文库">
+                            <option value="classic" selected>马列毛经典文库</option>
+                            <option value="historical" disabled>历史书籍文库（锁定）</option>
+                            <option value="literature" disabled>文学类文库（锁定）</option>
+                            <option value="non-zh" disabled>非汉语文库（锁定）</option>
+                            <option value="other" disabled>其他文库（锁定）</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <h1 class="library-title">马列毛经典文库</h1>
             <p class="library-subtitle" id="libraryBookCount">总收录 — 本 · 当前分类 — 本</p>
         </header>
 
@@ -1409,14 +1477,14 @@
     <!-- ========================================================= -->
     <!-- 加载导航栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=46')
+        fetch('/components/nav.html?v=47')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('nav-placeholder').innerHTML = data;
             })
             .catch(error => console.error('导航栏加载失败:', error));
 
-        fetch('/components/footer.html?v=10')
+        fetch('/components/footer.html?v=11')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('footer-placeholder').innerHTML = data;

@@ -232,16 +232,6 @@
         transform: rotate(225deg);
     }
 
-    html[data-nav-position="bottom"] .nav-more .caret {
-        margin-top: 2px;
-        transform: rotate(225deg);
-    }
-
-    html[data-nav-position="bottom"] .nav-more details[open] .caret {
-        margin-top: -4px;
-        transform: rotate(45deg);
-    }
-
     .nav-more .nav-sub {
         position: absolute;
         top: calc(100% + 8px);
@@ -369,6 +359,11 @@
         object-fit: contain;
         object-position: center;
         opacity: 1;
+    }
+
+    /* 外观下拉在宽屏和窄屏使用同一宽度 */
+    .nav-sub.nav-appearance-menu {
+        width: 200px;
     }
 
     .nav-sub a.nav-install {
@@ -672,7 +667,8 @@
         right: 10px;
         z-index: 1200;
         display: none;
-        width: min(300px, calc(100vw - 20px));
+        width: 200px;
+        max-width: calc(100vw - 20px);
         padding: 6px;
         border: 1px solid #e2ddd2;
         border-radius: 6px;

@@ -959,7 +959,7 @@
 
     <!-- 加载外部顶栏与页脚 -->
     <script>
-        fetch('/components/nav.html?v=46')
+        fetch('/components/nav.html?v=47')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
@@ -971,7 +971,7 @@
                 console.warn('顶栏加载失败:', err);
             });
 
-        fetch('/components/footer.html?v=10')
+        fetch('/components/footer.html?v=11')
             .then(res => {
                 if (!res.ok) throw new Error('网络响应失败');
                 return res.text();
